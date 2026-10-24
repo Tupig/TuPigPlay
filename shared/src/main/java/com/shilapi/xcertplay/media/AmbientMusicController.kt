@@ -2,9 +2,9 @@ package com.shilapi.xcertplay.media
 
 import android.content.Context
 import android.util.Log
-import com.shilapi.xcertplay.hud.BydAmbientLightClient
-import com.shilapi.xcertplay.hud.BydAmbientLightPolicy
-import com.shilapi.xcertplay.hud.BydCarMusicRhythm
+import com.shilapi.xcertplay.hud.TuPigAmbientLightClient
+import com.shilapi.xcertplay.hud.TuPigAmbientLightPolicy
+import com.shilapi.xcertplay.hud.TuPigCarMusicRhythm
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -34,15 +34,15 @@ object AmbientMusicController {
 
     private val lampSession = AmbientLampSession(
         factory = {
-            val real = BydAmbientLightClient(requireNotNull(context))
+            val real = TuPigAmbientLightClient(requireNotNull(context))
             object : AmbientLampSession.Client {
                 override fun unhealthy(): Boolean {
                     val phase = real.status().phase
-                    return phase == BydAmbientLightClient.Phase.FAILED || phase == BydAmbientLightClient.Phase.CLOSED
+                    return phase == TuPigAmbientLightClient.Phase.FAILED || phase == TuPigAmbientLightClient.Phase.CLOSED
                 }
-                override fun begin(seed: BydAmbientLightPolicy.Snapshot?) = real.begin(seed?.let {
-                    BydAmbientLightClient.State(it.frontColor, it.backColor, it.frontBrightness, it.backBrightness, it.area)
-                }).thenApply { BydAmbientLightPolicy.Snapshot(it.frontColor, it.backColor, it.frontBrightness, it.backBrightness, it.area) }
+                override fun begin(seed: TuPigAmbientLightPolicy.Snapshot?) = real.begin(seed?.let {
+                    TuPigAmbientLightClient.State(it.frontColor, it.backColor, it.frontBrightness, it.backBrightness, it.area)
+                }).thenApply { TuPigAmbientLightPolicy.Snapshot(it.frontColor, it.backColor, it.frontBrightness, it.backBrightness, it.area) }
                 override fun apply(desired: Triple<Int, Int, Int>) = real.apply(desired.first, desired.second, desired.third).thenApply { Unit }
                 override fun stop() = real.stop().thenApply { Unit }
                 // stop's future completes only after closeTransport, including its failure path.
@@ -51,13 +51,13 @@ object AmbientMusicController {
         },
         dispatch = { executor.execute(it) },
         now = { android.os.SystemClock.uptimeMillis() },
-        log = { Log.i("DiPlay-Ambient", it) },
+        log = { Log.i("TuPigCarPlay-Ambient", it) },
         applied = { desired ->
             appliedCount++
             val now = android.os.SystemClock.uptimeMillis()
             if (now - lastLogMillis >= 5_000) {
                 lastLogMillis = now
-                Log.i("DiPlay-Ambient", "applied=$appliedCount area=${desired.first} color=${desired.second} brightness=${desired.third} colorMode=${settings.colorMode} estimatedBpm=${colors.estimatedBpm?.toInt() ?: 0}")
+                Log.i("TuPigCarPlay-Ambient", "applied=$appliedCount area=${desired.first} color=${desired.second} brightness=${desired.third} colorMode=${settings.colorMode} estimatedBpm=${colors.estimatedBpm?.toInt() ?: 0}")
             }
         },
     )
@@ -69,13 +69,13 @@ object AmbientMusicController {
 
     /** On the executor, after [settings] changed. */
     private fun updateTicking() {
-        if (!settings.carRhythm) context?.let { BydCarMusicRhythm.setPlaying(it, false) }
+        if (!settings.carRhythm) context?.let { TuPigCarMusicRhythm.setPlaying(it, false) }
         if (!settings.enabled && !settings.carRhythm) {
             ticking?.cancel(false)
             ticking = null
         } else if (ticking == null) {
             ticking = executor.scheduleWithFixedDelay({ runCatching { tick() }.onFailure {
-                Log.w("DiPlay-Ambient", "lamp update failed", it)
+                Log.w("TuPigCarPlay-Ambient", "lamp update failed", it)
                 lampSession.recover()
             } }, 50, 50, TimeUnit.MILLISECONDS)
         }
@@ -174,7 +174,7 @@ object AmbientMusicController {
                 result.complete(true)
                 return@execute
             }
-            val client = BydAmbientLightClient(context.applicationContext)
+            val client = TuPigAmbientLightClient(context.applicationContext)
             client.read().handle { _, error -> error == null }.thenCompose { supported ->
                 // Release the read-only worker before an enabled session can acquire its process lock.
                 client.stop().handle { _, error ->
@@ -264,7 +264,7 @@ object AmbientMusicController {
 
     private fun restoreOriginal() { lampSession.setEnabled(false) }
 
-    // The car's own rhythm follows CarPlay music while it plays; DiPlay does not set the lamps meanwhile. On head
+    // The car's own rhythm follows CarPlay music while it plays; TuPigCarPlay does not set the lamps meanwhile. On head
     // units whose audio service makes no spectrum of its own, the feed option sends the played music's 16 bands.
     private var lastBandsMillis = 0L
     private fun carRhythm() {
@@ -273,7 +273,7 @@ object AmbientMusicController {
         val rendererActive = activeRenderer.get() != 0L && playback != null
         val playbackState = if (rendererActive) playback?.invoke() else null
         val playing = carRhythmPlaying(rendererActive, playbackState?.second, phonePlayback.current())
-        BydCarMusicRhythm.setPlaying(app, playing)
+        TuPigCarMusicRhythm.setPlaying(app, playing)
         if (!settings.carRhythmFeed) return
         val (head, headPlaying) = playbackState ?: return
         val now = android.os.SystemClock.uptimeMillis()
@@ -282,6 +282,6 @@ object AmbientMusicController {
         val bands = envelope?.playedBands(head, playing && headPlaying)
         if (!playing || bands == null) return
         lastBandsMillis = now
-        BydCarMusicRhythm.sendBands(app, bands)
+        TuPigCarMusicRhythm.sendBands(app, bands)
     }
 }

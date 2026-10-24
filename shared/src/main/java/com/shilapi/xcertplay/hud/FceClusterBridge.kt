@@ -8,14 +8,14 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Publishes CarPlay arrows and distance to the instrument cluster of FCE head units through
- * [FceCarPropertyWriter], independently of the BYD outputs. Needs both the navigation output switch
- * ([BydOutputSettings.enabled]) and its own opt-in ([BydOutputSettings.fceCluster]).
+ * [FceCarPropertyWriter], independently of the TuPig outputs. Needs both the navigation output switch
+ * ([TuPigOutputSettings.enabled]) and its own opt-in ([TuPigOutputSettings.fceCluster]).
  */
 internal object FceClusterBridge {
-    private const val TAG = "DiPlay-FCE-Cluster"
+    private const val TAG = "TuPigCarPlay-FCE-Cluster"
 
     private val lock = Any()
-    private val route = BydHudRouteState()
+    private val route = TuPigHudRouteState()
     private val navigation = FceNavigationState()
     private var output = FceClusterOutput(FceCarPropertyWriter())
     private var context: Context? = null
@@ -32,7 +32,7 @@ internal object FceClusterBridge {
         if (!tickStarted) {
             tickStarted = true
             Executors.newSingleThreadScheduledExecutor { runnable ->
-                Thread(runnable, "diplay-fce-cluster").apply { isDaemon = true }
+                Thread(runnable, "tupigcarplay-fce-cluster").apply { isDaemon = true }
             }.scheduleAtFixedRate(::tick, 1, 1, TimeUnit.SECONDS)
         }
     }
@@ -55,7 +55,7 @@ internal object FceClusterBridge {
     private fun tick() = synchronized(lock) { if (context != null) refreshLocked() }
 
     private fun enabledLocked(): Boolean =
-        context?.let { BydOutputSettings.enabled(it) && BydOutputSettings.fceCluster(it) } == true
+        context?.let { TuPigOutputSettings.enabled(it) && TuPigOutputSettings.fceCluster(it) } == true
 
     private fun refreshLocked() {
         if (!enabledLocked()) return output.stop()

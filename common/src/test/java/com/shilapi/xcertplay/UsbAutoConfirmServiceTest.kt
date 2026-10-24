@@ -63,28 +63,28 @@ class UsbAutoConfirmServiceTest {
         assertFalse(UsbAutoConfirmService.isSystemUsbWindow("evil.app", "android.app.Dialog"))
     }
 
-    @Test fun otherSystemDialogsNamingDiPlayAreLeftAlone() {
-        assertFalse(UsbAutoConfirmService.isTargetPrompt("Start recording or casting with DiPlay?", "DiPlay"))
+    @Test fun otherSystemDialogsNamingTuPigCarPlayAreLeftAlone() {
+        assertFalse(UsbAutoConfirmService.isTargetPrompt("Start recording or casting with TuPigCarPlay?", "TuPigCarPlay"))
         assertFalse(UsbAutoConfirmService.isTargetPrompt(
-            "DiPlay will have access to all of the information that is visible on your screen", "DiPlay",
+            "TuPigCarPlay will have access to all of the information that is visible on your screen", "TuPigCarPlay",
         ))
-        assertFalse(UsbAutoConfirmService.isTargetPrompt("要开始使用DiPlay录制或投放内容吗？", "DiPlay"))
+        assertFalse(UsbAutoConfirmService.isTargetPrompt("要开始使用TuPigCarPlay录制或投放内容吗？", "TuPigCarPlay"))
     }
 
-    @Test fun promptMustNameDiPlayInEveryAndroidWording() {
+    @Test fun promptMustNameTuPigCarPlayInEveryAndroidWording() {
         // Android 7.1 and 10+ wording, in English and Chinese (#409, #521).
-        assertTrue(UsbAutoConfirmService.isTargetPrompt("Allow the app DiPlay to access the USB device?", "DiPlay"))
-        assertTrue(UsbAutoConfirmService.isTargetPrompt("允许应用“DiPlay”访问该USB设备吗？", "DiPlay"))
-        assertTrue(UsbAutoConfirmService.isTargetPrompt("Allow DiPlay to access iPhone?", "DiPlay"))
-        assertTrue(UsbAutoConfirmService.isTargetPrompt("要允许DiPlay访问iPhone吗？", "DiPlay"))
-        assertTrue(UsbAutoConfirmService.isTargetPrompt("Always open DiPlay when iPhone is connected", "DiPlay"))
-        assertFalse(UsbAutoConfirmService.isTargetPrompt("Allow CarPlay access to iPhone?", "DiPlay"))
-        assertFalse(UsbAutoConfirmService.isTargetPrompt("Allow FakeDiPlay to access iPhone?", "DiPlay"))
-        assertFalse(UsbAutoConfirmService.isTargetPrompt("要允许DiPlayer访问iPhone吗？", "DiPlay"))
+        assertTrue(UsbAutoConfirmService.isTargetPrompt("Allow the app TuPigCarPlay to access the USB device?", "TuPigCarPlay"))
+        assertTrue(UsbAutoConfirmService.isTargetPrompt("允许应用“TuPigCarPlay”访问该USB设备吗？", "TuPigCarPlay"))
+        assertTrue(UsbAutoConfirmService.isTargetPrompt("Allow TuPigCarPlay to access iPhone?", "TuPigCarPlay"))
+        assertTrue(UsbAutoConfirmService.isTargetPrompt("要允许TuPigCarPlay访问iPhone吗？", "TuPigCarPlay"))
+        assertTrue(UsbAutoConfirmService.isTargetPrompt("Always open TuPigCarPlay when iPhone is connected", "TuPigCarPlay"))
+        assertFalse(UsbAutoConfirmService.isTargetPrompt("Allow CarPlay access to iPhone?", "TuPigCarPlay"))
+        assertFalse(UsbAutoConfirmService.isTargetPrompt("Allow FakeTuPigCarPlay to access iPhone?", "TuPigCarPlay"))
+        assertFalse(UsbAutoConfirmService.isTargetPrompt("要允许TuPigCarPlayer访问iPhone吗？", "TuPigCarPlay"))
         assertFalse(UsbAutoConfirmService.isTargetPrompt("Allow USB access?", ""))
     }
 
-    @Test fun bydAccessibilityScreenIsUsedWhenTheStandardActionIsMissing() {
+    @Test fun tuPigAccessibilityScreenIsUsedWhenTheStandardActionIsMissing() {
         val context = org.mockito.Mockito.mock(Context::class.java)
         val opened = mutableListOf<android.content.Intent>()
         org.mockito.Mockito.doAnswer { call ->

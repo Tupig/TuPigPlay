@@ -17,7 +17,7 @@ import org.robolectric.shadows.ShadowAlertDialog
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33], qualifiers = "en", manifest = Config.NONE)
 class FrameRateSettingTest {
-    private val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+    private val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
 
     @Test fun aRateFromTheCarPlayMenuIsShownAndThirtyCanBeChosenFromIt() {
         AirPlayPersistence.saveFps(activity, 45)
@@ -42,7 +42,7 @@ class FrameRateSettingTest {
 
     private fun row(): Button {
         val parent = LinearLayout(activity)
-        DiPlayActivity::class.java.getDeclaredMethod("frameRateControl", LinearLayout::class.java)
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("frameRateControl", LinearLayout::class.java)
             .apply { isAccessible = true }.invoke(activity, parent)
         return parent.getChildAt(0) as Button
     }

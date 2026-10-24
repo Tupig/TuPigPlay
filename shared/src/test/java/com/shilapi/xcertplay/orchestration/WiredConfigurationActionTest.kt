@@ -40,7 +40,7 @@ class WiredConfigurationActionTest {
         assertEquals("reject-missing-configuration", WiredConfigurationAction.REJECT.diagnostic)
     }
 
-    @Test fun theModeASessionDiPlayEndedLeftBehindIsRequestedAgainOnce() {
+    @Test fun theModeASessionTuPigCarPlayEndedLeftBehindIsRequestedAgainOnce() {
         // #335: after Save and reconnect the iPhone stayed in CarPlay mode on the same device node and took no
         // new session until it reset USB; a fresh mode request connected within seconds.
         assertEquals(WiredConfigurationAction.REQUEST_TRANSITION,

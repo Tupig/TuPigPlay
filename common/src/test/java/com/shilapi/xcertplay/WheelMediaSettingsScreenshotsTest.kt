@@ -25,7 +25,7 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class WheelMediaSettingsScreenshotsTest {
     @Test fun mediaKeyControlsRenderAtLargeFontsInThreeLayouts() {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         WheelZoomSettings.setMediaPlayPause(activity, true)
         try {
@@ -43,7 +43,7 @@ class WheelMediaSettingsScreenshotsTest {
                 @Suppress("DEPRECATION")
                 activity.resources.updateConfiguration(config, activity.resources.displayMetrics)
                 val row = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL }
-                DiPlayActivity::class.java.getDeclaredMethod("wheelKeysSettings", LinearLayout::class.java)
+                TuPigCarPlayActivity::class.java.getDeclaredMethod("wheelKeysSettings", LinearLayout::class.java)
                     .apply { isAccessible = true }.invoke(activity, row)
                 assertTrue(allViews(row).filterIsInstance<TextView>().any {
                     it.text.toString() == activity.getString(R.string.wheel_media_play_pause)

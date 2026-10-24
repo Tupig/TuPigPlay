@@ -4,7 +4,7 @@ import android.content.Context
 
 /** Durable metadata only. APK downloads always remain an explicit foreground action. */
 internal object UpdateAvailability {
-    private const val PREFERENCES = "diplay_update_availability"
+    private const val PREFERENCES = "tupigcarplay_update_availability"
     private const val TAG = "tag"
     private const val APK_NAME = "apk_name"
     private const val APK_URL = "apk_url"

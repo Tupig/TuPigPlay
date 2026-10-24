@@ -25,12 +25,12 @@ class CarHotspotConfigReadTest {
 
     private val key by lazy { KeyPairGenerator.getInstance("RSA").apply { initialize(2048) }.generateKeyPair() }
 
-    // The import switch is the driver's own tap. Without asking, a car that had never seen DiPlay's
+    // The import switch is the driver's own tap. Without asking, a car that had never seen TuPigCarPlay's
     // key answered "not approved" and showed no prompt (Galaxy Note20, Android 13).
     @Test fun aReadThatMayAskOffersTheKeyAndReadsTheCarHotspot() {
         val adbd = FakeAdbd(key, knowsKey = false, approves = true,
-            output = "DIPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car-Hotspot", "secret-pass", 1)}\n")
-        val outcome = CarHotspotConfigRead.readWithAdb(LocalAdb(key, port = adbd.port), "/data/app/diplay.apk",
+            output = "TUPIGCARPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car-Hotspot", "secret-pass", 1)}\n")
+        val outcome = CarHotspotConfigRead.readWithAdb(LocalAdb(key, port = adbd.port), "/data/app/tupigcarplay.apk",
             mayAsk = true, log = ::log)
         assertTrue(adbd.offeredKey)
         assertEquals(CarHotspotSavedCredentials("Car-Hotspot", "secret-pass", ManualHotspotSecurity.WPA2), outcome.credentials)
@@ -39,7 +39,7 @@ class CarHotspotConfigReadTest {
 
     @Test fun aReadThatMayNotAskLeavesAnUnknownKeyUnapproved() {
         val adbd = FakeAdbd(key, knowsKey = false, approves = true)
-        val outcome = CarHotspotConfigRead.readWithAdb(LocalAdb(key, port = adbd.port), "/data/app/diplay.apk",
+        val outcome = CarHotspotConfigRead.readWithAdb(LocalAdb(key, port = adbd.port), "/data/app/tupigcarplay.apk",
             mayAsk = false, log = ::log)
         assertFalse(adbd.offeredKey)
         assertEquals(CarHotspotConfigRead.Reason.ADB_UNAVAILABLE, outcome.reason)
@@ -48,8 +48,8 @@ class CarHotspotConfigReadTest {
 
     @Test fun adbReadCarriesTheSavedCredentials() {
         val outcome = CarHotspotConfigRead.readAdb(
-            { _, _ -> "noise\nDIPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car-Hotspot", "pass|word", 1)}\n" },
-            "/data/app/diplay.apk", 4_000, ::log)
+            { _, _ -> "noise\nTUPIGCARPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car-Hotspot", "pass|word", 1)}\n" },
+            "/data/app/tupigcarplay.apk", 4_000, ::log)
         assertEquals(CarHotspotSavedCredentials("Car-Hotspot", "pass|word", ManualHotspotSecurity.WPA2), outcome.credentials)
         assertNull(outcome.reason)
     }
@@ -62,7 +62,7 @@ class CarHotspotConfigReadTest {
             3 to ManualHotspotSecurity.WPA3,
         ).forEach { (type, security) ->
             val outcome = CarHotspotConfigRead.readAdb(
-                { _, _ -> "DIPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car", if (security == ManualHotspotSecurity.OPEN) "" else "pass", type)}" },
+                { _, _ -> "TUPIGCARPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car", if (security == ManualHotspotSecurity.OPEN) "" else "pass", type)}" },
                 "", 4_000, ::log)
             assertEquals(security, outcome.credentials?.security)
         }
@@ -70,7 +70,7 @@ class CarHotspotConfigReadTest {
 
     @Test fun securedHotspotsWithoutAPassphraseAreRejected() {
         val outcome = CarHotspotConfigRead.readAdb(
-            { _, _ -> "DIPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car", "", 1)}" }, "", 4_000, ::log)
+            { _, _ -> "TUPIGCARPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car", "", 1)}" }, "", 4_000, ::log)
         assertNull(outcome.credentials)
         assertEquals(CarHotspotConfigRead.Reason.UNAVAILABLE, outcome.reason)
         assertTrue(logs.last().contains("without a passphrase"))
@@ -78,24 +78,24 @@ class CarHotspotConfigReadTest {
 
     @Test fun openHotspotsWithAPassphraseAreRejected() {
         val outcome = CarHotspotConfigRead.readAdb(
-            { _, _ -> "DIPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car", "pass", 0)}" }, "", 4_000, ::log)
+            { _, _ -> "TUPIGCARPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car", "pass", 0)}" }, "", 4_000, ::log)
         assertNull(outcome.credentials)
         assertTrue(logs.last().contains("an open hotspot with a passphrase"))
     }
 
     @Test fun unnamedOrUnknownSecurityRepliesAreRejected() {
         val unnamed = CarHotspotConfigRead.readAdb(
-            { _, _ -> "DIPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("", "pass", 1)}" }, "", 4_000, ::log)
+            { _, _ -> "TUPIGCARPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("", "pass", 1)}" }, "", 4_000, ::log)
         assertNull(unnamed.credentials)
         val unknownSecurity = CarHotspotConfigRead.readAdb(
-            { _, _ -> "DIPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car", "pass", 9)}" }, "", 4_000, ::log)
+            { _, _ -> "TUPIGCARPLAY_HOTSPOT_APCONFIG_READ_V1|${reply("Car", "pass", 9)}" }, "", 4_000, ::log)
         assertNull(unknownSecurity.credentials)
         assertTrue(logs.last().contains("unsupported security mode"))
     }
 
     @Test fun shellFailuresAndSilenceAreUnavailable() {
         val failed = CarHotspotConfigRead.readAdb(
-            { _, _ -> "DIPLAY_HOTSPOT_APCONFIG_READ_V1|error rejected" }, "", 4_000, ::log)
+            { _, _ -> "TUPIGCARPLAY_HOTSPOT_APCONFIG_READ_V1|error rejected" }, "", 4_000, ::log)
         assertEquals(CarHotspotConfigRead.Outcome(reason = CarHotspotConfigRead.Reason.UNAVAILABLE), failed)
         val silent = CarHotspotConfigRead.readAdb({ _, _ -> null }, "", 4_000, ::log)
         assertEquals(CarHotspotConfigRead.Outcome(reason = CarHotspotConfigRead.Reason.UNAVAILABLE), silent)

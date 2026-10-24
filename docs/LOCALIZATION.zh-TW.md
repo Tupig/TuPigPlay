@@ -16,7 +16,7 @@
 | Head unit / Firmware | 車機／韌體 |
 | Experimental | 標題後綴使用 `（實驗性）` |
 
-保留 DiPlay、CarPlay、iPhone、Siri、Wi-Fi Direct、USB、ADB 等產品與技術名稱；不要翻譯協定識別碼、設定鍵、檔名或診斷程式用來比對的代碼。以來源語意為準，不只做簡繁字形轉換。設定會在重新連線或下次連線才生效時，譯文也必須明確說明。
+保留 TuPigCarPlay、CarPlay、iPhone、Siri、Wi-Fi Direct、USB、ADB 等產品與技術名稱；不要翻譯協定識別碼、設定鍵、檔名或診斷程式用來比對的代碼。以來源語意為準，不只做簡繁字形轉換。設定會在重新連線或下次連線才生效時，譯文也必須明確說明。
 
 ## 修改資源
 

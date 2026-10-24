@@ -1,16 +1,16 @@
-// Sample: how a launcher embeds DiPlay's live dashboard map. See docs/LAUNCHER_INTEGRATION.md.
+// Sample: how a launcher embeds TuPigCarPlay's live dashboard map. See docs/LAUNCHER_INTEGRATION.md.
 plugins {
     alias(libs.plugins.android.application)
 }
 
 android {
-    namespace = "com.diplay.maphost"
+    namespace = "com.tupigcarplay.maphost"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.diplay.maphost"
+        applicationId = "com.tupigcarplay.maphost"
         minSdk = 30 // SurfaceView.getHostToken and setChildSurfacePackage
         targetSdk = 37
         versionCode = 1

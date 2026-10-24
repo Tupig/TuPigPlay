@@ -1,10 +1,10 @@
 package com.shilapi.xcertplay.media
 
 import android.content.Context
-import com.shilapi.xcertplay.hud.BydCarMusicRhythm
-import com.shilapi.xcertplay.hud.BydCarMusicRhythmCall
-import com.shilapi.xcertplay.hud.BydCarMusicRhythmDirect
-import com.shilapi.xcertplay.hud.BydCarMusicRhythmHelper
+import com.shilapi.xcertplay.hud.TuPigCarMusicRhythm
+import com.shilapi.xcertplay.hud.TuPigCarMusicRhythmCall
+import com.shilapi.xcertplay.hud.TuPigCarMusicRhythmDirect
+import com.shilapi.xcertplay.hud.TuPigCarMusicRhythmHelper
 import java.time.Duration
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ScheduledFuture
@@ -60,8 +60,8 @@ class AmbientMusicTickingTest {
         context.getSharedPreferences("ambient_music", Context.MODE_PRIVATE).edit().clear()
             .putBoolean("carRhythm", true).putBoolean("carRhythmFeed", true).commit()
         val car = RecordingCall()
-        BydCarMusicRhythm.direct = car
-        BydCarMusicRhythm.helper = car
+        TuPigCarMusicRhythm.direct = car
+        TuPigCarMusicRhythm.helper = car
         val quiet = IntArray(16) { 1 }
         val onset = IntArray(16) { 15 }
         val envelope = AmbientMusicEnvelope().apply {
@@ -100,14 +100,14 @@ class AmbientMusicTickingTest {
             context.getSharedPreferences("ambient_music", Context.MODE_PRIVATE).edit().clear().commit()
             AmbientMusicController.settingsChanged(context)
             settle()
-            BydCarMusicRhythm.setPlaying(context, false)
+            TuPigCarMusicRhythm.setPlaying(context, false)
             rhythmSettle()
-            BydCarMusicRhythm.direct = BydCarMusicRhythmDirect
-            BydCarMusicRhythm.helper = BydCarMusicRhythmHelper
+            TuPigCarMusicRhythm.direct = TuPigCarMusicRhythmDirect
+            TuPigCarMusicRhythm.helper = TuPigCarMusicRhythmHelper
         }
     }
 
-    private class RecordingCall : BydCarMusicRhythmCall {
+    private class RecordingCall : TuPigCarMusicRhythmCall {
         val bands = mutableListOf<IntArray>()
         override fun supported(context: Context) = true
         override fun start(context: Context) = true
@@ -116,8 +116,8 @@ class AmbientMusicTickingTest {
     }
 
     private fun rhythmSettle() {
-        (BydCarMusicRhythm::class.java.getDeclaredField("executor").apply { isAccessible = true }
-            .get(BydCarMusicRhythm) as ExecutorService).submit {}.get(2, TimeUnit.SECONDS)
+        (TuPigCarMusicRhythm::class.java.getDeclaredField("executor").apply { isAccessible = true }
+            .get(TuPigCarMusicRhythm) as ExecutorService).submit {}.get(2, TimeUnit.SECONDS)
     }
 
     private fun settle() {

@@ -29,7 +29,7 @@ class UpdateHomeAvailabilityTest {
     @Test fun cachedUpdateAppearsBelowTheVersionAndOpensTheExistingDownloadFlow() {
         val release = release()
         UpdateAvailability.save(application, release)
-        val controller = Robolectric.buildActivity(DiPlayActivity::class.java).setup()
+        val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).setup()
         val activity = controller.get()
         val text = activity.getString(R.string.update_available_home)
         val update = descendants(activity.window.decorView).filterIsInstance<TextView>()
@@ -37,7 +37,7 @@ class UpdateHomeAvailabilityTest {
 
         assertTrue(update.isClickable)
         assertTrue(update.isFocusable)
-        assertEquals(DiPlayPalette.DARK.warning, update.currentTextColor)
+        assertEquals(TuPigCarPlayPalette.DARK.warning, update.currentTextColor)
         update.performClick()
 
         assertEquals(SettingsCategory.ABOUT, ReflectionHelpers.getField<SettingsCategory>(activity, "settingsCategory"))
@@ -51,7 +51,7 @@ class UpdateHomeAvailabilityTest {
     @Test fun cachedUpdateKeepsAnArmLengthTargetInCompactHome() {
         val release = release()
         UpdateAvailability.save(application, release)
-        val controller = Robolectric.buildActivity(DiPlayActivity::class.java).setup()
+        val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).setup()
         val activity = controller.get()
         val update = descendants(activity.window.decorView).filterIsInstance<TextView>().single {
             it.text == activity.getString(R.string.update_available_home)
@@ -62,8 +62,8 @@ class UpdateHomeAvailabilityTest {
         controller.pause().stop().destroy()
     }
 
-    @Test fun anUpdateFoundWhileDiPlayWasInTheBackgroundShowsWhenHomeReturns() {
-        val controller = Robolectric.buildActivity(DiPlayActivity::class.java).setup()
+    @Test fun anUpdateFoundWhileTuPigCarPlayWasInTheBackgroundShowsWhenHomeReturns() {
+        val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).setup()
         val activity = controller.get()
         val text = activity.getString(R.string.update_available_home)
         fun shown() = descendants(activity.window.decorView).filterIsInstance<TextView>().any { it.text == text }
@@ -80,8 +80,8 @@ class UpdateHomeAvailabilityTest {
 
     private fun release() = UpdateRelease(
         tagName = "v99.0.0",
-        apkName = "DiPlay.apk",
-        apkUrl = "https://example.com/DiPlay.apk",
+        apkName = "TuPigCarPlay.apk",
+        apkUrl = "https://example.com/TuPigCarPlay.apk",
         checksumsUrl = "https://example.com/SHA256SUMS.txt",
     )
 

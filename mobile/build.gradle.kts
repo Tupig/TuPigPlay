@@ -4,7 +4,7 @@ plugins {
 }
 
 // Optional local-only input. CI and ordinary source builds contain no accessory identity.
-val localAuthenticationAssets = providers.environmentVariable("DIPLAY_AUTH_ASSETS_DIR")
+val localAuthenticationAssets = providers.environmentVariable("TUPIGCARPLAY_AUTH_ASSETS_DIR")
     .orNull?.let { file(it).canonicalFile }
 
 android {
@@ -14,39 +14,37 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.shihab.diplay"
+        // Head units that accept the gallery rename whitelist this package name.
+        applicationId = "com.android.gallery3d"
         minSdk = 24
         targetSdk = 37
         versionCode = 40
         versionName = "0.2.21"
-
     }
-
 
     localAuthenticationAssets?.let { sourceSets.getByName("main").assets.srcDir(it) }
 
     signingConfigs {
-        create("release") {
-            storeFile = file(
-                providers.environmentVariable("ANDROID_KEYSTORE_PATH")
-                    .getOrElse("missing-release-keystore.jks"),
-            )
-            storePassword = providers.environmentVariable("ANDROID_KEYSTORE_PASSWORD").getOrElse("")
-            keyAlias = providers.environmentVariable("ANDROID_KEY_ALIAS").getOrElse("")
-            keyPassword = providers.environmentVariable("ANDROID_KEY_PASSWORD").getOrElse("")
+        // Public AOSP testkey only (same as installable gallery/camera2 car APKs).
+        create("aospTest") {
+            storeFile = file("signing/aosp-testkey.p12")
+            storePassword = "android"
+            keyAlias = "androidtestkey"
+            keyPassword = "android"
+            storeType = "PKCS12"
         }
     }
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".hudtest"
-            versionNameSuffix = "-hud-test"
+            // No applicationIdSuffix: the car whitelist is exactly com.android.gallery3d.
+            signingConfig = signingConfigs.getByName("aospTest")
         }
         release {
             optimization {
                 enable = false
             }
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("aospTest")
         }
     }
     compileOptions {
@@ -105,7 +103,7 @@ val verifyStandaloneAuthentication by tasks.registering {
     val directory = localAuthenticationAssets
     doLast {
         check(directory != null) {
-            "Standalone car builds require DIPLAY_AUTH_ASSETS_DIR; assembleDebug alone is source-only."
+            "Standalone car builds require TUPIGCARPLAY_AUTH_ASSETS_DIR; assembleDebug alone is source-only."
         }
         check(listOf("identity.pk8", "certificate.p7b").all {
             directory.resolve("offline-mfi/$it").let { file -> file.isFile && file.length() > 0 }

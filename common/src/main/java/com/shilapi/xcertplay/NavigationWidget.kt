@@ -18,7 +18,7 @@ import java.util.Date
 
 /**
  * A home-screen widget with CarPlay's next turn (arrow, distance, road), arrival and the
- * song. A standard Android widget, so it works in any launcher that hosts widgets; BYD's own home
+ * song. A standard Android widget, so it works in any launcher that hosts widgets; TuPig's own home
  * accepts only its listed widgets. A widget cannot show video, so there is no live map here.
  */
 class NavigationWidget : AppWidgetProvider() {
@@ -32,7 +32,7 @@ class NavigationWidget : AppWidgetProvider() {
 internal object NavigationWidgetUpdater {
     private const val MIN_INTERVAL_MILLIS = 1_000L
 
-    private val worker = Handler(HandlerThread("diplay-widget").apply { start() }.looper)
+    private val worker = Handler(HandlerThread("tupigcarplay-widget").apply { start() }.looper)
     @Volatile private var context: Context? = null
     private var lastRender = 0L // worker thread
     private var pending = false // worker thread
@@ -66,7 +66,7 @@ internal object NavigationWidgetUpdater {
 
     fun views(context: Context, glance: CarPlayGlance.Snapshot): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_navigation)
-        val target = if (glance.connected) CarPlayScreen.target(context) else DiPlayActivity::class.java
+        val target = if (glance.connected) CarPlayScreen.target(context) else TuPigCarPlayActivity::class.java
         views.setOnClickPendingIntent(
             R.id.widget_root,
             PendingIntent.getActivity(
@@ -78,7 +78,7 @@ internal object NavigationWidgetUpdater {
         when {
             !glance.connected -> {
                 views.setImageViewResource(R.id.widget_arrow, R.drawable.ic_dp_navigation)
-                views.setTextViewText(R.id.widget_distance, "DiPlay")
+                views.setTextViewText(R.id.widget_distance, "TuPigCarPlay")
                 views.setTextViewText(R.id.widget_road, context.getString(R.string.widget_not_connected))
                 views.setViewVisibility(R.id.widget_eta, View.GONE)
             }
@@ -107,7 +107,7 @@ internal object NavigationWidgetUpdater {
         return views
     }
 
-    /** Apple's RouteGuidanceManeuverType, grouped as DiPlay's BYD outputs group it. */
+    /** Apple's RouteGuidanceManeuverType, grouped as TuPigCarPlay's TuPig outputs group it. */
     fun arrow(type: Int, drivingSide: Int): Int = when (type) {
         1, 20 -> R.drawable.ic_maneuver_left
         2, 21 -> R.drawable.ic_maneuver_right

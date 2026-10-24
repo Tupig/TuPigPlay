@@ -9,7 +9,7 @@ import android.widget.Toast
 import com.shilapi.xcertplay.airplay.CarPlayMediaButton
 import com.shilapi.xcertplay.airplay.VideoInCar
 import com.shilapi.xcertplay.host.R
-import com.shilapi.xcertplay.hud.BydNavigationOutputs
+import com.shilapi.xcertplay.hud.TuPigNavigationOutputs
 import com.shilapi.xcertplay.orchestration.CarPlayController
 import com.shilapi.xcertplay.orchestration.CarPlayVideoListener
 import java.util.concurrent.CompletableFuture
@@ -24,12 +24,12 @@ import java.util.concurrent.atomic.AtomicLong
  * as the iPhone starts the item (or sends requestUI "videoplayback:") and only while the car is in P.
  */
 internal object CarPlayVideo : CarPlayVideoListener {
-    private const val TAG = "DiPlay-Video"
+    private const val TAG = "TuPigCarPlay-Video"
     const val SKIP_MILLIS = 10_000
     private const val URL_TIMEOUT_SECONDS = 10L
 
     private val main = Handler(Looper.getMainLooper())
-    private val sender = Executors.newSingleThreadExecutor { Thread(it, "diplay-video-reply").apply { isDaemon = true } }
+    private val sender = Executors.newSingleThreadExecutor { Thread(it, "tupigcarplay-video-reply").apply { isDaemon = true } }
     @Volatile private var appContext: Context? = null
     @Volatile private var controller: CarPlayController? = null
 
@@ -54,7 +54,7 @@ internal object CarPlayVideo : CarPlayVideoListener {
         next.videoListener = this
     }
 
-    override fun readParked(): Boolean? = appContext?.let(BydNavigationOutputs::parked)
+    override fun readParked(): Boolean? = appContext?.let(TuPigNavigationOutputs::parked)
 
     override fun onVideoAllowedChanged(allowed: Boolean) {
         if (!allowed) main.post { closePlayer("the car left P") }

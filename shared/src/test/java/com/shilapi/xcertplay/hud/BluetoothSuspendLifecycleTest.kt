@@ -29,9 +29,9 @@ import kotlin.concurrent.thread
 @Config(sdk = [28], manifest = Config.NONE)
 class BluetoothSuspendLifecycleTest {
     private val app get() = RuntimeEnvironment.getApplication()
-    private val leaseField = BydBluetoothSuspend::class.java.getDeclaredField("lease").apply { isAccessible = true }
+    private val leaseField = TuPigBluetoothSuspend::class.java.getDeclaredField("lease").apply { isAccessible = true }
     private val original = leaseField.get(null)
-    private val worker = BydBluetoothSuspend::class.java.getDeclaredField("worker").apply { isAccessible = true }
+    private val worker = TuPigBluetoothSuspend::class.java.getDeclaredField("worker").apply { isAccessible = true }
         .get(null) as ScheduledExecutorService
     private val controllers = mutableListOf<CarPlayController>()
 
@@ -48,7 +48,7 @@ class BluetoothSuspendLifecycleTest {
         val lease = BluetoothSuspendLease(journal, { enabled }, { commands += it; enabled = it }, { enabled == it })
         leaseField.set(null, lease)
         val controller = controller()
-        BydBluetoothSuspend.suspend(app, controller, 60_000)
+        TuPigBluetoothSuspend.suspend(app, controller, 60_000)
         controller.close()
         assertTrue(controller.awaitClosed(2_000))
         worker.submit {}.get(2, TimeUnit.SECONDS)
@@ -81,7 +81,7 @@ class BluetoothSuspendLifecycleTest {
             if (it) restored.countDown()
         }, { enabled == it }))
         val controller = controller()
-        BydBluetoothSuspend.suspend(app, controller, 0)
+        TuPigBluetoothSuspend.suspend(app, controller, 0)
         try {
             assertTrue(entered.await(2, TimeUnit.SECONDS))
             controller.close()
@@ -99,7 +99,7 @@ class BluetoothSuspendLifecycleTest {
         leaseField.set(null, BluetoothSuspendLease(journal, { enabled }, {
             enabled = it; if (it) restored.countDown()
         }, { enabled == it }))
-        BydBluetoothSuspend.onAppOpened(app)
+        TuPigBluetoothSuspend.onAppOpened(app)
         assertTrue(restored.await(2, TimeUnit.SECONDS))
         worker.submit {}.get(2, TimeUnit.SECONDS)
         assertFalse(journal.recorded)
@@ -114,10 +114,10 @@ class BluetoothSuspendLifecycleTest {
         }, { enabled == it }))
         val adapter = app.getSystemService(BluetoothManager::class.java).adapter
         shadowOf(adapter).setState(BluetoothAdapter.STATE_ON)
-        BydBluetoothSuspend.suspend(app, Any(), 0)
+        TuPigBluetoothSuspend.suspend(app, Any(), 0)
         try {
             assertTrue(entered.await(2, TimeUnit.SECONDS))
-            assertFalse(BydBluetoothSuspend.resumeAndWait(app, adapter, 25))
+            assertFalse(TuPigBluetoothSuspend.resumeAndWait(app, adapter, 25))
             assertTrue("the still-ON snapshot alone cannot prove recovery", adapter.isEnabled)
         } finally { proceed.countDown() }
         worker.submit {}.get(2, TimeUnit.SECONDS)
@@ -131,9 +131,9 @@ class BluetoothSuspendLifecycleTest {
         leaseField.set(null, BluetoothSuspendLease(journal, { enabled }, { enabled = it }, { enabled == it }))
         val lines = java.util.Collections.synchronizedList(mutableListOf<String>())
         val owner = Any()
-        BydBluetoothSuspend.suspend(app, owner, 0, log = { lines += it })
+        TuPigBluetoothSuspend.suspend(app, owner, 0, log = { lines += it })
         worker.submit {}.get(2, TimeUnit.SECONDS)
-        BydBluetoothSuspend.resume(app, owner) { lines += it }
+        TuPigBluetoothSuspend.resume(app, owner) { lines += it }
         worker.submit {}.get(2, TimeUnit.SECONDS)
         assertEquals(listOf("car Bluetooth pause in 0 s",
             "car Bluetooth paused: Android Bluetooth is off until CarPlay ends", "car Bluetooth back on"), lines)
@@ -145,9 +145,9 @@ class BluetoothSuspendLifecycleTest {
         leaseField.set(null, BluetoothSuspendLease(journal, { enabled }, { enabled = it }, { enabled == it }))
         val lines = java.util.Collections.synchronizedList(mutableListOf<String>())
         val owner = Any()
-        BydBluetoothSuspend.suspend(app, owner, 0, log = { lines += it })
+        TuPigBluetoothSuspend.suspend(app, owner, 0, log = { lines += it })
         worker.submit {}.get(2, TimeUnit.SECONDS)
-        BydBluetoothSuspend.resume(app, owner)
+        TuPigBluetoothSuspend.resume(app, owner)
         worker.submit {}.get(2, TimeUnit.SECONDS)
         assertEquals("car Bluetooth pause skipped: Android Bluetooth was already off", lines.last())
     }
@@ -162,7 +162,7 @@ class BluetoothSuspendLifecycleTest {
         val defaultAdapter = BluetoothAdapter.getDefaultAdapter()
         assertNotNull(defaultAdapter)
         shadowOf(defaultAdapter).setState(BluetoothAdapter.STATE_ON)
-        assertFalse(BydBluetoothSuspend.isSuspendedByUs(wrappedContext))
+        assertFalse(TuPigBluetoothSuspend.isSuspendedByUs(wrappedContext))
     }
 
     @Test fun oldControllerCloseCannotCancelNewControllerDelay() {
@@ -170,8 +170,8 @@ class BluetoothSuspendLifecycleTest {
         val lease = BluetoothSuspendLease(journal, { enabled }, { enabled = it }, { enabled == it })
         leaseField.set(null, lease)
         val old = controller(); val current = controller()
-        BydBluetoothSuspend.suspend(app, old, 60_000)
-        BydBluetoothSuspend.suspend(app, current, 60_000)
+        TuPigBluetoothSuspend.suspend(app, old, 60_000)
+        TuPigBluetoothSuspend.suspend(app, current, 60_000)
         old.close()
         assertTrue(old.awaitClosed(2_000))
         assertNull("current owner must survive the old controller close", lease.recoveryOnAppOpen())
@@ -193,7 +193,7 @@ class BluetoothSuspendLifecycleTest {
         val blocker = worker.submit { entered.countDown(); assertTrue(proceed.await(5, TimeUnit.SECONDS)) }
         assertTrue(entered.await(2, TimeUnit.SECONDS))
         val result = AtomicReference<Boolean>()
-        val handshake = thread { result.set(BydBluetoothSuspend.resumeAndWait(app, adapter, 3_000)) }
+        val handshake = thread { result.set(TuPigBluetoothSuspend.resumeAndWait(app, adapter, 3_000)) }
         try {
             val deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2)
             while (handshake.state != Thread.State.TIMED_WAITING && System.nanoTime() < deadline) Thread.sleep(5)

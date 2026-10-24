@@ -16,7 +16,7 @@ import org.robolectric.annotation.Implements
 import org.robolectric.annotation.Implementation
 
 /**
- * The connection settings screen lives in [DiPlayActivity] and comes back to the projection screen
+ * The connection settings screen lives in [TuPigCarPlayActivity] and comes back to the projection screen
  * with FLAG_ACTIVITY_REORDER_TO_FRONT, so the projection screen is resumed, not recreated.
  * Settings saved while it was in the background must reach the next handshake.
  */
@@ -56,7 +56,7 @@ class HostConnectionSettingsRefreshTest {
     }
 
     /** The projection screen must start without the private MFi identity used by real cars. */
-    @Implements(DiPlayBootstrap::class, isInAndroidSdk = false)
+    @Implements(TuPigCarPlayBootstrap::class, isInAndroidSdk = false)
     internal class Bootstrap {
         @Implementation fun ensure(context: Context) = Unit
 

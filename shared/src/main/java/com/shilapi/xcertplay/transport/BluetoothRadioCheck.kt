@@ -13,22 +13,22 @@ import java.io.IOException
  */
 object BluetoothRadioCheck {
     /**
-     * Why this attempt cannot reach an iPhone, or null when it can go on. A radio that DiPlay
+     * Why this attempt cannot reach an iPhone, or null when it can go on. A radio that TuPigCarPlay
      * paused itself is turned back on before the handshake, so it does not stop the attempt here.
      */
-    fun blocker(adapterPresent: Boolean, enabled: Boolean, pausedByDiPlay: Boolean): String? = when {
+    fun blocker(adapterPresent: Boolean, enabled: Boolean, pausedByTuPigCarPlay: Boolean): String? = when {
         !adapterPresent -> NO_ADAPTER
-        !enabled && !pausedByDiPlay -> RADIO_OFF
+        !enabled && !pausedByTuPigCarPlay -> RADIO_OFF
         else -> null
     }
 
     /**
      * Why this attempt cannot reach an iPhone, taking state into account.
      */
-    fun blockerForState(adapterPresent: Boolean, state: Int?, pausedByDiPlay: Boolean): String? = when {
+    fun blockerForState(adapterPresent: Boolean, state: Int?, pausedByTuPigCarPlay: Boolean): String? = when {
         !adapterPresent || state == null -> NO_ADAPTER
         (state == android.bluetooth.BluetoothAdapter.STATE_OFF ||
-            state == android.bluetooth.BluetoothAdapter.STATE_TURNING_OFF) && !pausedByDiPlay -> RADIO_OFF
+            state == android.bluetooth.BluetoothAdapter.STATE_TURNING_OFF) && !pausedByTuPigCarPlay -> RADIO_OFF
         else -> null
     }
 

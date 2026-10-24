@@ -41,7 +41,7 @@ class AmbientAlbumPaletteTest {
     @Test fun validColoredAccentStillWinsOverMajorityWhite() {
         for (white in listOf(0xffffffff.toInt(), 0xffe7f3fa.toInt())) {
             val pixels = IntArray(576) { if (it == 0) 0xffdd2222.toInt() else white }
-            val expected = AmbientAlbumPalette.bydColor(AmbientAlbumPalette.dominantRgb(pixels)!!)
+            val expected = AmbientAlbumPalette.tuPigColor(AmbientAlbumPalette.dominantRgb(pixels)!!)
             assertEquals(expected, AmbientAlbumPalette.albumColor(pixels))
             assertFalse(expected in 29..30)
         }
@@ -71,15 +71,15 @@ class AmbientAlbumPaletteTest {
         for (index in 1..31) {
             val pixels = IntArray(576) { AmbientAlbumPalette.previewRgb(index) }
             val rgb = AmbientAlbumPalette.dominantRgb(pixels) ?: continue
-            assertEquals(AmbientAlbumPalette.bydColor(rgb), AmbientAlbumPalette.albumColor(pixels))
+            assertEquals(AmbientAlbumPalette.tuPigColor(rgb), AmbientAlbumPalette.albumColor(pixels))
         }
     }
     @Test fun albumPaletteUsesOemNearbyHuesAndInvalidCoverFallsBackToAllColors() {
         assertEquals(listOf(1, 2), ambientColorPalette(AmbientColorSource.ALBUM, listOf(8), 1))
         assertFalse(ambientColorPalette(AmbientColorSource.ALBUM, emptyList(), 28).contains(29))
-        assertEquals(3, AmbientAlbumPalette.bydColor(0xff2237ac.toInt()))
-        assertEquals(14, AmbientAlbumPalette.bydColor(0xff30a557.toInt()))
-        assertEquals(26, AmbientAlbumPalette.bydColor(0xffb8224c.toInt()))
+        assertEquals(3, AmbientAlbumPalette.tuPigColor(0xff2237ac.toInt()))
+        assertEquals(14, AmbientAlbumPalette.tuPigColor(0xff30a557.toInt()))
+        assertEquals(26, AmbientAlbumPalette.tuPigColor(0xffb8224c.toInt()))
         assertEquals((1..31).toList(), ambientColorPalette(AmbientColorSource.ALBUM, listOf(8), null))
         assertEquals((1..31).toList(), ambientColorPalette(AmbientColorSource.ALBUM, listOf(8), 99))
         assertEquals(listOf(2, 8), ambientColorPalette(AmbientColorSource.SELECTED, listOf(8, 2), 1))

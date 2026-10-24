@@ -37,7 +37,7 @@ class HotspotJoinControlsTest {
         override fun cancel() { cancelled = true }
     }
     @Test fun renderingIsInertAndApplyRequiresASeparateUserConfirmation() {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         val backend = Backend()
         val controls = HotspotJoinControls(activity, { false }, backend)
@@ -62,7 +62,7 @@ class HotspotJoinControlsTest {
         (0 until view.childCount).flatMap { views(view.getChildAt(it)) } else emptyList()
 
     @Test fun closingBeforeTheWorkerStartsCancelsAndDoesNotRunPrivilegedWork() {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         val backend = Backend().apply { deferred = true }
         val controls = HotspotJoinControls(activity, { false }, backend)
@@ -75,7 +75,7 @@ class HotspotJoinControlsTest {
     }
 
     @Test fun aSessionStartingWhileConfirmationIsOpenPreventsTheWrite() {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         val backend = Backend()
         val controls = HotspotJoinControls(activity, { backend.session }, backend)
@@ -91,7 +91,7 @@ class HotspotJoinControlsTest {
     }
 
     @Test fun rollbackAlsoRequiresConfirmationAndBusyOperationsCannotOverlap() {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         val backend = Backend().apply { deferred = true }
         val controls = HotspotJoinControls(activity, { false }, backend)

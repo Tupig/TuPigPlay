@@ -16,14 +16,14 @@ class DiLink3ClusterRecoveryJournalTest {
         val commands = mutableListOf<String>()
         val session = DiLink3ClusterModeSession({ commands.add(it); ok }, { journal.pending }, journal::save,
             projectionStepDelay = {})
-        repeat(2) { assertFalse(session.apply(BydDiLink3ClusterMode.Mode.PROJECTION)) }
+        repeat(2) { assertFalse(session.apply(TuPigDiLink3ClusterMode.Mode.PROJECTION)) }
         assertTrue(memory)
         assertFalse(journal.pending)
         assertTrue(commands.isEmpty())
         commitsAllowed = true
-        assertTrue(session.apply(BydDiLink3ClusterMode.Mode.PROJECTION))
-        assertEquals(listOf(BydDiLink3ClusterMode.Mode.PROJECTION.entryCommand,
-            BydDiLink3ClusterMode.Mode.PROJECTION.command), commands)
+        assertTrue(session.apply(TuPigDiLink3ClusterMode.Mode.PROJECTION))
+        assertEquals(listOf(TuPigDiLink3ClusterMode.Mode.PROJECTION.entryCommand,
+            TuPigDiLink3ClusterMode.Mode.PROJECTION.command), commands)
         assertTrue(journal.pending)
     }
 
@@ -41,7 +41,7 @@ class DiLink3ClusterRecoveryJournalTest {
         assertTrue(journal.pending)
         commitsAllowed = true
         assertTrue(session.recoverInterrupted())
-        assertEquals(List(2) { BydDiLink3ClusterMode.Mode.STOCK.command }, commands)
+        assertEquals(List(2) { TuPigDiLink3ClusterMode.Mode.STOCK.command }, commands)
         assertFalse(journal.pending)
         assertTrue(session.apply(null))
         assertEquals(2, commands.size)

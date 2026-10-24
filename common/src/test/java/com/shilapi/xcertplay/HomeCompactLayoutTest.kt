@@ -27,7 +27,7 @@ class HomeCompactLayoutTest {
     }
 
     private fun verifyCompactArrangement(landscape: Boolean) {
-        val controller = Robolectric.buildActivity(DiPlayActivity::class.java).setup()
+        val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).setup()
         val activity = controller.get()
         val root = activity.window.decorView
         val metrics = activity.resources.displayMetrics
@@ -69,7 +69,7 @@ class HomeCompactLayoutTest {
     }
 
     private fun homeIsCompact(multiWindow: Boolean): Boolean {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).setup().get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).setup().get()
         shadowOf(activity).setInMultiWindowMode(multiWindow)
         ReflectionHelpers.callInstanceMethod<Unit>(activity, "render")
         val hero = activity.getString(R.string.a_familiar_drive)

@@ -22,17 +22,17 @@ import com.shilapi.xcertplay.airplay.CarPlayMediaButton
 import com.shilapi.xcertplay.glance.CarPlayGlance
 import com.shilapi.xcertplay.host.R
 import com.shilapi.xcertplay.media.NavigationPlayback
-import com.shilapi.xcertplay.hud.BydNavigationOutputs
-import com.shilapi.xcertplay.hud.BydOutputSettings
+import com.shilapi.xcertplay.hud.TuPigNavigationOutputs
+import com.shilapi.xcertplay.hud.TuPigOutputSettings
 
 /**
- * Optional: steering-wheel keys zoom CarPlay's dashboard map and work as a CarPlay joystick. BYD's window
+ * Optional: steering-wheel keys zoom CarPlay's dashboard map and work as a CarPlay joystick. TuPig's window
  * manager takes the wheel's keys (volume 291/292, the custom key 305, the media key 289) before any app
  * sees them and acts on them itself. An accessibility service that filters key events gets them earlier,
  * in the input filter, and may keep them. With the zoom setting on and the dashboard map streaming, the
- * mode key (BYD's custom key by default) switches the zoom keys (the volume keys by default) from volume
+ * mode key (TuPig's custom key by default) switches the zoom keys (the volume keys by default) from volume
  * to map zoom until it is pressed again, or, in the timed behaviour, until a few seconds after the last
- * zoom. With the joystick setting on, the joystick key (BYD's media key by default) turns the joystick on
+ * zoom. With the joystick setting on, the joystick key (TuPig's media key by default) turns the joystick on
  * and off; while it is on the keys drive CarPlay's main screen as a car's rotary knob would (see
  * [WheelJoystick]). A call always keeps the keys for the call. During a CarPlay call the call key answers on
  * the iPhone (see [CarPlayCallKeys]), and with a CarPlay session DiLink 3's CarPlay voice keys open Siri.
@@ -191,7 +191,7 @@ class WheelKeyService : AccessibilityService() {
         if (navigationKeys.owns(event.keyCode, event.deviceId, event.downTime)) return navigationKey(event)
         if (CarPlayCallKeys.onKey(this, event.keyCode, down)) return true
         val key = WheelKey.of(event)
-        if (BydOutputSettings.carPlayCallControls(this) &&
+        if (TuPigOutputSettings.carPlayCallControls(this) &&
             CarPlayMediaButton.opensSiriWhileCarPlay(event.keyCode) &&
             !(WheelZoomSettings.siriDoublePress(this) && WheelZoomSettings.isSiriKey(this, key)) &&
             session() != null) {
@@ -256,7 +256,7 @@ class WheelKeyService : AccessibilityService() {
                 handler.postDelayed(requestDelayedSiri, release.triggerDelayMillis.toLong())
             }
             // Both presses stay vehicle-owned: the first can open its assistant and the second can
-            // close it. DiPlay only observes the pair and opens Siri after the configured delay.
+            // close it. TuPigCarPlay only observes the pair and opens Siri after the configured delay.
             return false
         }
         val controller = CarPlayBackgroundSession.snapshot()?.controller
@@ -430,7 +430,7 @@ class WheelKeyService : AccessibilityService() {
             if (on) Toast.makeText(this, "$text\n${getString(R.string.wheel_joystick_hint)}", Toast.LENGTH_LONG).show()
             else Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
         }
-        BydNavigationOutputs.dashboardNote(text)
+        TuPigNavigationOutputs.dashboardNote(text)
     }
 
     private fun clearLearning(notify: Boolean = true) {
@@ -468,7 +468,7 @@ class WheelKeyService : AccessibilityService() {
         }
     }
 
-    // On the centre screen, and where the song shows on the dashboard: zoom with BYD's Bluetooth-music
+    // On the centre screen, and where the song shows on the dashboard: zoom with TuPig's Bluetooth-music
     // icon (source 6), volume with the song's usual icon.
     private fun announce(zoomOn: Boolean) {
         note("zoom mode ${if (zoomOn) "on" else "off"}")
@@ -476,14 +476,14 @@ class WheelKeyService : AccessibilityService() {
             Toast.makeText(this, if (zoomOn) R.string.wheel_zoom_mode_on else R.string.wheel_zoom_mode_off, Toast.LENGTH_SHORT).show()
         }
         if (zoomOn) {
-            BydNavigationOutputs.dashboardNote("🔍 ${getString(R.string.wheel_zoom_note_zoom)}", ZOOM_NOTE_SOURCE)
+            TuPigNavigationOutputs.dashboardNote("🔍 ${getString(R.string.wheel_zoom_note_zoom)}", ZOOM_NOTE_SOURCE)
         } else {
-            BydNavigationOutputs.dashboardNote("🔊 ${getString(R.string.wheel_zoom_note_volume)}")
+            TuPigNavigationOutputs.dashboardNote("🔊 ${getString(R.string.wheel_zoom_note_volume)}")
         }
     }
 
     companion object {
-        internal const val TAG = "DiPlay-WheelKeys"
+        internal const val TAG = "TuPigCarPlay-WheelKeys"
         private const val ZOOM_NOTE_SOURCE = 6
         private const val ELIGIBILITY_POLL_MILLIS = 250L
         private const val ROUTE_CHECK_MILLIS = 1_000L
@@ -529,7 +529,7 @@ class WheelKeyService : AccessibilityService() {
         }
 
         /**
-         * BYD's settings have no accessibility page, so the user can turn the service on through the car's
+         * TuPig's settings have no accessibility page, so the user can turn the service on through the car's
          * own adb (allowed once on the car screen). Services already in the list stay there.
          */
         fun enableOverAdb(context: Context, mayAsk: Boolean = true): LocalAdb.Access = LocalAdb(AdbKeys.load(context)).use { adb ->
@@ -544,7 +544,7 @@ class WheelKeyService : AccessibilityService() {
             if (allowed) access else LocalAdb.Access.UNREACHABLE
         }
 
-        private const val GRANT_EXIT = "DIPLAY_WHEEL_EXIT"
+        private const val GRANT_EXIT = "TUPIGCARPLAY_WHEEL_EXIT"
         private const val CRASH_RESET_PAUSE_SECONDS = 1
         private fun checkedShell(command: String, shell: (String) -> String?): String? {
             val lines = shell("( $command ); result=\$?; printf '\\n$GRANT_EXIT:%s\\n' \"\$result\"")
@@ -592,21 +592,21 @@ class WheelKeyService : AccessibilityService() {
         internal fun needsRestore(context: Context): Boolean = !connected() && wanted(context)
 
         /**
-         * The call controls need the service too: outside the CarPlay screen the call key reaches DiPlay
-         * only through it, and without it BYD's window manager opens its own phone app instead. So does the
-         * watcher for other apps' calls, which runs only while something keeps DiPlay alive.
+         * The call controls need the service too: outside the CarPlay screen the call key reaches TuPigCarPlay
+         * only through it, and without it TuPig's window manager opens its own phone app instead. So does the
+         * watcher for other apps' calls, which runs only while something keeps TuPigCarPlay alive.
          */
         internal fun wanted(context: Context): Boolean = WheelZoomSettings.anyEnabled(context) ||
-            BydOutputSettings.carPlayCallControls(context) || NavigationWheelSettings.restoreAllowed(context) ||
-            BydOutputSettings.phoneAudioRouteApps(context)
+            TuPigOutputSettings.carPlayCallControls(context) || NavigationWheelSettings.restoreAllowed(context) ||
+            TuPigOutputSettings.phoneAudioRouteApps(context)
 
         /**
-         * Android takes the service off the allowed list when the app is force-stopped (BYD's system does
-         * that), and an update or a crash can leave it unbound. With a wheel key setting or the call controls on, DiPlay
+         * Android takes the service off the allowed list when the app is force-stopped (TuPig's system does
+         * that), and an update or a crash can leave it unbound. With a wheel key setting or the call controls on, TuPigCarPlay
          * puts it back over the car's adb, already allowed, when it is still not running a few seconds after
-         * a DiPlay screen opens or comes back to the front, so the keys work without a visit to the settings.
+         * a TuPigCarPlay screen opens or comes back to the front, so the keys work without a visit to the settings.
          * The front check matters when the service stays unbound after the retries at startup: the keys
-         * stayed on "Allowed, starting…" with the car's adb working until DiPlay was restarted (#606).
+         * stayed on "Allowed, starting…" with the car's adb working until TuPigCarPlay was restarted (#606).
          */
         fun restoreIfNeeded(context: Context) {
             val app = context.applicationContext
@@ -629,12 +629,12 @@ class WheelKeyService : AccessibilityService() {
                 } finally {
                     restoring.set(false)
                 }
-            }, "diplay-wheel-keys-restore").start()
+            }, "tupigcarplay-wheel-keys-restore").start()
         }
 
         /**
-         * At boot the car's adb can come up after DiPlay, and a single early attempt left the keys on
-         * "Allowed, starting…" until DiPlay was force-stopped (#606, #619). Unreachable adb, or a service
+         * At boot the car's adb can come up after TuPigCarPlay, and a single early attempt left the keys on
+         * "Allowed, starting…" until TuPigCarPlay was force-stopped (#606, #619). Unreachable adb, or a service
          * that the rewritten list did not bind yet, is tried again; a key the driver has not approved is not.
          */
         internal fun restoreWithRetries(
@@ -707,7 +707,7 @@ private fun note(message: String) {
 // CarPlay's iAP2 call state can be active even when the head unit leaves Android's mode normal.
 // Native Bluetooth calls also use a call/communication audio mode.
 internal fun inCall(context: Context): Boolean =
-    BydNavigationOutputs.carPlayCall() != null ||
+    TuPigNavigationOutputs.carPlayCall() != null ||
         (context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager)?.mode.let { it != null && it != AudioManager.MODE_NORMAL }
 
 /** Use the input-device ID for a held press; saved assignments still use the stable device name. */
@@ -925,7 +925,7 @@ class WheelSiriKey {
 }
 
 /**
- * One press of BYD's voice key arrives as two keys: the CarPlay pair (327 short, 328 long) for the wheel key
+ * One press of TuPig's voice key arrives as two keys: the CarPlay pair (327 short, 328 long) for the wheel key
  * service and the generic pair (304 short, 312 long) for the CarPlay window, about half a second apart.
  * Each opens Siri, and a second request ends the Siri session the first one began, so only the first of the
  * two within [WINDOW_MILLIS] is sent. No Android types, so it is unit-tested.
@@ -953,7 +953,7 @@ class VoiceKeyPair {
 
 /** Settings for the wheel's dashboard map zoom, CarPlay joystick and Siri key. */
 object WheelZoomSettings {
-    private const val PREFS = "diplay_wheel_map_zoom"
+    private const val PREFS = "tupigcarplay_wheel_map_zoom"
     private const val KEY_ENABLED = "enabled"
     private const val KEY_BEHAVIOUR = "behaviour"
     private const val KEY_JOYSTICK = "joystick"
@@ -964,7 +964,7 @@ object WheelZoomSettings {
     private const val KEY_SIRI_DOUBLE_PRESS_INTERVAL = "siri_double_press_interval"
     private const val KEY_SIRI_TRIGGER_DELAY = "siri_trigger_delay"
     private const val KEY_SIRI_LONG_ONLY = "siri_long_press_only"
-    private const val BYD_KEYS = "simulate-keys"
+    private const val TUPIG_KEYS = "simulate-keys"
     const val TIMED_MODE_MILLIS = 5_000L
     const val JOYSTICK_IDLE_MILLIS = 15_000L
     val SIRI_DOUBLE_PRESS_INTERVALS = listOf(300, 400, 500, 600, 800, 1_000)
@@ -973,17 +973,17 @@ object WheelZoomSettings {
     const val DEFAULT_SIRI_TRIGGER_DELAY_MILLIS = 300
 
     /**
-     * Defaults are a BYD Tang's wheel: the custom key, volume up and down (the roller), the media key,
-     * previous, next and play/pause. The Siri key has no default: DiPlay's screen already takes BYD's voice key.
+     * Defaults are a TuPig Tang's wheel: the custom key, volume up and down (the roller), the media key,
+     * previous, next and play/pause. The Siri key has no default: TuPigCarPlay's screen already takes TuPig's voice key.
      */
     enum class Role(val defaultKey: WheelKey?) {
-        MODE(WheelKey(305, 300, BYD_KEYS)),
-        ZOOM_IN(WheelKey(291, 115, BYD_KEYS)),
-        ZOOM_OUT(WheelKey(292, 114, BYD_KEYS)),
-        JOYSTICK(WheelKey(289, 89, BYD_KEYS)),
-        PREVIOUS(WheelKey(88, 268, BYD_KEYS)),
-        NEXT(WheelKey(87, 270, BYD_KEYS)),
-        SELECT(WheelKey(353, 505, BYD_KEYS)),
+        MODE(WheelKey(305, 300, TUPIG_KEYS)),
+        ZOOM_IN(WheelKey(291, 115, TUPIG_KEYS)),
+        ZOOM_OUT(WheelKey(292, 114, TUPIG_KEYS)),
+        JOYSTICK(WheelKey(289, 89, TUPIG_KEYS)),
+        PREVIOUS(WheelKey(88, 268, TUPIG_KEYS)),
+        NEXT(WheelKey(87, 270, TUPIG_KEYS)),
+        SELECT(WheelKey(353, 505, TUPIG_KEYS)),
         SIRI(null),
         MEDIA_PLAY_PAUSE(null),
     }

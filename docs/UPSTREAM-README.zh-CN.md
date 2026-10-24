@@ -63,7 +63,7 @@ Remote MFi 客户端把远程服务当作一块 MFi 芯片远程调用，抑或�
 - 启动 Gradle 需要 JDK 17 或更高版本；daemon 通过 Gradle toolchain 解析 Java 25。
 - Android SDK Platform 37。
 - Android 9（API 28）或更高版本。
-  在 Android 9 上不可用 Wi-Fi P2P 5 GHz 模式，应用会改用 LocalOnlyHotspot。
+  在 Android 9 上不可用 Wi-Fi P2P 5 GHz 模式，请改用车机热点（手动）或已有 Wi-Fi。
 - Android NDK `28.2.13676358`。
 - 硬件验证需要支持 USB Host/OTG 的 Android 设备以及 MFi 硬件。
 
@@ -95,4 +95,4 @@ $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 
 ## 许可证
 
-本项目采用 [GNU General Public License v3.0](LICENSE) 许可。
+本项目采用 [GNU General Public License v3.0](../LICENSE) 许可。

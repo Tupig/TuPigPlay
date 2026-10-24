@@ -74,7 +74,7 @@ class ClusterMapPresentationTest {
         assertTrue(video is android.view.SurfaceView)
         val background = label.background as android.graphics.drawable.ColorDrawable
         assertEquals(255, android.graphics.Color.alpha(background.color))
-        // DiPlay's dark theme (the default) gives a black placeholder.
+        // TuPigCarPlay's dark theme (the default) gives a black placeholder.
         assertEquals(android.graphics.Color.BLACK, background.color)
         assertEquals(1f, video.alpha, 0.001f)
         presentation.setStreamActive(true)
@@ -250,7 +250,7 @@ class ClusterMapPresentationTest {
         AirPlayPersistence.saveClusterMapEnabled(context, false)
         val id = display(DiLink4ClusterDisplay.NAME, "w1920dp-h720dp-mdpi")
         try {
-            assertFalse(com.shilapi.xcertplay.hud.BydOutputSettings.navigationAvailable(context))
+            assertFalse(com.shilapi.xcertplay.hud.TuPigOutputSettings.navigationAvailable(context))
             val report = ClusterMapPresentation.diagnosticReport(context)
             assertTrue(report.contains("clusterEnabled=false"))
             assertTrue(report.contains("navigationReceiverAvailable=false"))

@@ -45,7 +45,7 @@ internal class BackgroundUpdateWorker(context: Context, parameters: WorkerParame
         return try {
             val release = UpdateReleaseLookup.latest(
                 installedVersion = installedVersion,
-                userAgent = "DiPlay/$installedVersion",
+                userAgent = "TuPigCarPlay/$installedVersion",
                 openConnection = network::openConnection,
             )
             if (release == null) UpdateAvailability.clear(applicationContext)
@@ -65,14 +65,14 @@ internal class BackgroundUpdateWorker(context: Context, parameters: WorkerParame
     }
 
     private companion object {
-        const val TAG = "DiPlay-Update"
+        const val TAG = "TuPigCarPlay-Update"
         const val MAX_ATTEMPTS = 5
     }
 }
 
 internal object BackgroundUpdateScheduler {
-    private const val PERIODIC_WORK = "diplay-periodic-update-check"
-    private const val OPEN_WORK = "diplay-open-update-check"
+    private const val PERIODIC_WORK = "tupigcarplay-periodic-update-check"
+    private const val OPEN_WORK = "tupigcarplay-open-update-check"
 
     fun schedule(context: Context) {
         val constraints = Constraints.Builder()

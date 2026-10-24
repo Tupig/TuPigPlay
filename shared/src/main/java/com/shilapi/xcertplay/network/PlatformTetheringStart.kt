@@ -132,7 +132,7 @@ internal object PlatformTetheringStart {
     /**
      * Signature prefixes exempted from the hidden API checks: only the members this call uses. The
      * first prefix also covers IConnectivityManager.Stub and its Proxy. An exemption lasts for the
-     * process's life and DiPlay's process also runs CarPlay, so nothing else may be exempted.
+     * process's life and TuPigCarPlay's process also runs CarPlay, so nothing else may be exempted.
      */
     internal val HIDDEN_API_EXEMPTIONS = arrayOf(
         "Landroid/net/IConnectivityManager",

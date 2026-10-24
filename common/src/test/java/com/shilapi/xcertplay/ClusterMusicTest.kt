@@ -114,8 +114,8 @@ class ClusterMusicTest {
             val old = Configuration(context.resources.configuration)
             context.resources.updateConfiguration(Configuration(old).apply { fontScale = 1.5f }, context.resources.displayMetrics)
             ClusterMusicSettings.saveEnabled(context, true)
-            val controller = Robolectric.buildActivity(DiPlayActivity::class.java,
-                Intent(context, DiPlayActivity::class.java).putExtra("page", "settings")).setup()
+            val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java,
+                Intent(context, TuPigCarPlayActivity::class.java).putExtra("page", "settings")).setup()
             val activity = controller.get()
             activity.applicationInfo.flags = activity.applicationInfo.flags or android.content.pm.ApplicationInfo.FLAG_SUPPORTS_RTL
             val card = LinearLayout(activity).apply {

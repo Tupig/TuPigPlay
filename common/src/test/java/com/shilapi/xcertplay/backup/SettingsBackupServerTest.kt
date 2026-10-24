@@ -28,7 +28,7 @@ class SettingsBackupServerTest {
                 imported.set(outcome)
                 outcome
             },
-            report = { "DiPlay diagnostic report\n診斷".toByteArray(Charsets.UTF_8) },
+            report = { "TuPigCarPlay diagnostic report\n診斷".toByteArray(Charsets.UTF_8) },
         )
         val started = server.start()
         assertNotNull(started)
@@ -108,7 +108,7 @@ class SettingsBackupServerTest {
     fun reportReturnsTheTextOnlyUnderTheTokenPath() {
         val (status, body) = get("/b/${endpoint.token}/report")
         assertEquals(200, status)
-        assertEquals("DiPlay diagnostic report\n診斷", body)
+        assertEquals("TuPigCarPlay diagnostic report\n診斷", body)
         assertEquals(404, get("/report").first)
         assertEquals(404, get("/b/wrong-token/report").first)
         assertEquals(404, get("/b/${endpoint.token}/report", method = "POST", body = ByteArray(0)).first)
@@ -181,7 +181,7 @@ class SettingsBackupServerTest {
 
     @Test
     fun importAppliesTheDocumentAndReportsTheOutcome() {
-        val document = "{\"format\":\"diplay-settings\",\"version\":1,\"settings\":{}}"
+        val document = "{\"format\":\"tupigcarplay-settings\",\"version\":1,\"settings\":{}}"
         val (status, body) = get("/b/${endpoint.token}/import", method = "POST", body = document.toByteArray())
         assertEquals(200, status)
         assertTrue(body.contains("\"applied\":4"))

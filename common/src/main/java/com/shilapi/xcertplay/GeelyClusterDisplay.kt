@@ -10,7 +10,7 @@ import com.shilapi.xcertplay.airplay.SafeAreaRect
 /**
  * Geely FX11 / CS11_A4 head unit (`msmnile_gvmq`): the instrument cluster is an ordinary
  * 1920x720 presentation display, owned by no projection app. Any app may show a Presentation
- * on it; there is no BYD-style projection display, no projection command to issue and no
+ * on it; there is no TuPig-style projection display, no projection command to issue and no
  * DiLink side-layer layout.
  *
  * Measured on the target head unit: the cluster is

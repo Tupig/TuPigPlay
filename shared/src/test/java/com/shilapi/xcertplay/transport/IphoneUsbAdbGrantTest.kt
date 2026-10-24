@@ -16,10 +16,10 @@ class IphoneUsbAdbGrantTest {
         assertEquals(
             "CLASSPATH='/data/app/it'\"'\"'s/base.apk' app_process /system/bin " +
                 "com.shilapi.xcertplay.transport.IphoneUsbGrantTool " +
-                "com.shihab.diplay 1010001 1452 4776",
+                "com.android.gallery3d 1010001 1452 4776",
             IphoneUsbAdbGrant.command(
                 "/data/app/it's/base.apk",
-                "com.shihab.diplay",
+                "com.android.gallery3d",
                 1_010_001,
                 IphoneUsbMatcher.APPLE_VENDOR_ID,
                 0x12a8,
@@ -28,16 +28,16 @@ class IphoneUsbAdbGrantTest {
     }
 
     @Test fun parsesBoundedHelperResults() {
-        val granted = IphoneUsbAdbGrant.parse("DIPLAY_USB_GRANT_V1|GRANTED|1|1")
+        val granted = IphoneUsbAdbGrant.parse("TUPIGCARPLAY_USB_GRANT_V1|GRANTED|1|1")
         assertEquals(IphoneUsbAdbGrant.Code.GRANTED, granted.code)
         assertTrue(granted.permissionGranted)
 
         for (invalid in listOf(
             null,
-            "DIPLAY_USB_GRANT_V1|GRANTED|1|0",
-            "DIPLAY_USB_GRANT_V1|GRANTED|1|2",
-            "DIPLAY_USB_GRANT_V1|UNKNOWN|1|1",
-            "DIPLAY_USB_GRANT_V1|GRANTED|-1|0",
+            "TUPIGCARPLAY_USB_GRANT_V1|GRANTED|1|0",
+            "TUPIGCARPLAY_USB_GRANT_V1|GRANTED|1|2",
+            "TUPIGCARPLAY_USB_GRANT_V1|UNKNOWN|1|1",
+            "TUPIGCARPLAY_USB_GRANT_V1|GRANTED|-1|0",
         )) {
             assertEquals(IphoneUsbAdbGrant.Code.ERROR, IphoneUsbAdbGrant.parse(invalid).code)
         }
@@ -45,17 +45,17 @@ class IphoneUsbAdbGrantTest {
 
     @Test fun packageMustBelongToTheExactApplicationUid() {
         assertTrue(IphoneUsbAdbGrant.packageMatchesUid(
-            "com.shihab.diplay", 10_001, arrayOf("com.shihab.diplay"),
+            "com.android.gallery3d", 10_001, arrayOf("com.android.gallery3d"),
         ))
         assertTrue(IphoneUsbAdbGrant.packageMatchesUid(
-            "com.shihab.diplay", 1_010_001, arrayOf("shared.uid.peer", "com.shihab.diplay"),
+            "com.android.gallery3d", 1_010_001, arrayOf("shared.uid.peer", "com.android.gallery3d"),
         ))
         assertFalse(IphoneUsbAdbGrant.packageMatchesUid(
-            "com.shihab.diplay", 1_010_001, arrayOf("different.package"),
+            "com.android.gallery3d", 1_010_001, arrayOf("different.package"),
         ))
-        assertFalse(IphoneUsbAdbGrant.packageMatchesUid("com.shihab.diplay", 1_010_001, null))
+        assertFalse(IphoneUsbAdbGrant.packageMatchesUid("com.android.gallery3d", 1_010_001, null))
         assertFalse(IphoneUsbAdbGrant.packageMatchesUid(
-            "com.shihab.diplay", 9_999, arrayOf("com.shihab.diplay"),
+            "com.android.gallery3d", 9_999, arrayOf("com.android.gallery3d"),
         ))
     }
 }

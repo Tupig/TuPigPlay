@@ -1,39 +1,39 @@
-# DiPlay 0.2.21 — 2026-10-17
+# TuPigCarPlay 0.2.21 — 2026-10-17
 
 - Fix the 0.2.20 music lag by counting the music still waiting to be decoded in the clock adjustment, and bring music back after an interruption when the iPhone plays again (#814, #804).
 - Let wired CarPlay recover by itself: retry when the iPhone never opens its session, stop waiting forever for an ignored mode request, keep an attempt that recovered before its retry, and lower navigation guidance in the audio itself (#907, #841, #876).
-- Stop DiPlay closing when the software Opus encoder fails a check, name the wireless startup failure and refused permissions on the CarPlay screen, stop re-asking about the car hotspot on Android 13, find car hotspots on VLAN interfaces, wait for Bluetooth that is turning on, and save the CarPlay menu settings when an unused hotspot is empty (#866, #824, #795, #893, #885, #822, #853).
-- On BYD head units, hand the dashboard back to the car when CarPlay ends, survive the DiYou desktop card, warn again about a car hotspot that stays off, open BYD's own screens on DiLink 1.0, hide the call popup on Android 10+, clarify the call key setting and offer DiLink 7.0's split screen (#909, #827, #794, #845, #842, #875).
+- Stop TuPigCarPlay closing when the software Opus encoder fails a check, name the wireless startup failure and refused permissions on the CarPlay screen, stop re-asking about the car hotspot on Android 13, find car hotspots on VLAN interfaces, wait for Bluetooth that is turning on, and save the CarPlay menu settings when an unused hotspot is empty (#866, #824, #795, #893, #885, #822, #853).
+- On TuPig head units, hand the dashboard back to the car when CarPlay ends, survive the DiYou desktop card, warn again about a car hotspot that stays off, open TuPig's own screens on DiLink 1.0, hide the call popup on Android 10+, clarify the call key setting and offer DiLink 7.0's split screen (#909, #827, #794, #845, #842, #875).
 - Install on Android 7.0, add Italian, and add options that are off by default: temporary system bars, black rounded corners, a play/pause wheel key, double press for Siri, car hotspot import, a home-screen bubble, the car's own music rhythm and music data for it (#847, #863, #818, #811, #823, #813, #769, #844, #695, #908).
-- Record more in the diagnostic report: DiPlay's own frames in the crash record, the USB devices Android lists while waiting for the iPhone, a wheel-speed line each minute, and the USB network traffic when the iPhone never opens CarPlay; note screenshots under screen turning (#827, #830, #862, #907, #864).
+- Record more in the diagnostic report: TuPigCarPlay's own frames in the crash record, the USB devices Android lists while waiting for the iPhone, a wheel-speed line each minute, and the USB network traffic when the iPhone never opens CarPlay; note screenshots under screen turning (#827, #830, #862, #907, #864).
 
 See [0.2.21 release notes](docs/RELEASE-NOTES-0.2.21.md) for contribution links and limits, and [validation](docs/VALIDATION.md) for checks. Full-release vehicle acceptance is not claimed.
 
-# DiPlay 0.2.20 — 2026-10-15
+# TuPigCarPlay 0.2.20 — 2026-10-15
 
-- Keep music playing when a head unit's audio clock drifts by adjusting its playback rate, run DiPlay's audio threads at audio priority, and keep separate music buffers for wireless and USB (#788, #740, #746).
-- Play calls that a head unit sends to its earpiece on the loudspeaker, add Calls on the loudspeaker for phone and tablet head units, open the microphone for app voice messages, open Siri once per press of BYD's voice key, and record calls in the car's phone audio state from the voice-recognition source (#797, #704, #698, #774, #786, #770).
+- Keep music playing when a head unit's audio clock drifts by adjusting its playback rate, run TuPigCarPlay's audio threads at audio priority, and keep separate music buffers for wireless and USB (#788, #740, #746).
+- Play calls that a head unit sends to its earpiece on the loudspeaker, add Calls on the loudspeaker for phone and tablet head units, open the microphone for app voice messages, open Siri once per press of TuPig's voice key, and record calls in the car's phone audio state from the voice-recognition source (#797, #704, #698, #774, #786, #770).
 - Start wired CarPlay when a USB audio driver holds the iPhone, within seconds after Save and reconnect, after a VERSION reply that follows a reply trailer, and on Android 17 (#699, #714, #744, #708).
-- Turn the car hotspot on through the system shell, or without ADB on head units that aren't BYD on Android 8.0–10; let Connect in the "Car hotspot is off" dialog connect; add a switch for the Wi-Fi Direct scan pause; and skip 5 GHz Wi-Fi Direct channels on head units without that band (#699, #748, #775, #777, #789, #768, #740).
+- Turn the car hotspot on through the system shell, or without ADB on head units that aren't TuPig on Android 8.0–10; let Connect in the "Car hotspot is off" dialog connect; add a switch for the Wi-Fi Direct scan pause; and skip 5 GHz Wi-Fi Direct channels on head units without that band (#699, #748, #775, #777, #789, #768, #740).
 - Find the dashboard cluster on controller 13 and 17 firmware and the Leopard 5 Ultra, hide the DiLink 4 cluster routes on DiLink 3, fall back from HEVC to H.264 without a hardware decoder, show CarPlay with FFmpeg-backed decoders, and group the settings menu inside CarPlay by goal (#714, #734, #707, #710).
-- Record DiPlay's last crash, the wheel and media keys it received, the car Bluetooth pause, app-call vocoder info, music rebuffers and the USB devices listed while waiting for a CH341 adapter in the diagnostic report (#700, #702, #788, #740, #759, #793).
+- Record TuPigCarPlay's last crash, the wheel and media keys it received, the car Bluetooth pause, app-call vocoder info, music rebuffers and the USB devices listed while waiting for a CH341 adapter in the diagnostic report (#700, #702, #788, #740, #759, #793).
 
 See [0.2.20 release notes](docs/RELEASE-NOTES-0.2.20.md) for contribution links and limits, and [validation](docs/VALIDATION.md) for checks. Full-release vehicle acceptance is not claimed.
 
-# DiPlay 0.2.19 — 2026-10-12
+# TuPigCarPlay 0.2.19 — 2026-10-12
 
 - Start wired CarPlay several seconds sooner by not waiting 2 s on each refused USB network write, ask for CarPlay mode first on iOS 26, grant USB access through approved ADB on Android 7.1–9 head units without a USB permission page, and let Auto-confirm USB permission find the system dialog (#644, #689).
 - Report the playback position of 16 kHz calls, Siri and navigation prompts at their own rate instead of three times too fast, restart a microphone whose first read fails, and stop background music underruns from a 0.5 s audio wait (#644).
 - Keep CarPlay from restarting at the first touch with the DiLink 4 dashboard map on and from staying scaled down after the reversing camera, show the last picture when a SurfaceView output comes back, and redesign the in-CarPlay settings menu (#663, #674, #669, #642).
 - Japanese, complete Traditional Chinese with guides, and 67 more Arabic strings (#646, #691, #682, #681, #631).
 - Download the diagnostic report on a phone by QR code or a typed address and code, keep the phone page answering behind idle connections, show connection recovery tips and a Bluetooth-off message, and fix wireless CarPlay on MIUI 13 (#686, #687, #685, #677, #679, #673).
-- Set BYD navigation audio defaults on a first setup, add an optional album-artwork card on the dashboard map, record why the car hotspot could not be started, and fall back to the default Bluetooth adapter (#656, #660, #667, #641).
+- Set TuPig navigation audio defaults on a first setup, add an optional album-artwork card on the dashboard map, record why the car hotspot could not be started, and fall back to the default Bluetooth adapter (#656, #660, #667, #641).
 
 See [0.2.19 release notes](docs/RELEASE-NOTES-0.2.19.md) for contribution links and limits, and [validation](docs/VALIDATION.md) for checks. Full-release vehicle acceptance is not claimed.
 
-# DiPlay 0.2.18 — 2026-10-11
+# TuPigCarPlay 0.2.18 — 2026-10-11
 
-- Keep wired sessions running when a USB read finishes as DiPlay stops waiting for it, start wired CarPlay on Android 7.1 head units, when a head-unit USB audio driver holds the iPhone, and without a VPN dialog over approved network ADB (#625, #614, #618).
+- Keep wired sessions running when a USB read finishes as TuPigCarPlay stops waiting for it, start wired CarPlay on Android 7.1 head units, when a head-unit USB audio driver holds the iPhone, and without a VPN dialog over approved network ADB (#625, #614, #618).
 - Stop discarding music packets after a 10 ms wait, and log the /feedback position against the received audio (#618, #625).
 - Show the real connection stage in every app language, stop with a clear cause when a head unit's Bluetooth cannot reach the iPhone, and find the connected iPhone through sink-role Bluetooth profiles (#624, #590, #585).
 - Wheel next/previous on the CarPlay screen without the wheel-key service, Geely/Lynk `geely_fx11` wheel keys and Siri, wheel-key service restore retries, and next/previous to answer or decline with CarPlay call keys (#600, #626, #622, #625).
@@ -42,18 +42,18 @@ See [0.2.19 release notes](docs/RELEASE-NOTES-0.2.19.md) for contribution links 
 
 See [0.2.18 release notes](docs/RELEASE-NOTES-0.2.18.md) for contribution links and limits, and [validation](docs/VALIDATION.md) for checks. Full-release vehicle acceptance is not claimed.
 
-# DiPlay 0.2.17 — 2026-10-10
+# TuPigCarPlay 0.2.17 — 2026-10-10
 
 - Keep wired sessions running after a damaged NCM block, retry identification without unsupported CarPlay messages for older iOS, recognize the Android 10+ and Chinese USB permission prompts, explain refused wired mode switches and retry NCM interface claims (#575).
 - Add an iPhone charging choice for wired USB: Normal 2.4 A, Reduced 1.5 A or Low 0.5 A (#583).
 - Recommend the built-in car hotspot, and pause the car's Wi-Fi network search during Wi-Fi Direct on Android 7.1 and later when network ADB is approved (#570).
 - Record the head-unit microphone for app voice notes and clock Opus 16 kHz microphone packets at 16 kHz (#548, #547).
-- Check daily for updates with an Update available notice, recognize the DiLink generation from the controller version, and save Android 9 reports to Download/DiPlay (#488, #531, #541).
-- Add album-cover ambient lighting and fix saving ambient settings on hotfix firmware; add experimental BYD call popup hiding and external controller keys (#537, #550, #539, #549).
+- Check daily for updates with an Update available notice, recognize the DiLink generation from the controller version, and save Android 9 reports to Download/TuPigCarPlay (#488, #531, #541).
+- Add album-cover ambient lighting and fix saving ambient settings on hotfix firmware; add experimental TuPig call popup hiding and external controller keys (#537, #550, #539, #549).
 
 See [0.2.17 release notes](docs/RELEASE-NOTES-0.2.17.md) for contribution links and limits, and [validation](docs/VALIDATION.md) for checks. Full-release vehicle acceptance is not claimed.
 
-# DiPlay 0.2.16 — 2026-10-09
+# TuPigCarPlay 0.2.16 — 2026-10-09
 
 - Send the Siri and call microphone on Android 7.1–9 head units without an Opus encoder through a bundled software Opus encoder, and offer Opus only when it can be encoded; accepted on a BOS Mini A1 (Android 9) with an iPhone 12 on iOS 27 (#468, #483).
 - Fix wired NCM receive framing and Android 8 USB reads, and retry rejected large USB reads at smaller sizes (#478, #495).
@@ -65,7 +65,7 @@ See [0.2.17 release notes](docs/RELEASE-NOTES-0.2.17.md) for contribution links 
 
 See [0.2.16 release notes](docs/RELEASE-NOTES-0.2.16.md) for contribution links and limits, and [validation](docs/VALIDATION.md) for checks. Full-release vehicle acceptance is not claimed.
 
-# DiPlay 0.2.15 — 2026-10-08
+# TuPigCarPlay 0.2.15 — 2026-10-08
 
 - Lower the minimum to Android 7.1/API 25 with compatibility fallbacks; Android 7.1–8.1 vehicle validation remains pending (#407).
 - Add the first-launch DiLink setup guide and manual GitHub update checks in About (#416, #413).
@@ -77,7 +77,7 @@ See [0.2.16 release notes](docs/RELEASE-NOTES-0.2.16.md) for contribution links 
 
 See [0.2.15 release notes](docs/RELEASE-NOTES-0.2.15.md) for contribution links and limits, and [validation](docs/VALIDATION.md) for checks. Full-release vehicle acceptance is not claimed.
 
-# DiPlay 0.2.14 — 2026-10-07
+# TuPigCarPlay 0.2.14 — 2026-10-07
 
 - Group Settings by driver goal with search, adaptive layouts, quick controls and reconnect notices (#369).
 - Add an independent Interface size control, preserving CarPlay geometry and following real density/window changes (#378).
@@ -88,12 +88,12 @@ See [0.2.15 release notes](docs/RELEASE-NOTES-0.2.15.md) for contribution links 
 - Add default-off experimental Smooth video pacing with explicit latency/picture-adjustment limits (#367).
 - Preserve usable hotspot interface addresses and authenticated Bluetooth control on the observed rendered-session handoff fallback (#394, #396).
 - Add configurable steering-wheel Siri, bounded microphone-source fallback and optional audio-focus handling (#360, #371, #339).
-- Repair BYD call-watcher/audio-status behavior and add opt-in, default-off experimental software call echo cancellation and voice filtering (#370).
+- Repair TuPig call-watcher/audio-status behavior and add opt-in, default-off experimental software call echo cancellation and voice filtering (#370).
 - Preserve artwork proportions, correct system-bar-aware split/rotation geometry and recognize the specifically observed 1280×480 DiLink 3 cluster surface (#375, #389, #388).
 
 See [0.2.14 release notes](docs/RELEASE-NOTES-0.2.14.md) for all 20 contribution links, credits and limitations. Android 9/API 28 remains required. See [validation](docs/VALIDATION.md) for measured checks; complete-release vehicle acceptance is not claimed.
 
-# DiPlay 0.2.13 — 2026-10-06
+# TuPigCarPlay 0.2.13 — 2026-10-06
 
 - Enable the legacy Android 9 Wi-Fi Direct group path with generated credentials and serialized ownership/cleanup; requested frequency remains unverified on Android 9 (#282).
 - Prefer current IPv4 hotspot endpoints, preserve scoped IPv6 fallback, and refine Auto channel priorities beside a 5 GHz station without guaranteeing a band (#283, #309).
@@ -115,7 +115,7 @@ See [0.2.14 release notes](docs/RELEASE-NOTES-0.2.14.md) for all 20 contribution
 
 See [0.2.13 release notes](docs/RELEASE-NOTES-0.2.13.md) for all 35 contribution links, credits, experimental settings, compatibility limits and diagnostic export steps. Final exact-release validation is recorded in [VALIDATION](docs/VALIDATION.md). This remains a public preview; no fresh complete-release vehicle test is claimed.
 
-# DiPlay 0.2.12 — 2026-10-04
+# TuPigCarPlay 0.2.12 — 2026-10-04
 
 - Add Existing Wi-Fi / Same LAN wireless CarPlay with scoped IPv4/IPv6 discovery and network-change cleanup (#223).
 - Wait for a stable car-hotspot interface and recover bounded wireless attempts when no AirPlay TCP follows StartSession (#229); add observed-state, authorized-ADB hotspot fallback on firmware exposing supported commands (#235).
@@ -134,7 +134,7 @@ See [0.2.13 release notes](docs/RELEASE-NOTES-0.2.13.md) for all 35 contribution
 
 See [0.2.12 release notes](docs/RELEASE-NOTES-0.2.12.md) for the complete corrections, hardware evidence and issue-reporting steps. This remains a public preview; no fresh end-to-end vehicle test of the complete repaired release is claimed.
 
-# DiPlay 0.2.11 — 2026-10-03
+# TuPigCarPlay 0.2.11 — 2026-10-03
 
 - Add preferred Wi-Fi Direct channel selection for the next connection; Auto remains the default, and manual channel rejection/mismatch reports an error (#175).
 - Add a movable custom dashboard turn card with 2% position steps; leave unknown arrows blank and clear expired guidance (#155).
@@ -149,14 +149,14 @@ See [0.2.12 release notes](docs/RELEASE-NOTES-0.2.12.md) for the complete correc
 
 See [0.2.11 release notes](docs/RELEASE-NOTES-0.2.11.md) for requirements, device-test limits and fresh-report guidance. Preferred channel selection does not establish stutter as fixed; Qin Plus, Siri, iOS 15 and day/night reports remain under investigation. Android 9 is still the minimum; Wi-Fi Direct needs Android 10+.
 
-# DiPlay 0.2.10 — 2026-10-03
+# TuPigCarPlay 0.2.10 — 2026-10-03
 
 - Publish CarPlay song metadata, position and artwork to Android media sessions; bound artwork queues and reject stale work across sessions (#82).
 - Preserve normal USBMUX frames while handling narrowly validated handshake padding (#114); let USB connect without saved wireless-hotspot credentials (#130).
 - Handle unknown reported Wi-Fi Direct security types, retry busy channels and allow bounded 5 GHz fallback (#121).
 - Select an available AirPlay port and advertise it over Bonjour and wired/wireless iAP2; close sockets on failed setup/notification (#143).
 - Enable available platform echo cancellation and noise suppression for calls, restoring the previous mode afterward (#116).
-- Detect BYD CAN/CANFD battery protocols and clear unsupported/stale readings (#123).
+- Detect TuPig CAN/CANFD battery protocols and clear unsupported/stale readings (#123).
 - Add a saved show/hide setting for the home-screen dashboard-map mirror (#133).
 - Improve optional parked video with seeking and ten-second skip controls; validate media URLs and redirects (#129).
 - Extend Ukrainian translations, including the new map-mirror setting (#128 and release localization).
@@ -164,25 +164,25 @@ See [0.2.11 release notes](docs/RELEASE-NOTES-0.2.11.md) for requirements, devic
 
 See [0.2.10 release notes](docs/RELEASE-NOTES-0.2.10.md) for contributor credits, requirements and validation limits. Android 9 remains the minimum supported version.
 
-# DiPlay 0.2.9 — 2026-10-02
+# TuPigCarPlay 0.2.9 — 2026-10-02
 
-- Follow BYD head-unit day/night changes while CarPlay is visible, including firmware that does not reliably deliver Android configuration callbacks.
+- Follow TuPig head-unit day/night changes while CarPlay is visible, including firmware that does not reliably deliver Android configuration callbacks.
 - Restore media and navigation audio stream selection to 0–20 and inherit older saved navigation settings when no new selection exists. Vendor-specific outputs depend on head-unit support.
 - Keep CarPlay connected through normal surround-view window changes, preserving video proportions and touch alignment. A connection started in a narrow camera window reconnects once when the window grows to restore the full-screen canvas.
 - Add Ukrainian to the app language picker, Android app-language settings, and website. Correct its audio help to describe streams 1–20.
-- Add an optional CarPlay song title, artist, and play/pause display on the BYD instrument cluster, using the existing network ADB connection.
+- Add an optional CarPlay song title, artist, and play/pause display on the TuPig instrument cluster, using the existing network ADB connection.
 - Add a CarPlay navigation widget for launchers that host standard Android widgets, with the next turn, road, distance, arrival information, and song. Clear expired guidance and explicitly cleared song titles.
 - Add an optional floating copy of the dashboard map on the centre screen, with drag, pinch-to-resize, and tap-to-open controls. Requires permission to draw over other apps; Usage Access restricts it to home screens.
 - Fix floating-map resizing on head units that ignore small pinch gestures.
 - Let compatible launchers embed the live dashboard map on Android 11 and newer. Sharing is off by default; turning it off closes existing shared map views.
-- Add map-host and DiPlay Home sample apps for developers. DiPlay Home combines the live map, standard Android widgets, a clock, and an app list; sample builds, lint, and Home back-navigation tests are checked in CI.
+- Add map-host and TuPigCarPlay Home sample apps for developers. TuPigCarPlay Home combines the live map, standard Android widgets, a clock, and an app list; sample builds, lint, and Home back-navigation tests are checked in CI.
 - Leave the GPS course empty when its direction is unknown, instead of reporting north. Valid GPS directions are preserved.
-- Thanks to @lpcheng1208 for PRs [#71](https://github.com/shihabal3amri/DiPlay/pull/71), [#88](https://github.com/shihabal3amri/DiPlay/pull/88), and [#89](https://github.com/shihabal3amri/DiPlay/pull/89).
-- Thanks to @romanchukg-cloud for PRs [#93](https://github.com/shihabal3amri/DiPlay/pull/93), [#101](https://github.com/shihabal3amri/DiPlay/pull/101), [#105](https://github.com/shihabal3amri/DiPlay/pull/105), [#106](https://github.com/shihabal3amri/DiPlay/pull/106), [#107](https://github.com/shihabal3amri/DiPlay/pull/107), [#108](https://github.com/shihabal3amri/DiPlay/pull/108), and [#109](https://github.com/shihabal3amri/DiPlay/pull/109).
+- Thanks to @lpcheng1208 for PRs [#71](https://github.com/shihabal3amri/TuPigCarPlay/pull/71), [#88](https://github.com/shihabal3amri/TuPigCarPlay/pull/88), and [#89](https://github.com/shihabal3amri/TuPigCarPlay/pull/89).
+- Thanks to @romanchukg-cloud for PRs [#93](https://github.com/shihabal3amri/TuPigCarPlay/pull/93), [#101](https://github.com/shihabal3amri/TuPigCarPlay/pull/101), [#105](https://github.com/shihabal3amri/TuPigCarPlay/pull/105), [#106](https://github.com/shihabal3amri/TuPigCarPlay/pull/106), [#107](https://github.com/shihabal3amri/TuPigCarPlay/pull/107), [#108](https://github.com/shihabal3amri/TuPigCarPlay/pull/108), and [#109](https://github.com/shihabal3amri/TuPigCarPlay/pull/109).
 
 See [0.2.9 release notes](docs/RELEASE-NOTES-0.2.9.md) for the merged changes and validation limits.
 
-# DiPlay 0.2.8 — 2026-09-30
+# TuPigCarPlay 0.2.8 — 2026-09-30
 
 - Keep iPhone location reporting active across the wireless Bluetooth-to-Wi-Fi CarPlay handoff; limit location updates to one per second on wireless and USB.
 - Add optional ADB wheel-speed and gear reporting for iPhone dead reckoning when GPS is unavailable. Tunnel use has not yet been verified.
@@ -190,20 +190,20 @@ See [0.2.9 release notes](docs/RELEASE-NOTES-0.2.9.md) for the merged changes an
 - Explain unsupported DRM-protected video such as Apple TV+, which requires a licensed FairPlay receiver.
 - Improve playback error reporting and preserve CarPlay when the head unit cannot play a video.
 
-# DiPlay 0.2.7 — 2026-09-29
+# TuPigCarPlay 0.2.7 — 2026-09-29
 
 - App interface in English, Simplified Chinese, Arabic, Russian and Spanish; synchronized Android app-language settings.
-- Steering-wheel media controls and long-press Siri on supported BYD firmware while CarPlay is on screen.
+- Steering-wheel media controls and long-press Siri on supported TuPig firmware while CarPlay is on screen.
 - Dashboard display choices: map, turn card, or both; corrected dashboard keyframe recovery.
 - Optional ADB feature on supported DiLink 5.0: pause the dashboard map stream when its display mode hides the map.
 - Optional ADB battery reporting for Apple Maps, with warning threshold, charging-connector selection and a checked reconnect action.
 - Audio playback reliability fixes and clearer dashboard settings.
-- Clarify the BYD-only support scope on the README and all five website editions.
+- Clarify the TuPig-only support scope on the README and all five website editions.
 
-# 0.2.0 — BYD navigation and connection improvements
+# 0.2.0 — TuPig navigation and connection improvements
 
 - Standalone windshield HUD arrows, distance and street names on the verified DiLink5.1 firmware; no ADB, root or computer helper.
-- Retain contributor cluster/SOME-IP navigation, route parsing, BYD CarPlay icon and display-size presets.
+- Retain contributor cluster/SOME-IP navigation, route parsing, TuPig CarPlay icon and display-size presets.
 - Fix Car hotspot startup by using scoped IPv6 when available and binding discovery/probing to the AP interface. Physically confirmed on the development car.
 - Drain asynchronously decoded audio during packet gaps and rebuild the music buffer after starvation. Wi-Fi Direct is much better in the user retest; occasional audio cutouts remain for a later version.
 - Preserve bounded music-buffer choices, USB read improvements and decoder recovery; fix USB request/close races and keep vendor output outside phone callbacks.

@@ -25,12 +25,12 @@ import org.robolectric.util.ReflectionHelpers
 @Config(sdk = [28, 33], manifest = Config.NONE)
 @LooperMode(LooperMode.Mode.PAUSED)
 class LauncherIntentTest {
-    private var controller: ActivityController<DiPlayActivity>? = null
+    private var controller: ActivityController<TuPigCarPlayActivity>? = null
     private var stops = 0
 
     @Before fun setup() {
         val app = RuntimeEnvironment.getApplication()
-        app.getSharedPreferences("diplay", 0).edit().clear().commit()
+        app.getSharedPreferences("tupigcarplay", 0).edit().clear().commit()
         app.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
         CarPlayBackgroundSession.clear()
         val stop: ((() -> Unit) -> Unit) = { done -> stops++; done() }
@@ -56,16 +56,16 @@ class LauncherIntentTest {
 
     @Test
     fun onlyAPlainLauncherIntentReturnsToCarPlay() {
-        assertTrue(DiPlayActivity.isLauncherIntent(launcher()))
-        assertFalse(DiPlayActivity.isLauncherIntent(launcher().putExtra("page", "settings")))
-        assertFalse(DiPlayActivity.isLauncherIntent(launcher().putExtra("page", null as String?)))
-        assertFalse(DiPlayActivity.isLauncherIntent(launcher().putExtra("page", 123)))
-        assertFalse(DiPlayActivity.isLauncherIntent(Intent(Intent.ACTION_MAIN)))
-        assertFalse(DiPlayActivity.isLauncherIntent(Intent().putExtra("page", "connection")))
+        assertTrue(TuPigCarPlayActivity.isLauncherIntent(launcher()))
+        assertFalse(TuPigCarPlayActivity.isLauncherIntent(launcher().putExtra("page", "settings")))
+        assertFalse(TuPigCarPlayActivity.isLauncherIntent(launcher().putExtra("page", null as String?)))
+        assertFalse(TuPigCarPlayActivity.isLauncherIntent(launcher().putExtra("page", 123)))
+        assertFalse(TuPigCarPlayActivity.isLauncherIntent(Intent(Intent.ACTION_MAIN)))
+        assertFalse(TuPigCarPlayActivity.isLauncherIntent(Intent().putExtra("page", "connection")))
     }
 
     @Test fun freshLauncherReturnsToTheExistingHostWithoutStoppingTheSession() {
-        controller = Robolectric.buildActivity(DiPlayActivity::class.java, launcher()).create()
+        controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java, launcher()).create()
         val activity = controller!!.get()
         assertTrue(activity.isFinishing)
         assertEquals(CarPlayHostActivity::class.java.name,
@@ -75,7 +75,7 @@ class LauncherIntentTest {
     }
 
     @Test fun launcherDeliveredToExistingSettingsOpensProjectionAndClearsReturnNavigation() {
-        controller = Robolectric.buildActivity(DiPlayActivity::class.java,
+        controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java,
             Intent().putExtra("page", "settings")).create()
         val activity = controller!!.get()
         ReflectionHelpers.setField(activity, "connectionSettingsReturnCategory", SettingsCategory.ADVANCED)
@@ -93,7 +93,7 @@ class LauncherIntentTest {
     }
 
     @Test fun recreationRetainsSettingsInsteadOfRedirectingToProjection() {
-        controller = Robolectric.buildActivity(DiPlayActivity::class.java, launcher())
+        controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java, launcher())
             .create(Bundle().apply { putString("page", "settings") })
         val activity = controller!!.get()
         assertFalse(activity.isFinishing)
@@ -103,7 +103,7 @@ class LauncherIntentTest {
     }
 
     @Test fun bootStartReturnsToTheBackgroundSessionWithoutStoppingIt() {
-        controller = Robolectric.buildActivity(DiPlayActivity::class.java, bootLaunch()).create()
+        controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java, bootLaunch()).create()
         val activity = controller!!.get()
         assertEquals(CarPlayHostActivity::class.java.name,
             shadowOf(activity).nextStartedActivity?.component?.className)
@@ -113,7 +113,7 @@ class LauncherIntentTest {
     }
 
     @Test fun bootStartDeliveredToAnOpenHomeReturnsToTheBackgroundSession() {
-        controller = Robolectric.buildActivity(DiPlayActivity::class.java, Intent()).create()
+        controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java, Intent()).create()
         val activity = controller!!.get()
         controller!!.newIntent(bootLaunch())
         assertEquals(CarPlayHostActivity::class.java.name,
@@ -125,12 +125,12 @@ class LauncherIntentTest {
     @Test fun bootStartWithoutASessionStaysOnHomeAndAutoConnectsOnlyWhenOn() {
         CarPlayBackgroundSession.clear()
         val app = RuntimeEnvironment.getApplication()
-        DiPlayPreferences.savePhone(app, "00:11:22:33:44:55", "Test iPhone")
+        TuPigCarPlayPreferences.savePhone(app, "00:11:22:33:44:55", "Test iPhone")
         AirPlayPersistence.saveWirelessHotspotMode(app, WirelessHotspotMode.WIFI_P2P)
-        app.getSharedPreferences("diplay", 0).edit().putBoolean("notification_asked", true).commit()
+        app.getSharedPreferences("tupigcarplay", 0).edit().putBoolean("notification_asked", true).commit()
         for (autoConnect in listOf(false, true)) {
-            DiPlayPreferences.saveAutoConnect(app, autoConnect)
-            val home = Robolectric.buildActivity(DiPlayActivity::class.java, bootLaunch()).create()
+            TuPigCarPlayPreferences.saveAutoConnect(app, autoConnect)
+            val home = Robolectric.buildActivity(TuPigCarPlayActivity::class.java, bootLaunch()).create()
             val activity = home.get()
             // Source-only test builds have no authentication assets; exercise the startup decision.
             ReflectionHelpers.setField(activity, "setupError", null)

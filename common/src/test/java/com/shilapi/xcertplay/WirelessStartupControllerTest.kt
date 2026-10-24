@@ -163,7 +163,7 @@ class WirelessStartupControllerTest {
     @Test fun theIphoneChoiceSaysWhyNoIphoneWasPicked() {
         val iPhone = "iPhone" to "00:11:22:33:44:01"
         assertCause(ConnectionFailureCause.CHOSEN_IPHONE_NOT_PAIRED,
-            "The selected iPhone is no longer paired. Choose it again in DiPlay.", selectionFailure("00:11:22:33:44:99", iPhone))
+            "The selected iPhone is no longer paired. Choose it again in TuPigCarPlay.", selectionFailure("00:11:22:33:44:99", iPhone))
         val noneBonded = "No unambiguous bonded iPhone found; pair one iPhone and retry"
         assertCause(ConnectionFailureCause.NO_PAIRED_IPHONE, noneBonded, selectionFailure(null))
         assertCause(ConnectionFailureCause.IPHONE_NOT_CHOSEN,

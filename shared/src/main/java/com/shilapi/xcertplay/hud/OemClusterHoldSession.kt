@@ -11,12 +11,12 @@ internal class OemClusterHoldSession(
     data class Journal(val target: Target, val originalState: Int, val lease: String)
     private var ownedLease: String? = null
 
-    fun acquire(mode: BydOemClusterHold, lease: String, current: () -> Boolean): Boolean {
+    fun acquire(mode: TuPigOemClusterHold, lease: String, current: () -> Boolean): Boolean {
         if (!current()) return false
         val target = when (mode) {
-            BydOemClusterHold.OFF -> return release()
-            BydOemClusterHold.COMPONENT -> Target.COMPONENT
-            BydOemClusterHold.PACKAGE -> Target.PACKAGE
+            TuPigOemClusterHold.OFF -> return release()
+            TuPigOemClusterHold.COMPONENT -> Target.COMPONENT
+            TuPigOemClusterHold.PACKAGE -> Target.PACKAGE
         }
         val pending = loadJournal()
         if (pending != null && ownedLease == lease && pending.target == target &&

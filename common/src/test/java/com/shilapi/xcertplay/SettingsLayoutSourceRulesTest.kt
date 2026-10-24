@@ -10,7 +10,7 @@ class SettingsLayoutSourceRulesTest {
 
     @Test fun blockGapsUseTheNamedConstant() {
         val literal = Regex("""(bottom|top)Margin = dp\((16|18|20)\)""")
-        assertEquals(emptyList<String>(), hits(File(sources.first().parentFile, "DiPlayActivity.kt"), literal))
+        assertEquals(emptyList<String>(), hits(File(sources.first().parentFile, "TuPigCarPlayActivity.kt"), literal))
     }
 
     @Test fun sizesAreNotPixelConstants() {

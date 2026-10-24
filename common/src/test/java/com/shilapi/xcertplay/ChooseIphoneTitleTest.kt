@@ -25,7 +25,7 @@ import org.robolectric.util.ReflectionHelpers
 @Config(sdk = [29], qualifiers = "en-w1000dp-h700dp-land")
 class ChooseIphoneTitleTest {
     private val context: Context = RuntimeEnvironment.getApplication()
-    private val opened = mutableListOf<DiPlayActivity>()
+    private val opened = mutableListOf<TuPigCarPlayActivity>()
 
     @Before fun setUp() = clearSettings()
 
@@ -36,17 +36,17 @@ class ChooseIphoneTitleTest {
     }
 
     private fun clearSettings() {
-        context.getSharedPreferences("diplay", 0).edit().clear().commit()
+        context.getSharedPreferences("tupigcarplay", 0).edit().clear().commit()
         context.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
     }
 
-    private fun open(page: String): DiPlayActivity = Robolectric.buildActivity(
-        DiPlayActivity::class.java,
-        Intent(context, DiPlayActivity::class.java).putExtra("page", page),
+    private fun open(page: String): TuPigCarPlayActivity = Robolectric.buildActivity(
+        TuPigCarPlayActivity::class.java,
+        Intent(context, TuPigCarPlayActivity::class.java).putExtra("page", page),
     ).setup().get().also { opened += it }
 
     /** Connection setup, the setup guide's iPhone step, and Settings → Connection: each has the button. */
-    private fun pages(): List<Pair<String, DiPlayActivity>> = listOf(
+    private fun pages(): List<Pair<String, TuPigCarPlayActivity>> = listOf(
         "connection setup" to open("connection"),
         "setup guide" to open("setup").also {
             ReflectionHelpers.setField(it, "setupStep", SetupGuide.STEP_IPHONE)
@@ -58,7 +58,7 @@ class ChooseIphoneTitleTest {
         },
     )
 
-    private fun texts(screen: DiPlayActivity): List<String> =
+    private fun texts(screen: TuPigCarPlayActivity): List<String> =
         descendants(screen.window.decorView).filterIsInstance<TextView>().map { it.text.toString() }.toList()
 
     private fun descendants(view: View): Sequence<View> = sequence {
@@ -66,7 +66,7 @@ class ChooseIphoneTitleTest {
         if (view is ViewGroup) for (index in 0 until view.childCount) yieldAll(descendants(view.getChildAt(index)))
     }
 
-    private fun chooseButtons(screen: DiPlayActivity): List<String> = texts(screen).filter {
+    private fun chooseButtons(screen: TuPigCarPlayActivity): List<String> = texts(screen).filter {
         it == screen.getString(R.string.choose_iphone) || it.startsWith(screen.getString(R.string.choose_iphone_prefix))
     }
 
@@ -86,7 +86,7 @@ class ChooseIphoneTitleTest {
     }
 
     @Test fun aChosenIphoneIsNamedOnTheButton() {
-        DiPlayPreferences.savePhone(context, "AA:BB:CC:DD:EE:FF", "Test iPhone")
+        TuPigCarPlayPreferences.savePhone(context, "AA:BB:CC:DD:EE:FF", "Test iPhone")
         for ((name, screen) in pages()) {
             assertEquals(name, listOf(screen.getString(R.string.choose_iphone_prefix) + "Test iPhone"), chooseButtons(screen))
         }

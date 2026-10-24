@@ -85,8 +85,8 @@ class ClusterSpeedometerSettingsTest {
     }
 
     @Test fun speedometerControlsOnlyAppearWithClusterMapEnabled() {
-        val controller = Robolectric.buildActivity(DiPlayActivity::class.java,
-            Intent(context, DiPlayActivity::class.java).putExtra("page", "settings")).setup()
+        val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java,
+            Intent(context, TuPigCarPlayActivity::class.java).putExtra("page", "settings")).setup()
         val activity = controller.get()
         ReflectionHelpers.setField(activity, "settingsCategory", SettingsCategory.ADVANCED)
         fun hasToggle(id: Int = com.shilapi.xcertplay.host.R.string.settings_cluster_speedometer): Boolean {
@@ -211,8 +211,8 @@ class ClusterSpeedometerSettingsTest {
             val old = Configuration(context.resources.configuration)
             context.resources.updateConfiguration(Configuration(old).apply { fontScale = 1.5f }, context.resources.displayMetrics)
             AirPlayPersistence.saveClusterSpeedometerEnabled(context, true)
-            val controller = Robolectric.buildActivity(DiPlayActivity::class.java,
-                Intent(context, DiPlayActivity::class.java).putExtra("page", "settings")).setup()
+            val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java,
+                Intent(context, TuPigCarPlayActivity::class.java).putExtra("page", "settings")).setup()
             val activity = controller.get()
             activity.applicationInfo.flags = activity.applicationInfo.flags or android.content.pm.ApplicationInfo.FLAG_SUPPORTS_RTL
             val card = LinearLayout(activity).apply {

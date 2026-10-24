@@ -8,7 +8,7 @@ import kotlin.math.ln
 
 /**
  * The view areas the main screen declares for one session, and the one CarPlay uses now. A fixed dock
- * declares every area once per dock edge; the head unit's split screen adds an area the size of DiPlay's
+ * declares every area once per dock edge; the head unit's split screen adds an area the size of TuPigCarPlay's
  * window there; a square canvas for a turning screen holds a landscape and a portrait screen. The car
  * moves CarPlay between them with updateViewArea, without reconnecting. No Android types beyond
  * preferences, so the choices are unit-tested.
@@ -18,7 +18,7 @@ class CarPlayViewAreas private constructor(
     private val slots: List<Slot>,
     initial: Int,
 ) {
-    /** What an area is for; SIDE_PANEL is CarPlay beside DiPlay's panel and is only chosen on request. */
+    /** What an area is for; SIDE_PANEL is CarPlay beside TuPigCarPlay's panel and is only chosen on request. */
     enum class Kind { FULL_SCREEN, SPLIT_SCREEN, SIDE_PANEL }
 
     /** A full screen the canvas holds: its size and whether the screen is portrait then. */
@@ -43,7 +43,7 @@ class CarPlayViewAreas private constructor(
         areas.indices.firstOrNull { slots[it].kind == kind && slots[it].portrait == portrait && areas[it].dockEdge == dockEdge }
 
     /**
-     * The area for DiPlay's window on a [portrait] or landscape screen, keeping the dock edge: the
+     * The area for TuPigCarPlay's window on a [portrait] or landscape screen, keeping the dock edge: the
      * split-screen area in the head unit's split screen when one has about the window's shape, the
      * whole screen otherwise. Null when this session has no area for that screen (the caller reconnects).
      */
@@ -55,7 +55,7 @@ class CarPlayViewAreas private constructor(
     }
 
     /**
-     * The area beside DiPlay's side panel on the current (or given) screen with CarPlay's share in [sixths]
+     * The area beside TuPigCarPlay's side panel on the current (or given) screen with CarPlay's share in [sixths]
      * (another share when this session has no such area), or null without a side panel.
      */
     fun sidePanel(portrait: Boolean = slots[current].portrait, sixths: Int = DEFAULT_SIDE_PANEL_SIXTHS): Int? {
@@ -75,7 +75,7 @@ class CarPlayViewAreas private constructor(
         } else areas[index]
 
     /**
-     * The part of the stream DiPlay's panel covers beside side-panel area [index]: the strip of its whole
+     * The part of the stream TuPigCarPlay's panel covers beside side-panel area [index]: the strip of its whole
      * screen that CarPlay leaves (stream pixels), or null for other areas.
      */
     fun panelRect(index: Int): AirPlayViewArea? {
@@ -100,7 +100,7 @@ class CarPlayViewAreas private constructor(
     }
 
     companion object {
-        /** Further than this (as an aspect ratio) from DiPlay's window, a split-screen area does not fit it. */
+        /** Further than this (as an aspect ratio) from TuPigCarPlay's window, a split-screen area does not fit it. */
         private const val MAX_ASPECT_MISMATCH = 1.25
 
         /** CarPlay's share of the screen beside the side panel, in sixths: two thirds, half, one third. */
@@ -128,7 +128,7 @@ class CarPlayViewAreas private constructor(
          * corner), or null when the whole stream as one area will do (one screen, automatic dock, no split
          * screen). [splitWindow] gives the split-screen window on a portrait or landscape screen as
          * fractions of that full screen, or null without split-screen support. With [sidePanel], CarPlay
-         * also gets two thirds of each screen beside a DiPlay panel, nearer the driver ([rightHandDrive]).
+         * also gets two thirds of each screen beside a TuPigCarPlay panel, nearer the driver ([rightHandDrive]).
          */
         fun build(
             canvasWidth: Int,
@@ -153,7 +153,7 @@ class CarPlayViewAreas private constructor(
             }
             for (screen in screens) {
                 val window = splits[screen] ?: continue
-                // The window's own size (BYD shows its bars in split screen), kept even for the encoder.
+                // The window's own size (TuPig shows its bars in split screen), kept even for the encoder.
                 val splitWidth = (screen.width * window.first).toInt().coerceIn(2, screen.width) and 1.inv()
                 val splitHeight = (screen.height * window.second).toInt().coerceIn(2, screen.height) and 1.inv()
                 for (edge in edges) {
@@ -187,12 +187,12 @@ class CarPlayViewAreas private constructor(
 }
 
 /**
- * Optional: CarPlay fills DiPlay's window in the head unit's split screen without reconnecting. The
+ * Optional: CarPlay fills TuPigCarPlay's window in the head unit's split screen without reconnecting. The
  * window there is remembered as fractions of the whole screen, which hiding or showing the system bars
  * does not change, so the next connection declares an area of exactly that shape.
  */
 object SplitScreenSettings {
-    private const val PREFS = "diplay_split_screen"
+    private const val PREFS = "tupigcarplay_split_screen"
     private const val KEY_ENABLED = "enabled"
 
     fun enabled(context: Context): Boolean = prefs(context).getBoolean(KEY_ENABLED, false)
@@ -213,8 +213,8 @@ object SplitScreenSettings {
     }
 
     /**
-     * The split window to expect before DiPlay has seen one, as fractions of the whole screen: the screen
-     * halved across its long side less the [divider], with both system bars shown, as BYD shows them in
+     * The split window to expect before TuPigCarPlay has seen one, as fractions of the whole screen: the screen
+     * halved across its long side less the [divider], with both system bars shown, as TuPig shows them in
      * split screen whatever the full-screen settings. On my Tang (2560x1440, bars of 112 and 120 px, a
      * 20 px divider) that is 1270x1208 side by side and 1440x1154 stacked, the windows the head unit gave.
      * Null when the screen size is unknown.

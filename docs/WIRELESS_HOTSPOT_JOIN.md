@@ -7,7 +7,7 @@ failure from a failure after the Wi-Fi link is established.
 
 First check Bluetooth, Wi-Fi and Auto-Join for the CarPlay network, as described
 in [Apple's CarPlay troubleshooting](https://support.apple.com/en-us/105109).
-Reproduce while parked and share a reviewed DiPlay diagnostic report with the
+Reproduce while parked and share a reviewed TuPigCarPlay diagnostic report with the
 receiver firmware/Android version, phone/iOS version, connection mode and whether
 manual selection succeeds. Keep passwords, full network captures, addresses and
 private device backups out of public reports.
@@ -23,19 +23,19 @@ those elements.
 [Apple's WWDC 2023 connectivity discussion](https://developer.apple.com/videos/play/wwdc2023/10150/)
 states that the simplified endpoint exchange supports iOS 14 onward. No reviewed
 public Apple notice identifies the failure below as an iOS 14.0.1-specific defect.
-These public presentations do not certify DiPlay or describe every private
+These public presentations do not certify TuPigCarPlay or describe every private
 accessory specification detail.
 
 ## Controlled interoperability observation
 
 A controlled comparison used the following receiver and phone:
 
-- DiPlay **0.2.12**, package `com.shihab.diplay`, original installed release.
+- TuPigCarPlay **0.2.12**, package `com.android.gallery3d`, original installed release.
 - iPhone **8 Plus / iOS 14.0.1**, with hotspot Auto-Join enabled.
 - OnePlus **7T Pro / Android 13 (API 33)**, WPA2 hotspot, actual **5220 MHz /
-  channel 44**. This is a receiver interoperability observation outside DiPlay's
-  BYD support scope; it does not add OnePlus support.
-- DiPlay advertised channel **0**, because its app could not read the effective
+  channel 44**. This is a receiver interoperability observation outside TuPigCarPlay's
+  TuPig support scope; it does not add OnePlus support.
+- TuPigCarPlay advertised channel **0**, because its app could not read the effective
   channel. Android's stored channel was also 0 (automatic selection).
 - Manual joining worked without asking for a password. A renamed hotspot
   reproduced the automatic-join failure, and manual joining still worked.
@@ -78,7 +78,7 @@ the reproducible cause on this setup. Channel 0 and IPv6 both succeeded on the
 original release when the element was present. No channel override or IPv4 preference change was needed.
 
 This does not establish an iOS-version-specific bug or a regression introduced
-by 0.2.12. Other iOS versions, BYD firmware, 2.4 GHz, Wi-Fi Direct, reconnect after
+by 0.2.12. Other iOS versions, TuPig firmware, 2.4 GHz, Wi-Fi Direct, reconnect after
 reboot and long-session reliability remain untested by this comparison.
 
 Android 13 exposes vendor elements through a privileged system API rather than
@@ -90,12 +90,12 @@ evidence for a general in-app fix.
 
 ## Opt-in app repair
 
-**Connection setup → Built-in car hotspot → Check hotspot repair** runs DiPlay's
+**Connection setup → Built-in car hotspot → Check hotspot repair** runs TuPigCarPlay's
 authorized local-ADB/app_process helper. Opening the screen, resuming the app or
 starting CarPlay does not run this repair. Check reads the saved configuration
 and prepares a private full rollback snapshot; it does not change the hotspot.
 After a successful check, **Add automatic-join information** requires a separate
-confirmation. This is experimental, capability-based BYD work, not support for a
+confirmation. This is experimental, capability-based TuPig work, not support for a
 new vehicle brand.
 
 The helper requires Android 13/API 33 or later, the firmware's complete
@@ -126,7 +126,7 @@ adbd reconfiguration or TLS downgrade is performed.
 
 While parked, disconnect CarPlay and turn the hotspot off in car settings before
 Apply or Restore. Both writes require a fresh, authoritative **disabled** AP
-state; starting/stopping/failed/hidden states are refused. DiPlay never stops or
+state; starting/stopping/failed/hidden states are refused. TuPigCarPlay never stops or
 restarts the hotspot. Turn it on yourself afterward to update broadcasts, then
 verify a fresh scan and automatic joining. Saved-configuration readback is not
 proof that an OEM HAL broadcasts the element or that CarPlay joins successfully.
@@ -135,7 +135,7 @@ proof that an OEM HAL broadcasts the element or that CarPlay joins successfully.
 
 The shell helper retains the complete original and intended configurations in a
 versioned, integrity-checked atomic journal under
-`/data/local/tmp/diplay-hotspot-join-<package>/`. Directory mode is 0700 and new
+`/data/local/tmp/tupigcarplay-hotspot-join-<package>/`. Directory mode is 0700 and new
 files are 0600, owned by the executing shell/root UID. Existing foreign,
 world/group-accessible or symlinked entries are rejected. Snapshot files and the
 directory rename and its parent entry are synced and read back before mutation.
@@ -185,8 +185,8 @@ recorded in
 [hotspot repair validation](HOTSPOT_JOIN_VALIDATION.md).
 
 The controlled phone experiment above used the original APK and a separate
-privileged helper. It did not exercise this new in-app path. BYD firmware,
+privileged helper. It did not exercise this new in-app path. TuPig firmware,
 app-issued authorization, broadcast refresh, automatic joining, reboot persistence
-and long sessions still require physical-device acceptance. Android 9/10 BYD
+and long sessions still require physical-device acceptance. Android 9/10 TuPig
 receivers without these APIs remain unsupported by this repair; ordinary CarPlay
 connection modes continue to work as before.

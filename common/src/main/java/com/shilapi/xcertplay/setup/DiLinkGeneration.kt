@@ -3,7 +3,7 @@ package com.shilapi.xcertplay.setup
 import android.content.Context
 import android.os.Build
 
-/** The BYD head unit generation. The setup guide uses it only to explain which features apply. */
+/** The TuPig head unit generation. The setup guide uses it only to explain which features apply. */
 enum class DiLinkGeneration(val key: String) {
     DILINK_3("dilink3"),
     DILINK_4("dilink4"),
@@ -18,13 +18,13 @@ enum class DiLinkGeneration(val key: String) {
     companion object {
         private val VERSION = Regex("""DiLink\s*([345])(?:\.\d+)?""", RegexOption.IGNORE_CASE)
         private const val CONTROLLER_VERSION_PROPERTY = "apps.setting.product.outswver"
-        private const val PREFS = "diplay"
+        private const val PREFS = "tupigcarplay"
         private const val KEY = "setup_dilink_generation"
 
         fun fromKey(key: String?): DiLinkGeneration? = entries.firstOrNull { it.key == key }
 
         /**
-         * BYD names the build after the head unit: DiLink 3.0 reports product `DiLink3.0` and a
+         * TuPig names the build after the head unit: DiLink 3.0 reports product `DiLink3.0` and a
          * `BYD-AUTO/DiLink3.0/...` fingerprint. DiLink 5.1 reports a generic `IVI` product on Android 13.
          */
         fun detect(product: String?, fingerprint: String?, display: String?, sdkInt: Int,

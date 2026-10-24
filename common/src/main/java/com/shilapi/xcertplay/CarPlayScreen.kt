@@ -9,15 +9,15 @@ import java.lang.ref.WeakReference
  * Chooses which declaration of the CarPlay screen opens.
  *
  * Since 0.2.12 [CarPlayHostActivity] runs in a task of its own (taskAffinity `.carplay`), so CarPlay stays open
- * behind DiPlay's settings. Launchers that show DiPlay's task in a card or a picture-in-picture window (BYD's DiYou
- * desktop card, 嘟嘟桌面) then show only DiPlay's start page, and CarPlay opens outside the card (#463, #406, #1003).
- * With "Keep CarPlay in the launcher card" on, [SameTaskCarPlayHostActivity] opens instead, in DiPlay's own task.
+ * behind TuPigCarPlay's settings. Launchers that show TuPigCarPlay's task in a card or a picture-in-picture window (TuPig's DiYou
+ * desktop card, 嘟嘟桌面) then show only TuPigCarPlay's start page, and CarPlay opens outside the card (#463, #406, #1003).
+ * With "Keep CarPlay in the launcher card" on, [SameTaskCarPlayHostActivity] opens instead, in TuPigCarPlay's own task.
  *
  * Only one CarPlay screen exists at a time. While one is open every start goes to it, and a start of the other
  * declaration (an older widget or notification, a USB attachment, a launcher that names the class) is forwarded.
  */
 internal object CarPlayScreen {
-    private const val TAG = "DiPlay"
+    private const val TAG = "TuPigCarPlay"
     @Volatile private var open: WeakReference<CarPlayHostActivity>? = null
 
     fun target(context: Context): Class<out CarPlayHostActivity> =
@@ -64,7 +64,7 @@ internal object CarPlayScreen {
     fun closeIfElsewhere(context: Context): Boolean {
         val screen = current() ?: return false
         if (screen.javaClass == preferred(context)) return false
-        // The separate task holds nothing else; DiPlay's own task keeps its other screens.
+        // The separate task holds nothing else; TuPigCarPlay's own task keeps its other screens.
         if (screen is SameTaskCarPlayHostActivity) screen.finish() else screen.finishAndRemoveTask()
         return true
     }

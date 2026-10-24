@@ -1,23 +1,23 @@
 package com.shilapi.xcertplay.media
 
-import com.shilapi.xcertplay.hud.BydAmbientLightPolicy
+import com.shilapi.xcertplay.hud.TuPigAmbientLightPolicy
 import java.util.concurrent.CompletableFuture
 import org.junit.Assert.*
 import org.junit.Test
 
 class AmbientLampSessionTest {
-    private val original = BydAmbientLightPolicy.Snapshot(7, 23, 2, 5, 2)
+    private val original = TuPigAmbientLightPolicy.Snapshot(7, 23, 2, 5, 2)
     private val desired = Triple(3, 15, 6)
     private class Fake : AmbientLampSession.Client {
         var failed = false
-        var seed: BydAmbientLightPolicy.Snapshot? = null
-        val begin = CompletableFuture<BydAmbientLightPolicy.Snapshot>()
+        var seed: TuPigAmbientLightPolicy.Snapshot? = null
+        val begin = CompletableFuture<TuPigAmbientLightPolicy.Snapshot>()
         val stopped = CompletableFuture<Unit>()
         val applies = mutableListOf<Pair<Triple<Int, Int, Int>, CompletableFuture<Unit>>>()
         var stops = 0
         var closed = false
         override fun unhealthy() = failed
-        override fun begin(seed: BydAmbientLightPolicy.Snapshot?): CompletableFuture<BydAmbientLightPolicy.Snapshot> { this.seed = seed; return begin }
+        override fun begin(seed: TuPigAmbientLightPolicy.Snapshot?): CompletableFuture<TuPigAmbientLightPolicy.Snapshot> { this.seed = seed; return begin }
         override fun apply(desired: Triple<Int, Int, Int>) = CompletableFuture<Unit>().also { applies.add(desired to it) }
         override fun stop(): CompletableFuture<Unit> { stops++; return stopped }
         override fun close() { closed = true }

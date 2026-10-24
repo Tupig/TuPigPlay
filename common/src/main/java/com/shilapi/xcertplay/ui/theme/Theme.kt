@@ -6,11 +6,11 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.shilapi.xcertplay.DiPlayPalette
+import com.shilapi.xcertplay.TuPigCarPlayPalette
 
 private fun color(value: Int) = Color(value)
 
-private fun darkScheme(palette: DiPlayPalette) = darkColorScheme(
+private fun darkScheme(palette: TuPigCarPlayPalette) = darkColorScheme(
     primary = color(palette.accent),
     onPrimary = color(palette.onAccent),
     background = color(palette.background),
@@ -20,7 +20,7 @@ private fun darkScheme(palette: DiPlayPalette) = darkColorScheme(
     error = color(palette.danger),
 )
 
-private fun lightScheme(palette: DiPlayPalette) = lightColorScheme(
+private fun lightScheme(palette: TuPigCarPlayPalette) = lightColorScheme(
     primary = color(palette.accent),
     onPrimary = color(palette.onAccent),
     background = color(palette.background),
@@ -35,7 +35,7 @@ fun XcertplayTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val palette = DiPlayPalette.of(darkTheme)
+    val palette = TuPigCarPlayPalette.of(darkTheme)
     val colorScheme = if (darkTheme) darkScheme(palette) else lightScheme(palette)
 
     MaterialTheme(

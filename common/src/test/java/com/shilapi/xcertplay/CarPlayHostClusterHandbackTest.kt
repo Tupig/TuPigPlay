@@ -13,8 +13,8 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.time.Duration
 
-// #883, #803: after the iPhone left, DiPlay kept holding the BYD cluster with no map, and the cluster
-// stayed in BYD's simple mode until the head unit restarted.
+// #883, #803: after the iPhone left, TuPigCarPlay kept holding the TuPig cluster with no map, and the cluster
+// stayed in TuPig's simple mode until the head unit restarted.
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [29])
 class CarPlayHostClusterHandbackTest {

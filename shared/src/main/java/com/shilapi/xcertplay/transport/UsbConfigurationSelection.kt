@@ -7,7 +7,7 @@ package com.shilapi.xcertplay.transport
  * Linux refuses SET_CONFIGURATION while any interface of the active configuration is bound
  * ("usbfs: interface 0 claimed by snd-usb-audio while '…' sets config #6"). An 8227L kernel bound
  * snd-usb-audio to the iPhone's audio configuration, so every switch failed, the claims landed on
- * the wrong configuration and DiPlay reported "could not claim the NCM interface 3" (#518).
+ * the wrong configuration and TuPigCarPlay reported "could not claim the NCM interface 3" (#518).
  * Android detaches a kernel driver only through a forced claim, so each interface number is
  * claimed with force. Android's releaseInterface() asks the kernel to reattach the driver
  * (USBDEVFS_CONNECT), which undid the detach before the switch in 0.2.19, so the claims are

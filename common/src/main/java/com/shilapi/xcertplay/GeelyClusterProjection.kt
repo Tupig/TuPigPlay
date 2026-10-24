@@ -6,7 +6,7 @@ import android.os.Parcel
 import android.util.Log
 
 /**
- * Turns the instrument panel's projection into DiPlay's display.
+ * Turns the instrument panel's projection into TuPigCarPlay's display.
  *
  * <p>On `geely_fx11` the cluster keeps its own layer on top of Android's display 2 until the
  * head unit is told to project to it. The stock map does this through the DIM service
@@ -20,7 +20,7 @@ import android.util.Log
  */
 internal object GeelyClusterProjection {
 
-    private const val TAG = "DiPlay-Cluster"
+    private const val TAG = "TuPigCarPlay-Cluster"
     private const val SERVICE = "DimNaviService"
     private const val DESCRIPTOR = "ecarx.dimprotocol.custom.service.IDimNaviService"
     private const val NOTIFY_PROJECT_SCREEN_SWITCH = 9
@@ -32,7 +32,7 @@ internal object GeelyClusterProjection {
     /**
      * Reads the head unit's projection state, or null when the answer cannot be obtained (service not
      * registered, transaction refused). The state is head-unit-wide: the stock map drives the same
-     * switch, so an off reading while DiPlay's presentation is up means the map took it away and the
+     * switch, so an off reading while TuPigCarPlay's presentation is up means the map took it away and the
      * cluster is dark (see [ClusterProjectionWatchdog]).
      */
     fun status(): Boolean? {
@@ -89,8 +89,8 @@ internal object GeelyClusterProjection {
 
     /**
      * Handles a projection a previous run may have left on. A kill that skipped `onStop` leaves the
-     * cluster on DiPlay's last frame (measured: the car's SystemUI killed DiPlay about 5 s after
-     * Home), and the DIM switch carries no owner, so the claim is recorded while DiPlay holds the
+     * cluster on TuPigCarPlay's last frame (measured: the car's SystemUI killed TuPigCarPlay about 5 s after
+     * Home), and the DIM switch carries no owner, so the claim is recorded while TuPigCarPlay holds the
      * switch and this decides on the next start whether the switch can still be handed back.
      */
     fun releaseStale(context: Context) {
@@ -124,11 +124,11 @@ internal object GeelyClusterProjection {
 
 /** What [GeelyClusterProjection.releaseStale] does with the claim a previous run may have left. */
 internal enum class StaleProjectionAction {
-    /** Leave the switch and the claim alone: DiPlay never claimed it, or it is about to project again. */
+    /** Leave the switch and the claim alone: TuPigCarPlay never claimed it, or it is about to project again. */
     NONE,
     /** The claim no longer describes the switch: forget it without touching the head unit. */
     FORGET,
-    /** The switch still reads on and is DiPlay's leftover: hand it back to the head unit. */
+    /** The switch still reads on and is TuPigCarPlay's leftover: hand it back to the head unit. */
     HAND_BACK,
 }
 
@@ -136,8 +136,8 @@ internal enum class StaleProjectionAction {
  * The next-start decision for a projection a killed run left on.
  *
  * The DIM switch carries no owner, so an on reading cannot be told apart from the stock map's own
- * projection. The on-disk claim is the only evidence that the leftover is DiPlay's, and even then the
- * switch is only handed back while DiPlay is not going to project: as soon as a session is up DiPlay
+ * projection. The on-disk claim is the only evidence that the leftover is TuPigCarPlay's, and even then the
+ * switch is only handed back while TuPigCarPlay is not going to project: as soon as a session is up TuPigCarPlay
  * asserts the projection itself, and its new frame replaces the leftover, while handing the switch
  * back first would take the wheel-key map off the cluster. A reading that cannot be taken keeps the
  * claim for the next run ([GeelyClusterProjection.status] returns null then).

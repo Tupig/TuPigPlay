@@ -28,20 +28,20 @@ import org.robolectric.util.ReflectionHelpers
 @Config(sdk = [29], qualifiers = "en-w1000dp-h700dp-land")
 class ChooseIphoneBluetoothDialogTest {
     private val context: Context = RuntimeEnvironment.getApplication()
-    private var activity: DiPlayActivity? = null
+    private var activity: TuPigCarPlayActivity? = null
 
     @After fun tearDown() {
         activity?.finish()
         ShadowBluetoothAdapter.setIsBluetoothSupported(true)
         AppAppearanceRuntime.resetForTest()
-        context.getSharedPreferences("diplay", 0).edit().clear().commit()
+        context.getSharedPreferences("tupigcarplay", 0).edit().clear().commit()
         context.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
     }
 
-    private fun open(): DiPlayActivity =
-        Robolectric.buildActivity(DiPlayActivity::class.java).setup().get().also { activity = it }
+    private fun open(): TuPigCarPlayActivity =
+        Robolectric.buildActivity(TuPigCarPlayActivity::class.java).setup().get().also { activity = it }
 
-    private fun choosePhone(screen: DiPlayActivity): AlertDialog {
+    private fun choosePhone(screen: TuPigCarPlayActivity): AlertDialog {
         ReflectionHelpers.callInstanceMethod<Unit>(screen, "choosePhone")
         shadowOf(Looper.getMainLooper()).idle()
         return ShadowAlertDialog.getLatestAlertDialog()
@@ -55,7 +55,7 @@ class ChooseIphoneBluetoothDialogTest {
         if (view is ViewGroup) for (index in 0 until view.childCount) yieldAll(descendants(view.getChildAt(index)))
     }
 
-    // Issue 703's screen: the car's own Bluetooth is on, Android has none, and DiPlay asked to turn it on.
+    // Issue 703's screen: the car's own Bluetooth is on, Android has none, and TuPigCarPlay asked to turn it on.
     @Test fun aHeadUnitWithoutAndroidBluetoothIsToldSoInsteadOfBeingSentToASwitch() {
         ShadowBluetoothAdapter.setIsBluetoothSupported(false)
         val screen = open()

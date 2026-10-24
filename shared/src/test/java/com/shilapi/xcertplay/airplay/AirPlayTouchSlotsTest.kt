@@ -19,7 +19,7 @@ class AirPlayTouchSlotsTest {
         assertEquals(emptyList<AirPlayContact>(), slots.assign(emptyList()))
     }
 
-    // Opening the settings menu or DiPlay's home, and the settings swipe, send an empty list.
+    // Opening the settings menu or TuPigCarPlay's home, and the settings swipe, send an empty list.
     @Test fun anEmptyListReleasesEveryFingerWhereItWas() {
         val slots = AirPlayTouchSlots(2)
         slots.assign(listOf(c(3, .1, .2), c(5, .7, .8)))

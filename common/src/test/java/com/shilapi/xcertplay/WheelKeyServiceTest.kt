@@ -7,8 +7,8 @@ import android.os.Looper
 import android.view.KeyEvent
 import android.widget.Button
 import com.shilapi.xcertplay.airplay.CarPlayMediaButton
-import com.shilapi.xcertplay.hud.BydOutputSettings
-import com.shilapi.xcertplay.hud.BydCarPlayCall
+import com.shilapi.xcertplay.hud.TuPigOutputSettings
+import com.shilapi.xcertplay.hud.TuPigCarPlayCall
 import com.shilapi.xcertplay.hud.CarPlayCallState
 import com.shilapi.xcertplay.iap2.message.Iap2Messages
 import com.shilapi.xcertplay.media.AndroidMediaSink
@@ -36,8 +36,8 @@ class WheelKeyServiceTest {
 
     @Before fun setUp() {
         service = Robolectric.buildService(WheelKeyService::class.java).create().get()
-        service.getSharedPreferences("diplay_navigation_wheel", Context.MODE_PRIVATE).edit().clear().commit()
-        service.getSharedPreferences("diplay_wheel_map_zoom", Context.MODE_PRIVATE).edit().clear().commit()
+        service.getSharedPreferences("tupigcarplay_navigation_wheel", Context.MODE_PRIVATE).edit().clear().commit()
+        service.getSharedPreferences("tupigcarplay_wheel_map_zoom", Context.MODE_PRIVATE).edit().clear().commit()
         service.mapRoute = { route }
         WheelZoomSettings.setEnabled(service, true)
         WheelZoomSettings.assign(service, WheelZoomSettings.Role.MODE, WheelKey(KeyEvent.KEYCODE_F1, 0, "?"))
@@ -48,8 +48,8 @@ class WheelKeyServiceTest {
 
     @After fun tearDown() {
         service.onDestroy()
-        BydOutputSettings.setCarPlayCallControls(service, false)
-        BydCarPlayCall.end()
+        TuPigOutputSettings.setCarPlayCallControls(service, false)
+        TuPigCarPlayCall.end()
         CarPlayBackgroundSession.clear()
     }
 
@@ -222,20 +222,20 @@ class WheelKeyServiceTest {
 
     @Test fun experimentalVoiceKeysRemainWithTheCarUntilOptIn() {
         service.session = { "active-phone" }
-        BydOutputSettings.setCarPlayCallControls(service, false)
+        TuPigOutputSettings.setCarPlayCallControls(service, false)
         assertEquals(false to false, press(327))
         assertEquals(false to false, press(328))
-        BydOutputSettings.setCarPlayCallControls(service, true)
+        TuPigOutputSettings.setCarPlayCallControls(service, true)
         assertEquals(true to true, press(327))
         assertEquals(true to true, press(328))
-        BydOutputSettings.setCarPlayCallControls(service, false)
+        TuPigOutputSettings.setCarPlayCallControls(service, false)
         assertEquals(false to false, press(327))
     }
 
-    @Test fun anAssignedBydVoiceKeyStillUsesVoiceKeyPairWhenDoublePressIsOff() {
-        val code = CarPlayMediaButton.KEYCODE_BYD_CARPLAY_VOICE
+    @Test fun anAssignedTuPigVoiceKeyStillUsesVoiceKeyPairWhenDoublePressIsOff() {
+        val code = CarPlayMediaButton.KEYCODE_TUPIG_CARPLAY_VOICE
         service.session = { "active-phone" }
-        BydOutputSettings.setCarPlayCallControls(service, true)
+        TuPigOutputSettings.setCarPlayCallControls(service, true)
         WheelZoomSettings.setSiriKey(service, true)
         WheelZoomSettings.assign(service, WheelZoomSettings.Role.SIRI, WheelKey(code, 0, "?"))
         WheelZoomSettings.setSiriDoublePress(service, false)
@@ -253,7 +253,7 @@ class WheelKeyServiceTest {
 
     @Test
     fun theAllowedListKeepsOtherServicesAndRebindsAListedButStoppedService() {
-        val ours = "com.shihab.diplay/com.shilapi.xcertplay.WheelKeyService"
+        val ours = "com.android.gallery3d/com.shilapi.xcertplay.WheelKeyService"
         val car = "com.byd.airconditioning/.gesture.AcGestureService:com.android.systemui/.custom.StatusBarAccessibilityService"
         assertEquals(null to "$car:$ours", WheelKeyService.allowedServices("$car\n", ours))
         assertEquals(car to "$car:$ours", WheelKeyService.allowedServices("$ours:$car", ours))
@@ -563,11 +563,11 @@ class WheelKeyServiceTest {
         `when`(controller.activeAirPlaySessionToken()).thenReturn(Any())
         CarPlayBackgroundSession.store(controller, mock(AndroidMediaSink::class.java), 1, 1,
             this, mock(CarPlaySessionDisplay::class.java)) { it() }
-        BydOutputSettings.setCarPlayCallControls(service, true)
+        TuPigOutputSettings.setCarPlayCallControls(service, true)
         WheelZoomSettings.assign(service, WheelZoomSettings.Role.SIRI, WheelKey(KeyEvent.KEYCODE_ENDCALL, 0, "?"))
         assertTrue(key(KeyEvent.KEYCODE_ENDCALL, true))
         assertEquals(1, siriRequests)
-        BydCarPlayCall.onFrame(Iap2Messages.buildRaw(CarPlayCallState.CALL_STATE_UPDATE) {
+        TuPigCarPlayCall.onFrame(Iap2Messages.buildRaw(CarPlayCallState.CALL_STATE_UPDATE) {
             u8(2, 4); string(4, "new-call")
         })
         assertTrue(key(KeyEvent.KEYCODE_ENDCALL, false))
@@ -587,7 +587,7 @@ class WheelKeyServiceTest {
         val audio = service.getSystemService(AudioManager::class.java)
         audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 2, 0)
         audio.setStreamVolume(AudioManager.STREAM_MUSIC, 3, 0)
-        val prefs = service.getSharedPreferences("diplay_navigation_wheel", Context.MODE_PRIVATE)
+        val prefs = service.getSharedPreferences("tupigcarplay_navigation_wheel", Context.MODE_PRIVATE)
         // The disabled default must pass the initial wheel press through.
         fun event(action: Int, time: Long, repeat: Int = 0) = KeyEvent(time, time, action,
             KeyEvent.KEYCODE_VOLUME_UP, repeat)

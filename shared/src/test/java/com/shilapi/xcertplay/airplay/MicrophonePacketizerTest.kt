@@ -52,7 +52,7 @@ class MicrophonePacketizerTest {
 
     @Test
     fun opusTimestampsCountInTheClockTheIphoneChose() {
-        // Siri asks for Opus 24 kHz (0x20000000) and calls for Opus 48 kHz (0x40000000); DiPlay still
+        // Siri asks for Opus 24 kHz (0x20000000) and calls for Opus 48 kHz (0x40000000); TuPigCarPlay still
         // captures 20 ms at 48 kHz, but each packet moves the RTP clock by 20 ms of the chosen rate.
         assertEquals(24_000, MicrophoneConfig.opusClockRate(0x20000000L))
         assertEquals(48_000, MicrophoneConfig.opusClockRate(0x40000000L))

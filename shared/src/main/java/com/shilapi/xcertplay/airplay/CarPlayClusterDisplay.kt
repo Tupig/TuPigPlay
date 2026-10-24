@@ -14,7 +14,7 @@ object CarPlayClusterDisplay {
     /**
      * What the dashboard shows: one of the cluster contents the iPhone lists in `altScreenURLs`.
      * On the tested car the iPhone glass turn card needed 0–5 kbit/s against 0.3–4 Mbit/s for the map.
-     * MAP_WITH_CUSTOM_CARD asks for the map stream so DiPlay can draw a movable card on top.
+     * MAP_WITH_CUSTOM_CARD asks for the map stream so TuPigCarPlay can draw a movable card on top.
      */
     enum class Content(val url: String) {
         MAP(MAP_URL),
@@ -30,7 +30,7 @@ object CarPlayClusterDisplay {
 
     /**
      * Where the car marker goes, as percent of the panel (left, top, right, bottom). Measured on a
-     * DiLink 5.0 cluster with a calibration grid. In "Full screen navi" BYD draws a status row,
+     * DiLink 5.0 cluster with a calibration grid. In "Full screen navi" TuPig draws a status row,
      * turn/ADAS icons, the ADAS lane view (from x 68 %), speed and power readouts and a bottom band
      * over the map; "Small screen navi" crops the panel to a centre window of about x 31–68 %,
      * y 16–89 %. This centre area is clear in both modes, so no per-mode setting is needed.

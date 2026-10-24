@@ -33,7 +33,7 @@ import org.robolectric.util.ReflectionHelpers
 @Config(sdk = [29], qualifiers = "en-w1000dp-h700dp-land", shadows = [CarHotspotOffConnectTest.HotspotState::class])
 class CarHotspotOffConnectTest {
     private val context: Context = RuntimeEnvironment.getApplication()
-    private val opened = mutableListOf<DiPlayActivity>()
+    private val opened = mutableListOf<TuPigCarPlayActivity>()
 
     @Before fun setUp() {
         clearSettings()
@@ -51,17 +51,17 @@ class CarHotspotOffConnectTest {
     }
 
     private fun clearSettings() {
-        for (name in listOf("diplay", "xcertplay_airplay", "diplay_car_hotspot")) {
+        for (name in listOf("tupigcarplay", "xcertplay_airplay", "tupigcarplay_car_hotspot")) {
             context.getSharedPreferences(name, 0).edit().clear().commit()
         }
     }
 
-    private fun openHome(): DiPlayActivity = Robolectric.buildActivity(DiPlayActivity::class.java,
-        Intent(context, DiPlayActivity::class.java).putExtra("page", "home")).setup().get().also { opened += it }
+    private fun openHome(): TuPigCarPlayActivity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java,
+        Intent(context, TuPigCarPlayActivity::class.java).putExtra("page", "home")).setup().get().also { opened += it }
 
-    private fun carHotspotOff(home: DiPlayActivity): Boolean = ReflectionHelpers.callInstanceMethod(home, "carHotspotOff")
+    private fun carHotspotOff(home: TuPigCarPlayActivity): Boolean = ReflectionHelpers.callInstanceMethod(home, "carHotspotOff")
 
-    private fun offDialogs(home: DiPlayActivity) = ShadowDialog.getShownDialogs().filterIsInstance<AlertDialog>()
+    private fun offDialogs(home: TuPigCarPlayActivity) = ShadowDialog.getShownDialogs().filterIsInstance<AlertDialog>()
         .filter { shadowOf(it).title == home.getString(R.string.car_hotspot_is_off) }
 
     @Test fun connectInTheOffDialogConnectsInsteadOfAskingAgain() {

@@ -2,7 +2,7 @@
 
 Author: 寒叙 (@Hanxu4131)
 
-This change adapts the navigation wheel-volume approach used successfully on a 2023 BYD Tang DM-i Champion Edition with the platform/controller-21 head unit. On that tested vehicle, the navigation audio used legacy stream 14: while guidance was speaking, the wheel changed navigation volume; after guidance it returned to media volume. These observations apply to the local builds on that vehicle. The new upstream integration has not yet been tested in a car and makes no claim of compatibility with all BYD vehicles or other head units.
+This change adapts the navigation wheel-volume approach used successfully on a 2023 TuPig Tang DM-i Champion Edition with the platform/controller-21 head unit. On that tested vehicle, the navigation audio used legacy stream 14: while guidance was speaking, the wheel changed navigation volume; after guidance it returned to media volume. These observations apply to the local builds on that vehicle. The new upstream integration has not yet been tested in a car and makes no claim of compatibility with all TuPig vehicles or other head units.
 
 Enable **Wheel volume during navigation guidance (experimental)** under Advanced, select a supported navigation audio stream, and explicitly allow the existing wheel key accessibility service through Android settings or the existing ADB authorization button. The switch defaults to off. Automatic/usage routing, a legacy-track fallback, ambiguous simultaneous navigation routes and stream 3 are passed through because a separate navigation volume stream cannot be identified safely. Changing the selected audio route requires the existing reconnect flow.
 

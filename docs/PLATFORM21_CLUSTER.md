@@ -1,8 +1,8 @@
 # Platform 21 independent cluster task (experimental)
 
 Adaptation author and source vehicle tester: 寒叙 (@Hanxu4131),
-https://github.com/Hanxu4131/BYD-CarPlay. The source adaptation was field-tested on a
-2023 BYD Tang DM-i Champion Edition / platform-controller 21. This smaller upstream
+https://github.com/Hanxu4131/TuPig-CarPlay. The source adaptation was field-tested on a
+2023 TuPig Tang DM-i Champion Edition / platform-controller 21. This smaller upstream
 integration has not been installed or tested on that vehicle; model year alone is
 not an enablement condition or a compatibility guarantee.
 

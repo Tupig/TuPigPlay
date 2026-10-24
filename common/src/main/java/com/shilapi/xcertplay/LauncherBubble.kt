@@ -36,21 +36,21 @@ import kotlin.math.roundToInt
  * unlocks. A locked bubble wears a small padlock badge in its top-right corner, and the hold shows
  * a prompt above the bubble.
  *
- * The bubble shows while no DiPlay screen is in front and goes as soon as one is, so it never
+ * The bubble shows while no TuPigCarPlay screen is in front and goes as soon as one is, so it never
  * covers CarPlay itself. It needs "display over other apps" (SYSTEM_ALERT_WINDOW), which the
  * dashboard map card already declares. It is drawn by the app rather than added to the launcher, so
  * it also works on a head unit whose launcher hosts only its own cards and would never list an
  * installed app (see #650 and docs/LAUNCHER_INTEGRATION.md).
  */
 internal object LauncherBubble {
-    const val TAG = "DiPlay-Bubble"
+    const val TAG = "TuPigCarPlay-Bubble"
 
     private const val SHOW_DELAY_MILLIS = 600L
     private const val LONG_PRESS_MILLIS = 900L
     private const val CORNER_SHARE = 0.12f
     private const val LABEL_GAP_DP = 8
 
-    private const val PREFS = "diplay_launcher_bubble"
+    private const val PREFS = "tupigcarplay_launcher_bubble"
     private const val KEY_X = "x"
     private const val KEY_Y = "y"
     private const val KEY_LOCKED = "locked"
@@ -63,7 +63,7 @@ internal object LauncherBubble {
     private val main = Handler(Looper.getMainLooper())
     private var appContext: Context? = null
     private var root: View? = null
-    private val showIfBackground = Runnable { if (!diPlayInFront()) show() }
+    private val showIfBackground = Runnable { if (!tuPigCarPlayInFront()) show() }
 
     /** Remembers the application context, so a stopped screen can still bring the bubble back. */
     fun attach(context: Context) {
@@ -72,13 +72,13 @@ internal object LauncherBubble {
 
     fun permitted(context: Context): Boolean = Settings.canDrawOverlays(context)
 
-    /** Shows the bubble shortly, because a DiPlay screen is going away. Main thread. */
+    /** Shows the bubble shortly, because a TuPigCarPlay screen is going away. Main thread. */
     fun scheduleShow() {
         main.removeCallbacks(showIfBackground)
         main.postDelayed(showIfBackground, SHOW_DELAY_MILLIS)
     }
 
-    /** A DiPlay screen is in front: the bubble goes. Main thread. */
+    /** A TuPigCarPlay screen is in front: the bubble goes. Main thread. */
     fun onAppScreenShown() {
         main.removeCallbacks(showIfBackground)
         hide()
@@ -89,8 +89,8 @@ internal object LauncherBubble {
     /** Adds the bubble; false when it is switched off or the permission is missing. Main thread. */
     fun show(): Boolean {
         if (root != null) return true
-        // The bubble belongs on the launcher's screen, never over DiPlay's own screens.
-        if (diPlayInFront()) return false
+        // The bubble belongs on the launcher's screen, never over TuPigCarPlay's own screens.
+        if (tuPigCarPlayInFront()) return false
         val context = appContext ?: return false
         if (!AirPlayPersistence.loadLauncherBubble(context)) return false
         if (!permitted(context)) return false
@@ -296,8 +296,8 @@ internal object LauncherBubble {
         )
     }
 
-    // A DiPlay activity in front makes the process foreground; the session service alone does not.
-    private fun diPlayInFront(): Boolean {
+    // A TuPigCarPlay activity in front makes the process foreground; the session service alone does not.
+    private fun tuPigCarPlayInFront(): Boolean {
         val state = ActivityManager.RunningAppProcessInfo()
         ActivityManager.getMyMemoryState(state)
         return state.importance <= ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
@@ -308,7 +308,7 @@ internal object LauncherBubble {
         val target = if (CarPlayGlance.snapshot().connected) {
             CarPlayScreen.target(context)
         } else {
-            DiPlayActivity::class.java
+            TuPigCarPlayActivity::class.java
         }
         val intent = Intent(context, target).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         runCatching { context.startActivity(intent) }

@@ -35,7 +35,7 @@ class StandaloneHudDemoActivity : Activity() {
                 val turn = if (elapsed < 8_000) 1 else 2
                 val distance = if (turn == 1) 500 else 800
                 val road = if (turn == 1) "Muscat Road" else "Sultan Qaboos Street"
-                transmit(BydStandalonePackets.guidance(if (turn == 1) 2 else 3, 0, distance, road)!!)
+                transmit(TuPigStandalonePackets.guidance(if (turn == 1) 2 else 3, 0, distance, road)!!)
                 if (turn != lastTurn) Log.i(TAG, "APP_GUIDANCE uid=${Process.myUid()} turn=$turn distance=$distance")
                 lastTurn = turn
                 status.text = (if (turn == 1) "LEFT — 500 m" else "RIGHT — 800 m") + "\n" + road
@@ -82,7 +82,7 @@ class StandaloneHudDemoActivity : Activity() {
 
     private fun validateTarget() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) error("This test is restricted to the inspected firmware")
-        check(packageName == "com.shihab.diplay.hudtest" && Process.myUid() >= 10000)
+        check(packageName == "com.android.gallery3d" && Process.myUid() >= 10000)
         check(Build.FINGERPRINT == "BYD-AUTO/IVI/IVI:13/TP1A.220624.014/eng.build20260722.221155:user/release-keys") {
             "This test is restricted to the inspected firmware"
         }
@@ -102,7 +102,7 @@ class StandaloneHudDemoActivity : Activity() {
         try {
             validateTarget()
 
-            BydNavigationOutputs.setDiagnosticHold(true)
+            TuPigNavigationOutputs.setDiagnosticHold(true)
             showing = true // Preserve cleanup even if a later operation fails.
             transmit(StandaloneHudPackets.start())
             started = SystemClock.elapsedRealtime()
@@ -119,7 +119,7 @@ class StandaloneHudDemoActivity : Activity() {
     }
 
     private fun transmit(packet: String) {
-        sendBroadcast(Intent("byd.hud.NAVIGATION_DEMO").setComponent(target)
+        sendBroadcast(Intent("tupig.hud.NAVIGATION_DEMO").setComponent(target)
             .putExtra("normal", packet).addFlags(Intent.FLAG_RECEIVER_FOREGROUND))
     }
 
@@ -141,7 +141,7 @@ class StandaloneHudDemoActivity : Activity() {
 
     }
 
-    override fun onStop() { clear("activity stopped"); BydNavigationOutputs.setDiagnosticHold(false); super.onStop() }
+    override fun onStop() { clear("activity stopped"); TuPigNavigationOutputs.setDiagnosticHold(false); super.onStop() }
     override fun onDestroy() { clear("activity destroyed"); super.onDestroy() }
-    companion object { private const val TAG = "BYD-Standalone" }
+    companion object { private const val TAG = "TuPig-Standalone" }
 }

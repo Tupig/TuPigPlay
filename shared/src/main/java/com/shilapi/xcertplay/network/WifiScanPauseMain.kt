@@ -52,7 +52,7 @@ object WifiScanPauseMain {
 
 /**
  * Switches the framework's automatic joining, and with it the periodic connectivity scans, through
- * the IWifiManager binder proxy. Methods are found by name and shape because BYD firmware renumbers
+ * the IWifiManager binder proxy. Methods are found by name and shape because TuPig firmware renumbers
  * binder transactions: `enableWifiConnectivityManager(boolean)` on Android 7.1-10,
  * `allowAutojoinGlobal(boolean)` on 11-13 and `allowAutojoinGlobal(boolean, String, Bundle)` on 14+.
  * Android 13+ also reports the current setting, so one that someone else turned off is left alone
@@ -109,7 +109,7 @@ internal class WifiAutojoinSwitch(
                 "asBinder" -> callback
                 "hashCode" -> System.identityHashCode(proxy)
                 "equals" -> proxy === args?.firstOrNull()
-                "toString" -> "DiPlayAutojoinListener"
+                "toString" -> "TuPigCarPlayAutojoinListener"
                 else -> null
             }
         }

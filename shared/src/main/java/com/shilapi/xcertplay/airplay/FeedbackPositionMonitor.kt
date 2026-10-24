@@ -1,7 +1,7 @@
 package com.shilapi.xcertplay.airplay
 
 /**
- * Compares the playback position DiPlay reports in /feedback with the newest RTP sample it has
+ * Compares the playback position TuPigCarPlay reports in /feedback with the newest RTP sample it has
  * received (#620). The reported position is extrapolated from the wall clock, so it keeps moving
  * while a stream starves and can run past the audio that actually arrived. Whether iOS stops a
  * stream because of that is unknown; these lines let a report tell it apart from packet loss.

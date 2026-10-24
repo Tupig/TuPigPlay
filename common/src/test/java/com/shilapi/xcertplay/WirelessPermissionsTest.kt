@@ -45,9 +45,9 @@ class WirelessPermissionsTest {
     }
 
     @Test fun aRefusalNamesOnlyTheAccessThatIsMissing() {
-        val location = R.string.allow_precise_location_for_diplay_in_the_head_unit_s_app_p
-        val nearby = R.string.allow_nearby_devices_for_diplay_in_the_head_unit_s_app_per
-        val checkPermissions = R.string.could_not_start_carplay_return_to_diplay_and_check_app_per
+        val location = R.string.allow_precise_location_for_tupigcarplay_in_the_head_unit_s_app_p
+        val nearby = R.string.allow_nearby_devices_for_tupigcarplay_in_the_head_unit_s_app_per
+        val checkPermissions = R.string.could_not_start_carplay_return_to_tupigcarplay_and_check_app_per
         assertEquals(location, WirelessPermissions.refusalMessage(listOf(Manifest.permission.ACCESS_FINE_LOCATION)))
         // Android 12 asks for both; Location is named first, Nearby devices once Location is allowed.
         assertEquals(location, WirelessPermissions.refusalMessage(

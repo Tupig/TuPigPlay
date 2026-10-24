@@ -1,7 +1,7 @@
 package com.shilapi.xcertplay.airplay
 
 /**
- * Placement and size of DiPlay's optional speedometer drawn over the dashboard map.
+ * Placement and size of TuPigCarPlay's optional speedometer drawn over the dashboard map.
  *
  * Coordinates are percentages of the full cluster panel, matching the custom turn-card
  * placement model so both overlays can be positioned independently.

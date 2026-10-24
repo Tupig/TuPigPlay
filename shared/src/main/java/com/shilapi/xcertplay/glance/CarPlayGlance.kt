@@ -1,6 +1,6 @@
 package com.shilapi.xcertplay.glance
 
-import com.shilapi.xcertplay.hud.BydHudRouteState
+import com.shilapi.xcertplay.hud.TuPigHudRouteState
 import com.shilapi.xcertplay.hud.ClusterSongState
 import com.shilapi.xcertplay.iap2.message.Iap2LaneGuidance
 import com.shilapi.xcertplay.iap2.message.LaneGuidanceLane
@@ -9,7 +9,7 @@ import com.shilapi.xcertplay.iap2.wire.Iap2Frame
 /**
  * What CarPlay is doing, at a glance, for widgets and other screens outside CarPlay: the next
  * maneuver from iAP2 route guidance (0x5201/0x5202) and the song from NowPlayingUpdate (0x5001).
- * Fed by every CarPlay session, whatever the BYD output settings.
+ * Fed by every CarPlay session, whatever the TuPig output settings.
  */
 object CarPlayGlance {
     /** One state of the glance; [maneuverType] is Apple's RouteGuidanceManeuverType, null without a route. */
@@ -27,9 +27,9 @@ object CarPlayGlance {
     )
 
     private const val LANE_GUIDANCE_UPDATE = 0x5204
-    private const val TAG = "DiPlay-Lane"
+    private const val TAG = "TuPigCarPlay-Lane"
 
-    private val route = BydHudRouteState()
+    private val route = TuPigHudRouteState()
     private val song = ClusterSongState()
     private var connected = false
     private var last = Snapshot()
@@ -64,7 +64,7 @@ object CarPlayGlance {
         }
         val changed = synchronized(this) {
             when (frame.messageId) {
-                BydHudRouteState.ROUTE_GUIDANCE_UPDATE, BydHudRouteState.ROUTE_GUIDANCE_MANEUVER_UPDATE ->
+                TuPigHudRouteState.ROUTE_GUIDANCE_UPDATE, TuPigHudRouteState.ROUTE_GUIDANCE_MANEUVER_UPDATE ->
                     runCatching { route.accept(frame.messageId, frame.payload) }
                 ClusterSongState.NOW_PLAYING_UPDATE -> runCatching { song.accept(frame) }
                 else -> return

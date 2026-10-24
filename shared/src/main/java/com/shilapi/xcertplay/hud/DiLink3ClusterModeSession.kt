@@ -10,31 +10,31 @@ internal class DiLink3ClusterModeSession(
 ) {
     private var owned = false
     private var restorePending = false
-    private var applied: BydDiLink3ClusterMode.Mode? = null
+    private var applied: TuPigDiLink3ClusterMode.Mode? = null
 
     /** A new process must restore an interrupted output before starting another one. */
     fun recoverInterrupted(): Boolean =
         if (restorePending || (!owned && loadRecovery())) restoreStock() else true
 
-    fun apply(mode: BydDiLink3ClusterMode.Mode?): Boolean {
+    fun apply(mode: TuPigDiLink3ClusterMode.Mode?): Boolean {
         if (!recoverInterrupted()) return false
-        if (mode == null || mode == BydDiLink3ClusterMode.Mode.STOCK) return restoreStock()
+        if (mode == null || mode == TuPigDiLink3ClusterMode.Mode.STOCK) return restoreStock()
         if (applied == mode && loadRecovery()) return true
         val entry = mode.entryCommand
         if (entry != null && !projectionStillWanted()) return false
         if (!saveRecovery(true)) return false
         owned = true // A missing reply can still mean the command changed the car.
         if (entry == null) {
-            val accepted = BydDiLink3ClusterMode.accepted(run(mode.command))
+            val accepted = TuPigDiLink3ClusterMode.accepted(run(mode.command))
             applied = if (accepted) mode else null
             return accepted
         }
         var interrupted = false
         val accepted = try {
-            if (!BydDiLink3ClusterMode.accepted(run(entry))) false
+            if (!TuPigDiLink3ClusterMode.accepted(run(entry))) false
             else {
                 projectionStepDelay()
-                projectionStillWanted() && BydDiLink3ClusterMode.accepted(run(mode.command))
+                projectionStillWanted() && TuPigDiLink3ClusterMode.accepted(run(mode.command))
             }
         } catch (error: Exception) {
             interrupted = error is InterruptedException
@@ -54,7 +54,7 @@ internal class DiLink3ClusterModeSession(
     /** Failure of any preparation step must compensate the earlier full-screen projection. */
     fun prepareDisplay(
         displayPresent: () -> Boolean,
-        currentMode: () -> BydDiLink3ClusterMode.Mode?,
+        currentMode: () -> TuPigDiLink3ClusterMode.Mode?,
         stillWanted: () -> Boolean,
         stepDelay: () -> Unit,
     ): Boolean {
@@ -67,8 +67,8 @@ internal class DiLink3ClusterModeSession(
         var compensated = false
         try {
             var completedSteps = 0
-            for (command in BydDiLink3ClusterMode.CREATE_DISPLAY.take(2)) {
-                if (!stillWanted() || !BydDiLink3ClusterMode.accepted(run(command))) {
+            for (command in TuPigDiLink3ClusterMode.CREATE_DISPLAY.take(2)) {
+                if (!stillWanted() || !TuPigDiLink3ClusterMode.accepted(run(command))) {
                     break
                 }
                 stepDelay()
@@ -96,7 +96,7 @@ internal class DiLink3ClusterModeSession(
     private fun restoreStock(): Boolean {
         if (!owned && !loadRecovery()) return true
         restorePending = true
-        if (!BydDiLink3ClusterMode.accepted(run(BydDiLink3ClusterMode.Mode.STOCK.command))) return false
+        if (!TuPigDiLink3ClusterMode.accepted(run(TuPigDiLink3ClusterMode.Mode.STOCK.command))) return false
         if (!saveRecovery(false)) return false
         owned = false
         restorePending = false

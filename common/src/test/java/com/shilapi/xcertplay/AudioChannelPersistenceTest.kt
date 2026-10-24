@@ -114,7 +114,7 @@ class AudioChannelPersistenceTest {
     }
 
     @Test fun onlyAFirstSetupAppliesTheGenerationDefault() {
-        val guide = context.getSharedPreferences("diplay", Context.MODE_PRIVATE)
+        val guide = context.getSharedPreferences("tupigcarplay", Context.MODE_PRIVATE)
         guide.edit().clear().commit()
         // Set up before the guide existed: a saved iPhone and automatic routing stay as they are.
         assertFalse(SetupGuide.applyFirstSetupDefaults(context, DiLinkGeneration.DILINK_4, phoneChosen = true))

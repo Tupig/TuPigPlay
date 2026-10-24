@@ -16,7 +16,7 @@ Music on cluster (experimental). The feature defaults to off.
   and navigation clear. The card stays within the projection surface, but OEM
   overlays/cropping may hide it on a particular firmware.
 
-The card reuses iPhone iAP2 Now Playing metadata/artwork already received by DiPlay.
+The card reuses iPhone iAP2 Now Playing metadata/artwork already received by TuPigCarPlay.
 No new vehicle writes or Ultra negotiation are added. Pending artwork uses a music
 symbol rather than knowingly showing the previous track's cover. No title/artist
 or session disconnect clears the card. Reopening a view does not replay an expired
@@ -38,7 +38,7 @@ launcher card and does not enable projection while the map feature is off.
 4. Permanent: confirm the cover stays through pause, the caption disappears after
    8 seconds, and both update when tracks change.
 5. Adjust position/size while parked. Disable the card: it should disappear at once.
-6. Disconnect/reconnect iPhone and reopen DiPlay: ensure no previous-session song or
+6. Disconnect/reconnect iPhone and reopen TuPigCarPlay: ensure no previous-session song or
    artwork persists. Check navigation and speed overlays still operate normally.
 
 The contributor reported the first rectangular card was visible on their Song Pro,

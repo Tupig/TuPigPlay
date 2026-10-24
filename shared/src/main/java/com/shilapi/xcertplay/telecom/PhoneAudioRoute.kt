@@ -3,12 +3,12 @@ package com.shilapi.xcertplay.telecom
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.shilapi.xcertplay.hud.BydOutputSettings
+import com.shilapi.xcertplay.hud.TuPigOutputSettings
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
-/** Why DiPlay wants the car in its phone audio state. */
+/** Why TuPigCarPlay wants the car in its phone audio state. */
 enum class PhoneAudioReason {
     /** A call on the iPhone is ringing, dialing or connected over CarPlay. */
     CARPLAY_CALL,
@@ -40,7 +40,7 @@ internal interface RouteScheduler {
  * shortly after the last reason goes away. All backend work runs in order on the scheduler.
  *
  * A refused call is not retried at once: [carPlayCallsUseCarAudio] turns false for [failureBackoffMillis], so
- * calls in that window fall back to DiPlay's own echo canceller instead of having neither.
+ * calls in that window fall back to TuPigCarPlay's own echo canceller instead of having neither.
  */
 internal class PhoneAudioRouteController(
     private val backend: PhoneAudioBackend,
@@ -64,7 +64,7 @@ internal class PhoneAudioRouteController(
     /** A setting changed: start or end the call to match. */
     fun settingsChanged() = evaluate()
 
-    /** True while the CarPlay call's echo is left to the car, so DiPlay's own canceller must stay out of it. */
+    /** True while the CarPlay call's echo is left to the car, so TuPigCarPlay's own canceller must stay out of it. */
     fun carPlayCallsUseCarAudio(): Boolean = enabled(PhoneAudioReason.CARPLAY_CALL) && !failedRecently()
 
     private fun failedRecently(): Boolean = failedAt != NEVER && now() - failedAt < failureBackoffMillis
@@ -101,7 +101,7 @@ internal class PhoneAudioRouteController(
     }
 
     companion object {
-        private const val TAG = "DiPlay-PhoneAudio"
+        private const val TAG = "TuPigCarPlay-PhoneAudio"
         private const val NEVER = Long.MIN_VALUE
 
         /** Bridges the gap between two calls, or a call and call waiting, without leaving and re-entering the state. */
@@ -113,18 +113,18 @@ internal class PhoneAudioRouteController(
 /**
  * Puts the car's audio into its phone state by holding a self-managed Telecom call.
  *
- * On a BYD DiLink 3 head unit, Telecom tells the car's audio layer about any call, and the voice processing
+ * On a TuPig DiLink 3 head unit, Telecom tells the car's audio layer about any call, and the voice processing
  * the car applies to a phone call, echo cancellation included, only runs in that state. A third-party call
  * played as media never reaches it, so the far end hears its own voice back. Any app may register a
- * self-managed call (the normal permission MANAGE_OWN_CALLS), so DiPlay holds one for as long as a call
- * needs the car's audio. Both uses are off by default, see [BydOutputSettings.phoneAudioRoute] and
- * [BydOutputSettings.phoneAudioRouteApps].
+ * self-managed call (the normal permission MANAGE_OWN_CALLS), so TuPigCarPlay holds one for as long as a call
+ * needs the car's audio. Both uses are off by default, see [TuPigOutputSettings.phoneAudioRoute] and
+ * [TuPigOutputSettings.phoneAudioRouteApps].
  */
 object PhoneAudioRoute {
-    private const val TAG = "DiPlay-PhoneAudio"
+    private const val TAG = "TuPigCarPlay-PhoneAudio"
 
     private val executor: ScheduledExecutorService by lazy {
-        Executors.newSingleThreadScheduledExecutor { Thread(it, "diplay-phone-audio").apply { isDaemon = true } }
+        Executors.newSingleThreadScheduledExecutor { Thread(it, "tupigcarplay-phone-audio").apply { isDaemon = true } }
     }
     @Volatile private var controller: PhoneAudioRouteController? = null
     private var watcher: VoipCallWatcher? = null // guarded by this
@@ -175,23 +175,23 @@ object PhoneAudioRoute {
     }
 
     /**
-     * True when the car's phone audio state handles the CarPlay call's echo, so DiPlay must not also
+     * True when the car's phone audio state handles the CarPlay call's echo, so TuPigCarPlay must not also
      * run its own canceller or the platform effects on the call microphone.
      */
     fun carPlayCallsUseCarAudio(): Boolean = controller?.carPlayCallsUseCarAudio() == true
 
-    /** DiPlay's own call microphone shows up in the recording list; it is not another app's call. */
+    /** TuPigCarPlay's own call microphone shows up in the recording list; it is not another app's call. */
     internal fun ownCarPlayCallActive(): Boolean = carPlayCallActive
 
     private fun enabledFor(context: Context, reason: PhoneAudioReason): Boolean = when (reason) {
-        PhoneAudioReason.CARPLAY_CALL -> BydOutputSettings.phoneAudioRoute(context)
-        PhoneAudioReason.VOIP_APP -> BydOutputSettings.phoneAudioRouteApps(context)
+        PhoneAudioReason.CARPLAY_CALL -> TuPigOutputSettings.phoneAudioRoute(context)
+        PhoneAudioReason.VOIP_APP -> TuPigOutputSettings.phoneAudioRouteApps(context)
     }
 
     @Synchronized
     private fun syncWatcher(context: Context) {
         // The recording and playback callbacks the watcher relies on arrive with Android 8.
-        val wantWatcher = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && BydOutputSettings.phoneAudioRouteApps(context)
+        val wantWatcher = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && TuPigOutputSettings.phoneAudioRouteApps(context)
         if (wantWatcher && watcher == null) {
             watcher = VoipCallWatcher(context) { active -> voipApp(active) }.also { it.start() }
             Log.i(TAG, "watching for voice-over-IP calls in other apps")

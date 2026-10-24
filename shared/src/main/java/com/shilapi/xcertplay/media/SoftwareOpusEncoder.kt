@@ -42,7 +42,7 @@ internal class SoftwareOpusEncoder(
             failed(encoder, error)
         } catch (error: AssertionError) {
             // Concentus checks the reference library's debug assertions in every build and throws an Error,
-            // which ended the microphone thread and DiPlay with it (#865). A failed check costs this frame only.
+            // which ended the microphone thread and TuPigCarPlay with it (#865). A failed check costs this frame only.
             failed(encoder, error)
         }
     }

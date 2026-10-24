@@ -9,7 +9,7 @@ import java.util.concurrent.TimeoutException
  * tethering call run by the shell ([CarHotspotStartMain]); never configures a replacement AP.
  */
 internal object CarHotspotAdbFallback {
-    private const val EXIT = "DIPLAY_HOTSPOT_EXIT:"
+    private const val EXIT = "TUPIGCARPLAY_HOTSPOT_EXIT:"
 
     fun start(deadline: Long, cancelled: () -> Boolean, state: () -> Boolean?,
         shell: (String, Int) -> String?, log: (String) -> Unit, helper: String? = null): Boolean {
@@ -113,7 +113,7 @@ internal object CarHotspotAdbFallback {
     internal fun bounded(deadline: Long, cancelled: () -> Boolean, abort: () -> Unit, action: () -> Boolean): Boolean {
         if (cancelled() || Thread.currentThread().isInterrupted || System.nanoTime() >= deadline) return false
         val task = FutureTask(action)
-        Thread(task, "diplay-hotspot-adb").apply { isDaemon = true; start() }
+        Thread(task, "tupigcarplay-hotspot-adb").apply { isDaemon = true; start() }
         try {
             while (!cancelled() && !Thread.currentThread().isInterrupted) {
                 val remaining = deadline - System.nanoTime()

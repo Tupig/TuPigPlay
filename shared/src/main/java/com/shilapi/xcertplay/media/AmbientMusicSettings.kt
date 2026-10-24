@@ -9,7 +9,7 @@ object AmbientMusicSettings {
         val speed: AmbientColorSpeed = AmbientColorSpeed.STANDARD, val selectedColors: List<Int> = listOf(1), val colorCycle: Boolean = false, val color: Int = 1, val brightness: Int = 0, val area: Int = 3,
         val colorSource: AmbientColorSource = AmbientColorSource.SELECTED,
         val idle: AmbientIdleBehavior = AmbientIdleBehavior.STEADY,
-        // The car's own music rhythm while CarPlay music plays; DiPlay then leaves the lamps to the car.
+        // The car's own music rhythm while CarPlay music plays; TuPigCarPlay then leaves the lamps to the car.
         val carRhythm: Boolean = false,
         // Sends the played music's spectrum to the car for that rhythm, where the car makes none of its own.
         val carRhythmFeed: Boolean = false)

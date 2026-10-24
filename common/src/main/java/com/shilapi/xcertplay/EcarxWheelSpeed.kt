@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
  * over the true speed.
  */
 internal object EcarxWheelSpeed : VehicleSpeedSource {
-    private const val TAG = "DiPlay-EcarxSpeed"
+    private const val TAG = "TuPigCarPlay-EcarxSpeed"
     private const val CAR = "com.ecarx.xui.adaptapi.car.Car"
     private const val ICAR = "com.ecarx.xui.adaptapi.car.ICar"
     private const val SENSOR = "com.ecarx.xui.adaptapi.car.sensor.ISensor"
@@ -73,7 +73,7 @@ internal object EcarxWheelSpeed : VehicleSpeedSource {
         reads = 0
         firstSampleLogged = false
         executor = Executors.newSingleThreadScheduledExecutor { runnable ->
-            Thread(runnable, "diplay-ecarx-speed").apply { isDaemon = true }
+            Thread(runnable, "tupigcarplay-ecarx-speed").apply { isDaemon = true }
         }.also { it.scheduleWithFixedDelay(::poll, 0, READ_MILLIS, TimeUnit.MILLISECONDS) }
         Log.i(TAG, "wheel speed started")
     }
@@ -138,7 +138,7 @@ internal object EcarxWheelSpeed : VehicleSpeedSource {
         Log.i(TAG, "ECARX speed sensor $status")
         manager
     }.onSuccess { sensor = it }.onFailure {
-        // The ECARX framework can come up after DiPlay at boot, so this retries; say it once.
+        // The ECARX framework can come up after TuPigCarPlay at boot, so this retries; say it once.
         if (!failureLogged) Log.w(TAG, "ECARX sensors unavailable, retrying", it)
         failureLogged = true
     }.getOrNull()

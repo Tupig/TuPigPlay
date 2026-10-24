@@ -79,7 +79,7 @@ internal object ConnectionFailureGuidance {
     private fun network(mode: WirelessHotspotMode): Int = when (mode) {
         WirelessHotspotMode.MANUAL -> R.string.connection_help_hotspot
         WirelessHotspotMode.EXISTING_WIFI -> R.string.connection_help_existing_wifi
-        WirelessHotspotMode.WIFI_P2P, WirelessHotspotMode.LOCAL_ONLY_HOTSPOT -> R.string.connection_help_wifi_direct
+        WirelessHotspotMode.WIFI_P2P -> R.string.connection_help_wifi_direct
     }
 
     /** Only the car hotspot is a network the driver joins on the iPhone. */

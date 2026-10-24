@@ -30,23 +30,23 @@ import org.robolectric.util.ReflectionHelpers
 import java.lang.ref.WeakReference
 
 /**
- * "Keep CarPlay in the launcher card" (#463, #406, #1003): launchers that show DiPlay's task in a card or a
+ * "Keep CarPlay in the launcher card" (#463, #406, #1003): launchers that show TuPigCarPlay's task in a card or a
  * picture-in-picture window need CarPlay in that task, as up to 0.2.11, not in its own `.carplay` task.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [29])
 class CarPlayScreenTest {
     private val app get() = RuntimeEnvironment.getApplication()
-    private var settings: ActivityController<DiPlayActivity>? = null
+    private var settings: ActivityController<TuPigCarPlayActivity>? = null
     private val screens = mutableListOf<ActivityController<out CarPlayHostActivity>>()
     private var bootstrapReady = false
 
     @Before fun setUp() {
         // The CarPlay screen must start without the private MFi identity used by real cars.
-        bootstrapReady = ReflectionHelpers.getField(DiPlayBootstrap, "ready")
-        ReflectionHelpers.setField(DiPlayBootstrap, "ready", true)
+        bootstrapReady = ReflectionHelpers.getField(TuPigCarPlayBootstrap, "ready")
+        ReflectionHelpers.setField(TuPigCarPlayBootstrap, "ready", true)
         app.getSharedPreferences("xcertplay_airplay", Context.MODE_PRIVATE).edit().clear().commit()
-        app.getSharedPreferences("diplay", Context.MODE_PRIVATE).edit().clear().commit()
+        app.getSharedPreferences("tupigcarplay", Context.MODE_PRIVATE).edit().clear().commit()
         CarPlayBackgroundSession.clear()
         ReflectionHelpers.setField(CarPlayScreen, "open", null)
         AirPlayPersistence.overlaySettingsListener = null
@@ -58,7 +58,7 @@ class CarPlayScreenTest {
         CarPlayBackgroundSession.clear()
         ReflectionHelpers.setField(CarPlayScreen, "open", null)
         AirPlayPersistence.overlaySettingsListener = null
-        ReflectionHelpers.setField(DiPlayBootstrap, "ready", bootstrapReady)
+        ReflectionHelpers.setField(TuPigCarPlayBootstrap, "ready", bootstrapReady)
     }
 
     @Test fun theSettingIsOffByDefaultAndCarPlayKeepsItsOwnTask() {
@@ -67,13 +67,13 @@ class CarPlayScreenTest {
         assertEquals(CarPlayHostActivity::class.java.name, CarPlayScreen.intent(app).component?.className)
     }
 
-    @Test fun onlyTheNewDeclarationJoinsDiPlaysTask() {
+    @Test fun onlyTheNewDeclarationJoinsTuPigCarPlaysTask() {
         val own = activityInfo(CarPlayHostActivity::class.java)
         val shared = activityInfo(SameTaskCarPlayHostActivity::class.java)
 
         assertEquals("${app.packageName}.carplay", own.taskAffinity)
         assertEquals(app.packageName, shared.taskAffinity)
-        assertEquals(activityInfo(DiPlayActivity::class.java).taskAffinity, shared.taskAffinity)
+        assertEquals(activityInfo(TuPigCarPlayActivity::class.java).taskAffinity, shared.taskAffinity)
         assertEquals(ActivityInfo.LAUNCH_SINGLE_TASK, own.launchMode)
         assertEquals(ActivityInfo.LAUNCH_SINGLE_TASK, shared.launchMode)
         // Only the original takes USB attachments and outside starts; those are forwarded when needed.
@@ -85,13 +85,13 @@ class CarPlayScreenTest {
         assertEquals(own.softInputMode, shared.softInputMode)
     }
 
-    @Test fun withTheSettingOnDiPlayOpensCarPlayInDiPlaysTask() {
+    @Test fun withTheSettingOnTuPigCarPlayOpensCarPlayInTuPigCarPlaysTask() {
         AirPlayPersistence.saveCarPlaySameTask(app, true)
         assertEquals(SameTaskCarPlayHostActivity::class.java, CarPlayScreen.target(app))
 
         // The launcher icon while a session runs opens CarPlay, the path a card takes after a restart.
         ReflectionHelpers.setField(CarPlayBackgroundSession, "stopAction", { done: () -> Unit -> done() })
-        settings = Robolectric.buildActivity(DiPlayActivity::class.java,
+        settings = Robolectric.buildActivity(TuPigCarPlayActivity::class.java,
             Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)).create()
         val started = shadowOf(settings!!.get()).nextStartedActivity
 
@@ -165,8 +165,8 @@ class CarPlayScreenTest {
     @Test fun theSwitchIsInAdvancedExperimentalDisplayAndClosesTheOpenScreen() {
         val unopened = Robolectric.buildActivity(CarPlayHostActivity::class.java).get()
         ReflectionHelpers.setField(CarPlayScreen, "open", WeakReference<CarPlayHostActivity>(unopened))
-        settings = Robolectric.buildActivity(DiPlayActivity::class.java,
-            Intent(app, DiPlayActivity::class.java).putExtra("page", "settings")).setup()
+        settings = Robolectric.buildActivity(TuPigCarPlayActivity::class.java,
+            Intent(app, TuPigCarPlayActivity::class.java).putExtra("page", "settings")).setup()
         val activity = settings!!.get()
         descendants(activity.window.decorView)
             .single { it.contentDescription == activity.getString(R.string.settings_open_category,

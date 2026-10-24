@@ -12,11 +12,11 @@ class ManualHotspotProvisioningTest {
     private val passphraseAlphabet = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789"
 
     @Test
-    fun ssidFollowsTheDiplayXXXXShape() {
+    fun ssidFollowsTheTuPigCarPlayXXXXShape() {
         val generated = ManualHotspotProvisioning.generate(Random(1))
-        assertTrue(generated.ssid.startsWith("DiPlay-"))
-        assertEquals("DiPlay-XXXX".length, generated.ssid.length)
-        assertTrue(generated.ssid.removePrefix("DiPlay-").all { it in ssidAlphabet })
+        assertTrue(generated.ssid.startsWith("TuPigCarPlay-"))
+        assertEquals("TuPigCarPlay-XXXX".length, generated.ssid.length)
+        assertTrue(generated.ssid.removePrefix("TuPigCarPlay-").all { it in ssidAlphabet })
     }
 
     @Test

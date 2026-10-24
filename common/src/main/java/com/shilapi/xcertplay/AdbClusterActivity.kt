@@ -115,7 +115,7 @@ class AdbClusterActivity : Activity() {
     private fun confirmDisplay(token: String?, display: Int) {
         if (isFinishing || isDestroyed || !ClusterActivityOutput.confirm(this, token, display)) {
             if (token != null && !ClusterActivityOutput.hasConfirmedRoute())
-                com.shilapi.xcertplay.hud.BydOemClusterNavi.release(this, token)
+                com.shilapi.xcertplay.hud.TuPigOemClusterNavi.release(this, token)
             finish(); return
         }
         routeStatus = getString(R.string.adb_cluster_routed)
@@ -131,7 +131,7 @@ class AdbClusterActivity : Activity() {
         videoTexture = null
         if (ClusterActivityOutput.activity.get() === this) {
             intent.getStringExtra("cluster_launch_token")?.let {
-                com.shilapi.xcertplay.hud.BydOemClusterNavi.release(this, it)
+                com.shilapi.xcertplay.hud.TuPigOemClusterNavi.release(this, it)
             }
             ClusterActivityOutput.activity.clear()
             ClusterActivityOutput.launchPending = false
@@ -285,7 +285,7 @@ internal object ClusterActivityOutput {
             }
             main.post {
                 completeLaunch(token, generation == epoch, result.success) {
-                    com.shilapi.xcertplay.hud.BydOemClusterNavi.release(app, token)
+                    com.shilapi.xcertplay.hud.TuPigOemClusterNavi.release(app, token)
                 }
             }
         }, "adb-cluster-launch").start()
@@ -340,7 +340,7 @@ internal object ClusterActivityOutput {
         expectedDisplay = -1
         launchHost.clear()
         if (releaseContext != null)
-            com.shilapi.xcertplay.hud.BydOemClusterNavi.release(releaseContext, releaseLease)
+            com.shilapi.xcertplay.hud.TuPigOemClusterNavi.release(releaseContext, releaseLease)
         main.removeCallbacks(retryTick)
         onSurface?.invoke(null)
         onSurface = null

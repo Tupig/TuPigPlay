@@ -28,11 +28,11 @@ import org.robolectric.util.ReflectionHelpers
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [25, 29], qualifiers = "en", manifest = Config.NONE)
 class AmbientSettingsRedesignTest {
-    private lateinit var activity: DiPlayActivity
+    private lateinit var activity: TuPigCarPlayActivity
 
     @Before fun setUp() {
         RuntimeEnvironment.getApplication().getSharedPreferences("ambient_music", 0).edit().clear().commit()
-        activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         activity.ambientSupportCheck = { CompletableFuture.completedFuture(true) }
     }

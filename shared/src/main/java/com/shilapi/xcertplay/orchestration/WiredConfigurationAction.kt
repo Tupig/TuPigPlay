@@ -5,7 +5,7 @@ package com.shilapi.xcertplay.orchestration
  *
  * iOS 17 and later offer USBMUX and NCM outside CarPlay mode too: an iPhone 12 Pro Max on iOS 26
  * listed five configurations, and the fifth had both but no Apple Ethernet interface (#634).
- * DiPlay used it as it was. iAP2 and StartSession succeeded, but the iPhone never opened AirPlay.
+ * TuPigCarPlay used it as it was. iAP2 and StartSession succeeded, but the iPhone never opened AirPlay.
  * After one CarPlay mode request the same iPhone re-enumerated with configuration 6 and worked.
  * So a configuration without Apple Ethernet is used only after the mode request was tried.
  */
@@ -28,7 +28,7 @@ internal enum class WiredConfigurationAction(val diagnostic: String) {
             maximumTransitions: Int,
             sessionAlreadyStarted: Boolean = false,
         ) = when {
-            // The mode a session DiPlay ended itself left behind takes no new session (#335; WiredSessionMemory).
+            // The mode a session TuPigCarPlay ended itself left behind takes no new session (#335; WiredSessionMemory).
             found && carPlayMode && sessionAlreadyStarted && transitionsTried == 0 -> REQUEST_TRANSITION
             found && carPlayMode -> USE
             found && transitionsTried > 0 -> USE_WITHOUT_APPLE_ETHERNET

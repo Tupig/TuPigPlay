@@ -21,7 +21,7 @@ data class CarHotspotSavedCredentials(
  * getWifiApConfiguration is hidden, but its only service-side gate is ACCESS_WIFI_STATE and the
  * stored WifiConfiguration still carries the raw SSID and passphrase. Android 11+ reads through the
  * shell helper, because the service enforces the signature NETWORK_SETTINGS permission that the
- * shell holds. WPA3 configurations are read as-is; DiPlay publishes them unchanged.
+ * shell holds. WPA3 configurations are read as-is; TuPigCarPlay publishes them unchanged.
  */
 object CarHotspotConfigRead {
     enum class Reason { UNSUPPORTED_SDK, ADB_UNAVAILABLE, UNAVAILABLE }
@@ -33,7 +33,7 @@ object CarHotspotConfigRead {
     )
 
     /**
-     * [mayAsk]: an unknown DiPlay key is offered to adbd, which shows the car's approval prompt, and
+     * [mayAsk]: an unknown TuPigCarPlay key is offered to adbd, which shows the car's approval prompt, and
      * the read waits for the driver's answer. Only for a read the driver started themselves.
      */
     fun read(context: Context, sdk: Int = Build.VERSION.SDK_INT, mayAsk: Boolean = false, log: (String) -> Unit): Outcome {

@@ -4,8 +4,8 @@ import com.shilapi.xcertplay.transport.Iap2WiredControlClient.StartAgain
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-// #889, #610: an iPhone that still held an ended DiPlay's session opened the USB network 15–26 s after the
-// start request, after it had stopped trying DiPlay's AirPlay listener.
+// #889, #610: an iPhone that still held an ended TuPigCarPlay's session opened the USB network 15–26 s after the
+// start request, after it had stopped trying TuPigCarPlay's AirPlay listener.
 class WiredStartAgainTest {
     private val second = 1_000_000_000L
 

@@ -29,8 +29,8 @@ import org.robolectric.util.ReflectionHelpers
 @Config(sdk = [28, 33], qualifiers = "en-w600dp-h700dp", manifest = Config.NONE)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ClusterSettingsConsentTest {
-    private lateinit var screen: DiPlayActivity
-    private lateinit var activity: ActivityController<DiPlayActivity>
+    private lateinit var screen: TuPigCarPlayActivity
+    private lateinit var activity: ActivityController<TuPigCarPlayActivity>
     private lateinit var session: CarPlayController
     private val routeOwner = Any()
     private val events = mutableListOf<String>()
@@ -38,13 +38,13 @@ class ClusterSettingsConsentTest {
     @Before fun setUp() {
         val app = RuntimeEnvironment.getApplication()
         app.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
-        app.getSharedPreferences("diplay", 0).edit().clear().commit()
+        app.getSharedPreferences("tupigcarplay", 0).edit().clear().commit()
         // These existing sessions have already answered the optional notification prompt.
-        app.getSharedPreferences("diplay", 0).edit().putBoolean("notification_asked", true).commit()
+        app.getSharedPreferences("tupigcarplay", 0).edit().putBoolean("notification_asked", true).commit()
         PendingReconnect.clear()
         CarPlayBackgroundSession.clear()
         ClusterActivityOutput.stopForSettings()
-        activity = Robolectric.buildActivity(DiPlayActivity::class.java)
+        activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java)
         screen = activity.get()
         screen.setTheme(android.R.style.Theme_Material_NoActionBar)
         activity.setup().visible()
@@ -74,7 +74,7 @@ class ClusterSettingsConsentTest {
         activity.pause().stop().destroy()
         val app = RuntimeEnvironment.getApplication()
         app.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
-        app.getSharedPreferences("diplay", 0).edit().clear().commit()
+        app.getSharedPreferences("tupigcarplay", 0).edit().clear().commit()
     }
 
     @Test fun cancellingAdbRoutingKeepsTheSessionAndItsClusterLease() {

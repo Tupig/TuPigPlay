@@ -79,7 +79,8 @@ connecting to a local MFi chip for authentication.
   Gradle toolchain.
 - Android SDK Platform 37.
 - Android 9 (API 28) or newer.
-  On Android 9, Wi-Fi P2P 5 GHz mode is unavailable and LocalOnlyHotspot is used instead.
+  On Android 9, Wi-Fi P2P 5 GHz mode is unavailable; use the built-in car hotspot
+  (Manual) or Existing Wi-Fi instead.
 - Android NDK `28.2.13676358`.
 - A physical USB Host/OTG Android device and MFi hardware are required for
   hardware validation.
@@ -114,4 +115,4 @@ providing important reference for the BAA authentication in this project.
 
 ## License
 
-Licensed under the [GNU General Public License v3.0](LICENSE).
+Licensed under the [GNU General Public License v3.0](../LICENSE).

@@ -1,7 +1,7 @@
 package com.shilapi.xcertplay.settings
 
 import android.content.Context
-import com.shilapi.xcertplay.DiPlayPalette
+import com.shilapi.xcertplay.TuPigCarPlayPalette
 
 class SettingsTheme private constructor(
     val isOverlay: Boolean,
@@ -20,11 +20,11 @@ class SettingsTheme private constructor(
 
     companion object {
         /** Dark aliases keep existing overlay callers source-compatible until Phase 4. */
-        @JvmField val CARD = card(DiPlayPalette.DARK)
-        @JvmField val OVERLAY = overlay(DiPlayPalette.DARK)
+        @JvmField val CARD = card(TuPigCarPlayPalette.DARK)
+        @JvmField val OVERLAY = overlay(TuPigCarPlayPalette.DARK)
         @JvmField val entries = listOf(CARD, OVERLAY)
 
-        internal fun card(palette: DiPlayPalette) = SettingsTheme(
+        internal fun card(palette: TuPigCarPlayPalette) = SettingsTheme(
             isOverlay = false,
             textPrimary = palette.primaryText,
             textSecondary = palette.secondaryText,
@@ -36,7 +36,7 @@ class SettingsTheme private constructor(
             focusRing = palette.focusRing,
         )
 
-        internal fun overlay(palette: DiPlayPalette) = SettingsTheme(
+        internal fun overlay(palette: TuPigCarPlayPalette) = SettingsTheme(
             isOverlay = true,
             textPrimary = palette.overlayPrimaryText,
             textSecondary = palette.overlaySecondaryText,

@@ -30,7 +30,7 @@ class SoftwareOpusEncoderTest {
         assertTrue(encoder.encode(toneFrame(0)).isEmpty())
     }
 
-    // #865: a failed Concentus check is an AssertionError, which ended the microphone thread and DiPlay.
+    // #865: a failed Concentus check is an AssertionError, which ended the microphone thread and TuPigCarPlay.
     @Test
     fun aFailedEncoderCheckCostsOneFrameAndTheNextStartsClean() {
         val errors = mutableListOf<Throwable>()

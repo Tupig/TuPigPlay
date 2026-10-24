@@ -24,10 +24,10 @@ class AppDialogsTest {
 
     @Test fun dialogThemesUseTheResolvedAppAppearance() {
         AirPlayPersistence.saveAppAppearance(context, AppAppearance.DARK)
-        assertDialogColors(context.appDialogContext(), DiPlayPalette.DARK)
+        assertDialogColors(context.appDialogContext(), TuPigCarPlayPalette.DARK)
 
         AirPlayPersistence.saveAppAppearance(context, AppAppearance.LIGHT)
-        assertDialogColors(context.appDialogContext(), DiPlayPalette.LIGHT)
+        assertDialogColors(context.appDialogContext(), TuPigCarPlayPalette.LIGHT)
     }
 
     @Test fun anExistingDialogContextKeepsItsAppearanceAfterThePreferenceChanges() {
@@ -36,8 +36,8 @@ class AppDialogsTest {
 
         AirPlayPersistence.saveAppAppearance(context, AppAppearance.DARK)
 
-        assertDialogColors(existingContext, DiPlayPalette.LIGHT)
-        assertDialogColors(context.appDialogBuilder().context, DiPlayPalette.DARK)
+        assertDialogColors(existingContext, TuPigCarPlayPalette.LIGHT)
+        assertDialogColors(context.appDialogBuilder().context, TuPigCarPlayPalette.DARK)
     }
 
     @Test fun dialogUsesTheOwnersCurrentAppearanceInsteadOfResolvingItAgain() {
@@ -46,7 +46,7 @@ class AppDialogsTest {
             override val currentAppNight = false
         }
 
-        assertDialogColors(lightOwner.appDialogContext(), DiPlayPalette.LIGHT)
+        assertDialogColors(lightOwner.appDialogContext(), TuPigCarPlayPalette.LIGHT)
     }
 
     /** Android 9 and older drop a literal colour here, and dialogs showed through (#640, #617). */
@@ -66,7 +66,7 @@ class AppDialogsTest {
         }
     }
 
-    private fun assertDialogColors(themedContext: android.content.Context, palette: DiPlayPalette) {
+    private fun assertDialogColors(themedContext: android.content.Context, palette: TuPigCarPlayPalette) {
         val attributes = themedContext.theme.obtainStyledAttributes(
             intArrayOf(android.R.attr.colorAccent, android.R.attr.windowBackground),
         )

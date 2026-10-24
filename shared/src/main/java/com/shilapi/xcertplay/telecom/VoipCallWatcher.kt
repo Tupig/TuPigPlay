@@ -18,9 +18,9 @@ import androidx.annotation.RequiresApi
  * nulls the echo. Plain MIC recordings, the kind voice notes and video use, are muted in that state, so they
  * never count here.
  *
- * A recording alone is not enough. While a call holds the phone state, BYD's own audio layer keeps
+ * A recording alone is not enough. While a call holds the phone state, TuPig's own audio layer keeps
  * VOICE_RECOGNITION and VOICE_COMMUNICATION recorders open for as long as the state lasts, including the one
- * DiPlay holds, so recordings never go away on their own. Those helpers play nothing; the call does.
+ * TuPigCarPlay holds, so recordings never go away on their own. Those helpers play nothing; the call does.
  */
 @RequiresApi(Build.VERSION_CODES.O)
 internal class VoipCallWatcher(context: Context, private val onChange: (Boolean) -> Unit) {
@@ -61,7 +61,7 @@ internal class VoipCallWatcher(context: Context, private val onChange: (Boolean)
     }
 
     companion object {
-        private const val TAG = "DiPlay-PhoneAudio"
+        private const val TAG = "TuPigCarPlay-PhoneAudio"
 
         fun voipActive(recordingSources: List<Int>, playbackUsages: List<Int>): Boolean =
             recordingSources.any { it == MediaRecorder.AudioSource.VOICE_COMMUNICATION } &&

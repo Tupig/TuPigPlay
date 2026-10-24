@@ -4,12 +4,12 @@ package com.shilapi.xcertplay.orchestration
  * A time limit for the iPhone's AirPlay session after a wired `carplay-start-session`.
  *
  * The wired control loop has no limit of its own, so an iPhone that accepts the start request but never opens the
- * session kept DiPlay on "connecting" until the cable was replugged (#889, #890). On a working head unit the session
+ * session kept TuPigCarPlay on "connecting" until the cable was replugged (#889, #890). On a working head unit the session
  * is active 2 to 13 s after the request. When the limit passes, [onTimeout] ends the attempt so the usual retry starts
  * a new one, which asks the iPhone to switch modes again, as a replug does.
  *
  * After a Save-and-reconnect the iPhone opened the USB network 15.8 to 30.2 s after the request, four of eight times
- * at 28.9 to 30.2 s (#335), too late for DiPlay's second request ([WiredStartAgain]) to go out within the limit, so
+ * at 28.9 to 30.2 s (#335), too late for TuPigCarPlay's second request ([WiredStartAgain]) to go out within the limit, so
  * the limit is held once while that request still can.
  */
 internal class WiredStartWatchdog(
@@ -34,7 +34,7 @@ internal class WiredStartWatchdog(
         arm(timeoutMillis)
     }
 
-    /** DiPlay's own second request after a late USB network ([WiredStartAgain]) gets a full limit, once. */
+    /** TuPigCarPlay's own second request after a late USB network ([WiredStartAgain]) gets a full limit, once. */
     @Synchronized fun startSessionSentAgain() {
         if (!armed || finished || rearmed) return
         rearmed = true

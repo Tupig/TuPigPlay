@@ -6,8 +6,8 @@ import java.util.UUID
 
 /** Shared by shell commands/watchers so an old process cannot reset a newer call. */
 internal class CarPlayCallWatchOwnership(private val directory: File = File("/data/local/tmp")) {
-    private val owner = File(directory, "diplay-carplay-call-owner")
-    private val lock = File(directory, "diplay-carplay-call-lock")
+    private val owner = File(directory, "tupigcarplay-carplay-call-owner")
+    private val lock = File(directory, "tupigcarplay-carplay-call-lock")
 
     fun claim(path: String, action: (File) -> Unit) = locked {
         val token = token(path)
@@ -138,7 +138,7 @@ internal class CarPlayCallWatchOwnership(private val directory: File = File("/da
     private fun token(path: String): File {
         val file = File(path).canonicalFile
         require(file.parentFile == directory.canonicalFile &&
-            file.name.matches(Regex("diplay-carplay-call-[A-Za-z0-9_.]+-[0-9a-f-]{36}"))) {
+            file.name.matches(Regex("tupigcarplay-carplay-call-[A-Za-z0-9_.]+-[0-9a-f-]{36}"))) {
             "Invalid CarPlay call token"
         }
         return file
@@ -157,7 +157,7 @@ internal class CarPlayCallWatchOwnership(private val directory: File = File("/da
         private val processLock = Any()
         fun newToken(packageName: String): String {
             require(packageName.matches(Regex("[A-Za-z0-9_.]+")))
-            return "/data/local/tmp/diplay-carplay-call-$packageName-${UUID.randomUUID()}"
+            return "/data/local/tmp/tupigcarplay-carplay-call-$packageName-${UUID.randomUUID()}"
         }
     }
 }

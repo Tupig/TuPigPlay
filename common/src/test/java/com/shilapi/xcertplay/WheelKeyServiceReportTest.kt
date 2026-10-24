@@ -28,8 +28,8 @@ class WheelKeyServiceReportTest {
     @Before fun setUp() {
         WheelKeyLog.reset()
         service = Robolectric.buildService(WheelKeyService::class.java).create().get()
-        service.getSharedPreferences("diplay_navigation_wheel", Context.MODE_PRIVATE).edit().clear().commit()
-        service.getSharedPreferences("diplay_wheel_map_zoom", Context.MODE_PRIVATE).edit().clear().commit()
+        service.getSharedPreferences("tupigcarplay_navigation_wheel", Context.MODE_PRIVATE).edit().clear().commit()
+        service.getSharedPreferences("tupigcarplay_wheel_map_zoom", Context.MODE_PRIVATE).edit().clear().commit()
         service.javaClass.getDeclaredMethod("onServiceConnected").apply { isAccessible = true }.invoke(service)
         audio = service.getSystemService(AudioManager::class.java)
         audio.mode = AudioManager.MODE_NORMAL
@@ -45,7 +45,7 @@ class WheelKeyServiceReportTest {
         .getDeclaredMethod("onKeyEvent", KeyEvent::class.java).apply { isAccessible = true }
         .invoke(service, KeyEvent(downTime, downTime, action, code, repeat, 0, 7, 0)) as Boolean
 
-    /** A new press; true when DiPlay kept its first DOWN. */
+    /** A new press; true when TuPigCarPlay kept its first DOWN. */
     private fun press(code: Int): Boolean {
         time += 1_000
         val kept = send(code, KeyEvent.ACTION_DOWN)
@@ -66,10 +66,10 @@ class WheelKeyServiceReportTest {
             entries(),
         )
         assertTrue(report().first(), report().first().startsWith(
-            "Wheel keys since DiPlay started: presses=1 kept=0 leftToHeadUnit=1 textKeysNotListed=0 boundForMs="))
+            "Wheel keys since TuPigCarPlay started: presses=1 kept=0 leftToHeadUnit=1 textKeysNotListed=0 boundForMs="))
     }
 
-    @Test fun aKeyDiPlayKeepsIsListedWithWhatItDid() {
+    @Test fun aKeyTuPigCarPlayKeepsIsListedWithWhatItDid() {
         service.mapRoute = { "map" }
         WheelZoomSettings.setEnabled(service, true)
         WheelZoomSettings.assign(service, WheelZoomSettings.Role.MODE, WheelKey(KeyEvent.KEYCODE_F1, 0, "?"))
@@ -172,13 +172,13 @@ class WheelKeyServiceReportTest {
 
     @Test fun theDiagnosticReportCarriesTheWheelKeyLines() {
         assertFalse(press(KeyEvent.KEYCODE_F7))
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         val text = activity.javaClass.getDeclaredMethod("diagnosticReportText", Context::class.java)
             .apply { isAccessible = true }.invoke(activity, service.applicationContext) as String
         val lines = text.lines()
         val serviceLine = lines.indexOfFirst { it.startsWith("Wheel key service: ") }
         assertTrue(text, serviceLine >= 0)
-        assertTrue(lines[serviceLine + 1], lines[serviceLine + 1].startsWith("Wheel keys since DiPlay started: presses=1 "))
+        assertTrue(lines[serviceLine + 1], lines[serviceLine + 1].startsWith("Wheel keys since TuPigCarPlay started: presses=1 "))
         assertTrue(lines[serviceLine + 2], lines[serviceLine + 2].endsWith("  wheel key service connected"))
         assertTrue(lines[serviceLine + 3], lines[serviceLine + 3].endsWith("  key 137/0 device 7 left to the head unit"))
         assertEquals("", lines[serviceLine + 4])

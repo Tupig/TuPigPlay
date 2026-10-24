@@ -46,10 +46,10 @@ class OwnScreenStartTest {
         val activity = Robolectric.buildActivity(Activity::class.java).setup().get()
         val log = mutableListOf<String>()
 
-        assertTrue(OwnScreenStart.start(activity, Intent(activity, DiPlayActivity::class.java), log::add))
+        assertTrue(OwnScreenStart.start(activity, Intent(activity, TuPigCarPlayActivity::class.java), log::add))
 
         val started = shadowOf(activity).nextStartedActivity
-        assertEquals(DiPlayActivity::class.java.name, started.component?.className)
+        assertEquals(TuPigCarPlayActivity::class.java.name, started.component?.className)
         assertFalse(started.flags and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
         assertNull(app.nextStartedActivity)
         assertTrue(log.isEmpty())

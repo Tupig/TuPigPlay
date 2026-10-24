@@ -10,7 +10,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-/** A media key that reaches DiPlay's media session is in the diagnostic report, not only in logcat (#610). */
+/** A media key that reaches TuPigCarPlay's media session is in the diagnostic report, not only in logcat (#610). */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28], manifest = Config.NONE)
 class MediaKeyReportTest {

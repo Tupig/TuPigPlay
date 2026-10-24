@@ -8,11 +8,11 @@ import android.content.Intent
 class StarterBridgeReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
-            "byd.hud.STARTER_CONFIG" -> {
-                BydStarterBridge.configure(context, intent.getStringExtra("token") ?: return)
+            "tupig.hud.STARTER_CONFIG" -> {
+                TuPigStarterBridge.configure(context, intent.getStringExtra("token") ?: return)
                 resultData = "Starter configured"
             }
-            "byd.hud.STARTER_DEMO" -> BydStarterBridge.demonstrate(context)
+            "tupig.hud.STARTER_DEMO" -> TuPigStarterBridge.demonstrate(context)
         }
     }
 }

@@ -3,11 +3,11 @@
 Android 9 uses the public two-argument `WifiP2pManager.createGroup` overload and reads the
 system-generated credentials from `requestGroupInfo`. Unlike the Android 10 configuration
 overload, Android 9 asks the framework to create or reuse a persistent group-owner profile.
-DiPlay removes its active group on close; it never deletes persistent profiles belonging to
+TuPigCarPlay removes its active group on close; it never deletes persistent profiles belonging to
 the framework or another app. A retained group is reclaimed only by exact recorded ownership.
 
 The hidden Android 9 `setWifiP2pChannels` API changes the supplicant's shared operating-frequency
-restriction. DiPlay calls it only after checking that no foreign active group is present. It
+restriction. TuPigCarPlay calls it only after checking that no foreign active group is present. It
 serializes selection and cleanup, clears its own restriction before a system-default retry,
 and clears on close only when the current group is absent or still has this attempt's identity.
 Clearing means operating channel 0 (unrestricted); Android exposes no readback for restoring a
@@ -31,5 +31,5 @@ Android 9 source references:
 - [SupplicantP2pIfaceHal](https://android.googlesource.com/platform/frameworks/opt/net/wifi/+/android-9.0.0_r1/service/java/com/android/server/wifi/p2p/SupplicantP2pIfaceHal.java)
 
 The author's Redmi K20 Pro/iPhone test supports basic bring-up; automated tests exercise default
-retry, close, late callbacks, foreign replacement and failed cleanup. BYD Android 9 cancellation
+retry, close, late callbacks, foreign replacement and failed cleanup. TuPig Android 9 cancellation
 and cleanup acceptance has not been run by this review.

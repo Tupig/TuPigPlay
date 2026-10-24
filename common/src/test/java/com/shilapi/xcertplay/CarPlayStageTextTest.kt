@@ -87,7 +87,7 @@ class CarPlayStageTextTest {
         assertStage(R.string.waiting_for_mfi_coprocessor, CarPlayStatus.WaitingForMfi)
         assertStage(R.string.getting_carplay_ready, CarPlayStatus.OpeningDataPaths)
 
-        val notPaired = "The selected iPhone is no longer paired. Choose it again in DiPlay."
+        val notPaired = "The selected iPhone is no longer paired. Choose it again in TuPigCarPlay."
         assertStage(R.string.chosen_iphone_not_paired,
             CarPlayStatus.Failed(notPaired, knownCause = ConnectionFailureCause.CHOSEN_IPHONE_NOT_PAIRED))
         assertStage(R.string.connection_interrupted_retrying, CarPlayStatus.Failed(notPaired))

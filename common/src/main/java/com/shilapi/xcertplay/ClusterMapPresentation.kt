@@ -32,11 +32,11 @@ import com.shilapi.xcertplay.host.R
 import com.shilapi.xcertplay.hud.ClusterTurnGuidance
 
 /**
- * Shows CarPlay's instrument-cluster stream on a BYD cluster projection display.
+ * Shows CarPlay's instrument-cluster stream on a TuPig cluster projection display.
  *
- * BYD exposes the cluster's projection area as public presentation displays owned by
+ * TuPig exposes the cluster's projection area as public presentation displays owned by
  * com.byd.containerservice (DiLink 5) or com.xdja.containerservice (DiLink 4). The
- * cluster only shows this display while its projection mode is on, which DiPlay cannot switch.
+ * cluster only shows this display while its projection mode is on, which TuPigCarPlay cannot switch.
  */
 internal class ClusterMapPresentation(
     context: Context,
@@ -71,7 +71,7 @@ internal class ClusterMapPresentation(
         val size = sizeOf(display)
         val adaptive = DiLink51ClusterLayout.supported()
         val plan = if (adaptive) DiLink51ClusterLayout.plan(size.x, size.y, theme) else null
-        // The adaptive DiLink 5.1 layout follows the cluster's own contrast; elsewhere the cluster follows DiPlay's theme.
+        // The adaptive DiLink 5.1 layout follows the cluster's own contrast; elsewhere the cluster follows TuPigCarPlay's theme.
         val dark = if (plan != null) DiLink51ClusterLayout.dark(context, theme) else context.resolveAppNightNow()
         val backdrop = if (dark) Color.rgb(15, 22, 30) else Color.rgb(207, 218, 229)
         val placeholder = if (dark) Color.BLACK else Color.rgb(233, 238, 246)
@@ -171,7 +171,7 @@ internal class ClusterMapPresentation(
         if (!GeelyClusterDisplay.supported()) return
         projectionWatchdog.reset()
         if (GeelyClusterProjection.set(true, context)) projectionWatchdog.assertedProjection()
-        // That switch belongs to the head unit, not to DiPlay: waking the stock map moves the
+        // That switch belongs to the head unit, not to TuPigCarPlay: waking the stock map moves the
         // projection there and its session end turns the switch off, with no display callback and
         // no onStop here to notice. Watch the state for as long as this presentation is up.
         projectionHandler.removeCallbacks(projectionTick)
@@ -181,7 +181,7 @@ internal class ClusterMapPresentation(
     override fun onStop() {
         if (GeelyClusterDisplay.supported()) {
             projectionHandler.removeCallbacks(projectionTick)
-            // Hand the projection back only while DiPlay still holds it. The switch is head-unit-wide
+            // Hand the projection back only while TuPigCarPlay still holds it. The switch is head-unit-wide
             // and the stock map drives it too, so when the map owns the cluster (the wheel key woke
             // it) switching it off here would take the map off the cluster as well. Read it back
             // first: the last readings decide, and this final one is the freshest evidence.
@@ -239,7 +239,7 @@ internal class ClusterMapPresentation(
     }
 
     companion object {
-        const val TAG = "DiPlay-Cluster"
+        const val TAG = "TuPigCarPlay-Cluster"
 
         /**
          * How often the Geely projection state is read. One binder transaction, and the watchdog needs
@@ -285,7 +285,7 @@ internal class ClusterMapPresentation(
 
         fun diagnosticReport(context: Context): String = buildString {
             appendLine("clusterEnabled=${AirPlayPersistence.loadClusterMapEnabled(context)}")
-            appendLine("navigationReceiverAvailable=${com.shilapi.xcertplay.hud.BydOutputSettings.navigationAvailable(context)}")
+            appendLine("navigationReceiverAvailable=${com.shilapi.xcertplay.hud.TuPigOutputSettings.navigationAvailable(context)}")
             appendLine("allDisplays=${describeDisplays(context)}")
             val presentations = context.getSystemService(DisplayManager::class.java)
                 ?.getDisplays(DisplayManager.DISPLAY_CATEGORY_PRESENTATION).orEmpty()
@@ -301,7 +301,7 @@ internal class ClusterMapPresentation(
     }
 }
 
-/** Shading belongs to DiPlay's map only; no stock cluster window is changed or covered outside the side card. */
+/** Shading belongs to TuPigCarPlay's map only; no stock cluster window is changed or covered outside the side card. */
 private class InstrumentContrastView(
     context: Context,
     private val plan: DiLink51ClusterLayout.Plan,

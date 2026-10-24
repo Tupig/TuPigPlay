@@ -1,10 +1,10 @@
 # Smooth wireless CarPlay
 
-The Wi-Fi channel and the size of the picture can affect how smooth wireless CarPlay feels. The numbers below were measured on a 2024 BYD Tang (DiLink 5.0, 2560×1440 screen) with an iPhone on iOS 27, parked, while scrolling the same Apple Music list. Other cars, firmware and phones may behave differently; interference, scanning and decoder limits can also contribute.
+The Wi-Fi channel and the size of the picture can affect how smooth wireless CarPlay feels. The numbers below were measured on a 2024 TuPig Tang (DiLink 5.0, 2560×1440 screen) with an iPhone on iOS 27, parked, while scrolling the same Apple Music list. Other cars, firmware and phones may behave differently; interference, scanning and decoder limits can also contribute.
 
 This guide describes 0.2.13 channel-policy and rotation behavior. Wi-Fi Direct is available on Android 9+ with suitable firmware. Android 9 uses the legacy group/channel path and cannot verify the negotiated frequency; see [Android 9 limits](ANDROID9_WIFI_DIRECT.md). Android 10+ retains actual-frequency verification. The contributor measurements below describe their specified Tang setup, not every device.
 
-**Use the built-in car hotspot if your car has one.** Wi-Fi Direct needs the car's Wi-Fi switch on, and while the car is not joined to a network it searches for one, every 10 s in reports from DiLink 4.0 and 5.0 cars. Each search takes the car's single radio off the CarPlay channel; audio packets sent meanwhile are lost, so music and navigation voice stutter on that rhythm whatever channel you choose, and a larger music buffer cannot bring them back. The car hotspot runs with the car's Wi-Fi client off: on the same cars it lost no audio, or almost none. With network ADB already approved, DiPlay pauses this search during Wi-Fi Direct sessions on Android 7.1 and later; see [Compatibility](COMPATIBILITY.md).
+**Use the built-in car hotspot if your car has one.** Wi-Fi Direct needs the car's Wi-Fi switch on, and while the car is not joined to a network it searches for one, every 10 s in reports from DiLink 4.0 and 5.0 cars. Each search takes the car's single radio off the CarPlay channel; audio packets sent meanwhile are lost, so music and navigation voice stutter on that rhythm whatever channel you choose, and a larger music buffer cannot bring them back. The car hotspot runs with the car's Wi-Fi client off: on the same cars it lost no audio, or almost none. With network ADB already approved, TuPigCarPlay pauses this search during Wi-Fi Direct sessions on Android 7.1 and later; see [Compatibility](COMPATIBILITY.md).
 
 ## 1. Wi-Fi channel
 
@@ -24,7 +24,7 @@ A 2.4 GHz Wi-Fi Direct channel alongside the 5 GHz network was smooth in this te
 
 **Settings → Display and performance → Turn CarPlay with the screen without reconnecting**
 
-Larger pictures can increase encoding, transmission and decoding work. In this test, DiPlay's received and rendered frame rates were close in all three cases, while the larger square arrived at a lower rate. This suggests testing picture size, but does not by itself identify the iPhone encoder as the bottleneck or rule out network effects and backpressure.
+Larger pictures can increase encoding, transmission and decoding work. In this test, TuPigCarPlay's received and rendered frame rates were close in all three cases, while the larger square arrived at a lower rate. This suggests testing picture size, but does not by itself identify the iPhone encoder as the bottleneck or rule out network effects and backpressure.
 
 | Setting | Picture | Pixels per frame | Frames per second while scrolling |
 |---|---|---|---|
@@ -44,7 +44,7 @@ With rotation on, CarPlay gets a square picture that holds both a landscape and 
 
 **Settings → Display and performance → Smooth video (experimental)**, off by default.
 
-By default DiPlay shows each frame as soon as the decoder releases it. On the Tang, the decoder's output timing depended on later input:
+By default TuPigCarPlay shows each frame as soon as the decoder releases it. On the Tang, the decoder's output timing depended on later input:
 
 - **The decoder held frames.** `c2.qti.avc.decoder` released a frame only after about two more had been queued. With the setting off (runs A1 and A2 below, about 56 fps), queue-to-output time (`decode p50/p90`) was 48–56 ms (median) and 69–77 ms (p90) in most 5 s windows, and on a still screen the last frame came out only with the next one.
 - **The iPhone's stream does not ask for that.** Its SPS signals `max_num_reorder_frames` 0, and the frames had no B slices.
@@ -54,13 +54,13 @@ By default DiPlay shows each frame as soon as the decoder releases it. On the Ta
   - `vendor.qti-ext-dec-timestamp-reorder.value` 0;
   - Constrained High flags in the SPS.
 
-The iPhone stamps each frame with its own time in the screen header. On the Tang at 60 fps these times fell on a 1/60 s grid, and frames the iPhone skipped left gaps of whole multiples. With this setting, DiPlay:
+The iPhone stamps each frame with its own time in the screen header. On the Tang at 60 fps these times fell on a 1/60 s grid, and frames the iPhone skipped left gaps of whole multiples. With this setting, TuPigCarPlay:
 
 - renders the main screen to a `SurfaceView`;
 - maps that time onto the head unit's clock, adding the link's base delay: a low percentile of recent arrivals (frame time to arrival). For the first 30 frames the base follows that percentile at once. After that it moves at most 2 ms per second, unless it rises by more than 0.5 s or falls by more than 100 ms, when it jumps to the new value;
 - releases each frame with `releaseOutputBuffer(index, timestampNs)` at that local time plus a display delay.
 
-The display delay adjusts itself. For each frame it can time, DiPlay notes how long after its local time the decoder released it. Frames released only after a pause in the iPhone's frames are not counted: the last three frames before a gap of more than 120 ms between consecutive iPhone frame times, since the decoder holds about two, and frames queued before a still screen of more than 0.5 s. Every 15 counted frames, the delay's goal is set to the 90th percentile of the last 120 counted frames plus a 20 ms margin, kept between 30 and 200 ms, aiming for about nine in ten frames ready in time. The margin is a refresh plus 4 ms because SurfaceFlinger takes a buffer about one refresh before the vsync it is shown at (measured below). It rises by at most 1 ms per frame and falls by at most 0.5 ms per frame, so a change spreads over many frames instead of shifting every later frame at once. It starts at three frame intervals of the frame-rate setting plus 40 ms: 90 ms at 60 fps, 140 ms at 30 fps. Frames that still leave the decoder after their time are shown at once and counted as `late`, and the stats line shows the current `delay`.
+The display delay adjusts itself. For each frame it can time, TuPigCarPlay notes how long after its local time the decoder released it. Frames released only after a pause in the iPhone's frames are not counted: the last three frames before a gap of more than 120 ms between consecutive iPhone frame times, since the decoder holds about two, and frames queued before a still screen of more than 0.5 s. Every 15 counted frames, the delay's goal is set to the 90th percentile of the last 120 counted frames plus a 20 ms margin, kept between 30 and 200 ms, aiming for about nine in ten frames ready in time. The margin is a refresh plus 4 ms because SurfaceFlinger takes a buffer about one refresh before the vsync it is shown at (measured below). It rises by at most 1 ms per frame and falls by at most 0.5 ms per frame, so a change spreads over many frames instead of shifting every later frame at once. It starts at three frame intervals of the frame-rate setting plus 40 ms: 90 ms at 60 fps, 140 ms at 30 fps. Frames that still leave the decoder after their time are shown at once and counted as `late`, and the stats line shows the current `delay`.
 
 **Measured on my Tang with a fixed 90 ms delay**, with an earlier version of this change that set up its own `SurfaceView` before the current one existed, and before the delay adjusted itself (USB, 2560×1440 at 60 fps, alternating off/on captures of 41–53 s while scrolling on and off, `rx` about 56 fps while scrolling). Intervals come from `dumpsys SurfaceFlinger --latency` for the video layer (the app window when off, the `SurfaceView` when on), counting only seconds with at least 40 presented frames:
 
@@ -74,7 +74,7 @@ The display delay adjusts itself. For each frame it can time, DiPlay notes how l
 - With the setting on, more of the received frames reached the screen and more of them came one refresh apart. This is consistent with the decoder's bunched output being spread back onto the iPhone's grid; it was not measured separately how much the `SurfaceView` alone contributes. An earlier USB run with a `SurfaceView` and no pacing, counted the same way (8 seconds), gave 63.4% at one refresh, close to the off runs.
 - With the fixed 90 ms, in the 5 s windows of the on runs where `rx` was above 53 fps, `late` was 36–75 (about 13–26% of the frames received), so a share of frames still left the decoder after their time.
 - The main screen sometimes arrived at a steady 30 fps for over a minute while the setting was 60 fps. Over USB right after run B2 (no touches), `rx` was 29–34 fps and `late` was 49–112 per 5 s (about 31–75% of the frames received). In a later wireless session (car hotspot, while I switched between CarPlay apps, the map among them), `late` was 98–128 per 5 s (about 62–85%). So for those stretches most frames were released as soon as they left the decoder, as with the setting off; what reached the screen was not captured then. This is why the delay now adjusts itself.
-- When DiPlay goes to the background, the main-screen decoder moves to an offscreen surface and keeps its state, and on return DiPlay asks the iPhone for a new keyframe. In the car the picture came back at once, with a short blink.
+- When TuPigCarPlay goes to the background, the main-screen decoder moves to an offscreen surface and keeps its state, and on return TuPigCarPlay asks the iPhone for a new keyframe. In the car the picture came back at once, with a short blink.
 
 **Measured on my Tang with the adjusting delay and a 4 ms margin**, the first version of the adjusting delay (car hotspot, 2560×1440 at 60 fps, one session of about 3 minutes: lists, the map, lists again, background and back; not an A/B run):
 
@@ -110,13 +110,13 @@ The display delay adjusts itself. For each frame it can time, DiPlay notes how l
 
 ## 4. Checking it yourself
 
-While CarPlay runs, DiPlay logs a `DiPlay-VideoStats` line every 5 s:
+While CarPlay runs, TuPigCarPlay logs a `TuPigCarPlay-VideoStats` line every 5 s:
 
 ```
 video stats rx=56.2fps shown=56.4fps maxGap=73ms kbps=28899 ...
 ```
 
-- `rx` counts frames received by DiPlay; `shown` counts decoder outputs released for rendering to its surface. These are windowed counters, not proof of every frame the phone sent or every physical display refresh.
+- `rx` counts frames received by TuPigCarPlay; `shown` counts decoder outputs released for rendering to its surface. These are windowed counters, not proof of every frame the phone sent or every physical display refresh.
 - If `shown` keeps up with `rx` but `rx` is low while you scroll, compare picture settings and the Wi-Fi link. The counters alone cannot distinguish phone encoding, transport delays or backpressure, and do not rule out every head-unit problem.
 - `decode p50/p90` is the time from queueing a frame into the decoder to dequeueing its output. Frames queued before an input gap of more than 0.5 s (a still screen) are left out of both `decode p50/p90` and `late`. With smooth video on, `late` counts frames shown at once because they left the decoder after their display time, or had no usable display time; frames held over a pause in the iPhone's frames are left out too, since no delay could have hidden them. `delay` is the display delay at the last paced frame.
 - `maxGap` is the largest interval between received frames shorter than 2 s; longer intervals are excluded. A static screen may also produce gaps because the iPhone need not send new frames. A single large value is not evidence of a stall by itself.

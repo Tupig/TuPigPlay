@@ -35,7 +35,7 @@ class InterfaceSizeActivityTest {
         CarPlayBackgroundSession.clear()
         AppLocale.save(app, AppLocale.SYSTEM)
         InterfaceSize.save(app, 150)
-        val controller = Robolectric.buildActivity(DiPlayActivity::class.java)
+        val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java)
         val activity = controller.get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         controller.setup()
@@ -79,7 +79,7 @@ class InterfaceSizeActivityTest {
             assertEquals(1, texts(activity.findViewById(android.R.id.content)).count {
                 it.text.startsWith(activity.getString(R.string.settings_interface_size) + " · ")
             })
-            val index = ReflectionHelpers.callInstanceMethod<List<DiPlayActivity.SettingsSearchResult>>(
+            val index = ReflectionHelpers.callInstanceMethod<List<TuPigCarPlayActivity.SettingsSearchResult>>(
                 activity, "buildSettingsSearchIndex")
             assertTrue(index.any {
                 it.title == activity.getString(R.string.settings_interface_size) &&
@@ -98,7 +98,7 @@ class InterfaceSizeActivityTest {
         CarPlayBackgroundSession.clear()
         AppLocale.save(app, AppLocale.SYSTEM)
         InterfaceSize.save(app, 150)
-        val controller = Robolectric.buildActivity(DiPlayActivity::class.java)
+        val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java)
         val activity = controller.get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         controller.setup()
@@ -140,7 +140,7 @@ class InterfaceSizeActivityTest {
     fun scaledSettingsKeepTheChosenLanguageBeforeAndroid13() {
         CarPlayBackgroundSession.clear()
         AppLocale.save(RuntimeEnvironment.getApplication(), AppLocale.ARABIC)
-        val controller = Robolectric.buildActivity(DiPlayActivity::class.java)
+        val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java)
         val activity = controller.get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         controller.setup()

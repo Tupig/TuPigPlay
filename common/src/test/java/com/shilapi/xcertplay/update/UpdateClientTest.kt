@@ -43,7 +43,7 @@ class UpdateClientTest {
             exchange.sendResponseHeaders(200, bytes.size.toLong())
             exchange.responseBody.use { it.write(bytes) }
         }
-        assertEquals(body, UpdateClient.fetchText("$root/releases", "application/vnd.github+json", "DiPlay/test"))
+        assertEquals(body, UpdateClient.fetchText("$root/releases", "application/vnd.github+json", "TuPigCarPlay/test"))
     }
 
     @Test
@@ -55,7 +55,7 @@ class UpdateClientTest {
         }
         val selected = AtomicBoolean()
 
-        UpdateClient.fetchText("$root/selected-network", null, "DiPlay/test") { url ->
+        UpdateClient.fetchText("$root/selected-network", null, "TuPigCarPlay/test") { url ->
             selected.set(true)
             url.openConnection()
         }
@@ -70,7 +70,7 @@ class UpdateClientTest {
             exchange.close()
         }
         try {
-            UpdateClient.fetchText("$root/releases", null, "DiPlay/test")
+            UpdateClient.fetchText("$root/releases", null, "TuPigCarPlay/test")
             throw AssertionError("expected an IOException")
         } catch (expected: java.io.IOException) {
             assertTrue(expected.message!!.contains("403"))
@@ -84,7 +84,7 @@ class UpdateClientTest {
             exchange.sendResponseHeaders(200, payload.size.toLong())
             exchange.responseBody.use { it.write(payload) }
         }
-        val destination = File(temporaryFolder.root, "update/DiPlay.apk")
+        val destination = File(temporaryFolder.root, "update/TuPigCarPlay.apk")
         val reports = mutableListOf<Pair<Long, Long?>>()
         UpdateClient.download("$root/apk", destination) { written, total -> reports.add(written to total) }
         assertEquals(payload.toList(), destination.readBytes().toList())
@@ -99,7 +99,7 @@ class UpdateClientTest {
             exchange.responseBody.use { it.write(ByteArray(16)) }
             exchange.close()
         }
-        val destination = File(temporaryFolder.root, "update/DiPlay.apk")
+        val destination = File(temporaryFolder.root, "update/TuPigCarPlay.apk")
         try {
             UpdateClient.download("$root/apk", destination) { _, _ -> }
             throw AssertionError("expected an IOException")

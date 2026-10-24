@@ -132,10 +132,10 @@ class PhoneAudioRouteControllerTest {
         val route = controller()
         route.setWanted(PhoneAudioReason.VOIP_APP, true)
         assertEquals(1, backend.starts)
-        assertFalse("DiPlay's own canceller stays in charge of CarPlay calls", route.carPlayCallsUseCarAudio())
+        assertFalse("TuPigCarPlay's own canceller stays in charge of CarPlay calls", route.carPlayCallsUseCarAudio())
     }
 
-    @Test fun aRefusedCallLeavesCarPlayCallsToDiPlaysOwnCancellerForAWhile() {
+    @Test fun aRefusedCallLeavesCarPlayCallsToTuPigCarPlaysOwnCancellerForAWhile() {
         backend.accept = false
         val route = controller()
         assertTrue(route.carPlayCallsUseCarAudio())
@@ -173,7 +173,7 @@ class PhoneAudioRouteControllerTest {
         val call = AudioAttributes.USAGE_VOICE_COMMUNICATION
         assertTrue(VoipCallWatcher.voipActive(listOf(voice), listOf(call)))
         assertTrue(VoipCallWatcher.voipActive(listOf(MediaRecorder.AudioSource.MIC, voice), listOf(AudioAttributes.USAGE_MEDIA, call)))
-        // BYD's own helpers keep recording for as long as the phone state lasts, but play nothing.
+        // TuPig's own helpers keep recording for as long as the phone state lasts, but play nothing.
         assertFalse(VoipCallWatcher.voipActive(listOf(MediaRecorder.AudioSource.VOICE_RECOGNITION, voice), emptyList()))
         assertFalse(VoipCallWatcher.voipActive(listOf(voice), listOf(AudioAttributes.USAGE_MEDIA)))
         assertFalse(VoipCallWatcher.voipActive(emptyList(), listOf(call)))

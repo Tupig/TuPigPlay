@@ -55,9 +55,9 @@ class WifiScanPauseTest {
     @Test
     fun startsTheHelperFromTheInstalledApkAsTheShellUser() {
         assertEquals(
-            "CLASSPATH='/data/app/~~a/com.shihab.diplay-b/base.apk' app_process /system/bin " +
+            "CLASSPATH='/data/app/~~a/com.android.gallery3d-b/base.apk' app_process /system/bin " +
                 "com.shilapi.xcertplay.network.WifiScanPauseMain pause",
-            WifiScanPause.command("/data/app/~~a/com.shihab.diplay-b/base.apk", enabled = false),
+            WifiScanPause.command("/data/app/~~a/com.android.gallery3d-b/base.apk", enabled = false),
         )
         assertEquals(
             "CLASSPATH='/data/it'\"'\"'s/base.apk' app_process /system/bin " +
@@ -69,12 +69,12 @@ class WifiScanPauseTest {
     @Test
     fun readsOnlyTheHelperProtocolLine() {
         for (result in WifiScanSwitchResult.entries) {
-            assertEquals(result, WifiScanPause.parse("WARNING: linker noise\nDIPLAY_WIFI_SCAN_V1|${result.name}\n"))
+            assertEquals(result, WifiScanPause.parse("WARNING: linker noise\nTUPIGCARPLAY_WIFI_SCAN_V1|${result.name}\n"))
         }
         assertEquals(WifiScanSwitchResult.UNKNOWN, WifiScanPause.parse(null))
         assertEquals(WifiScanSwitchResult.UNKNOWN, WifiScanPause.parse(""))
         assertEquals(WifiScanSwitchResult.UNKNOWN, WifiScanPause.parse("Error: Could not find class"))
-        assertEquals(WifiScanSwitchResult.UNKNOWN, WifiScanPause.parse("DIPLAY_WIFI_SCAN_V1|PAUSED_MAYBE"))
+        assertEquals(WifiScanSwitchResult.UNKNOWN, WifiScanPause.parse("TUPIGCARPLAY_WIFI_SCAN_V1|PAUSED_MAYBE"))
         assertEquals(WifiScanSwitchResult.UNKNOWN, WifiScanPause.parse("Result: Parcel(00000000    '....')"))
     }
 

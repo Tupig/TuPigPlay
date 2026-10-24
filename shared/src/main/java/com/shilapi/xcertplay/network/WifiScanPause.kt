@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import com.shilapi.xcertplay.adb.LocalAdb
-import com.shilapi.xcertplay.hud.BydAdbShell
+import com.shilapi.xcertplay.hud.TuPigAdbShell
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
  * Pauses the head unit's automatic Wi-Fi network search while a Wi-Fi Direct CarPlay session runs.
  *
  * Wi-Fi Direct needs the car's Wi-Fi client switched on. While that client is not joined to a
- * network, BYD firmware searches every band every 10 s (seen on DiLink 3, 4 and 5). The single radio
+ * network, TuPig firmware searches every band every 10 s (seen on DiLink 3, 4 and 5). The single radio
  * leaves the CarPlay channel for each search, and the iPhone's audio packets sent meanwhile are lost,
  * so music and voice stutter on a 10 s rhythm. The built-in car hotspot runs with the client off and
  * is not affected, and Same LAN needs the search, so only Wi-Fi Direct sessions pause it.
@@ -52,8 +52,8 @@ internal class WifiScanPause(
     }
 
     internal companion object {
-        internal const val TAG = "DiPlayWifiScan"
-        internal const val HEADER = "DIPLAY_WIFI_SCAN_V1"
+        internal const val TAG = "TuPigCarPlayWifiScan"
+        internal const val HEADER = "TUPIGCARPLAY_WIFI_SCAN_V1"
 
         /** app_process start-up on a slow head unit plus the helper's own deadline. */
         internal const val HELPER_TIMEOUT_MS = 15_000
@@ -96,12 +96,12 @@ internal interface WifiScanPauseControl {
 
 /** The single writer is shared across full controller rebuilds, including delayed restore retries. */
 private object ProcessWifiScanPause : WifiScanPauseControl {
-    private const val PREFS = "diplay_wifi_scan_pause"
+    private const val PREFS = "tupigcarplay_wifi_scan_pause"
     private const val JOURNAL = "restore_pending"
     private val worker: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor {
         Thread(it, WifiScanPause.TAG).apply { isDaemon = true }
     }
-    private val adb = BydAdbShell(WifiScanPause.TAG)
+    private val adb = TuPigAdbShell(WifiScanPause.TAG)
     private var session: WifiScanPauseSession? = null
     private var retry: ScheduledFuture<*>? = null
 

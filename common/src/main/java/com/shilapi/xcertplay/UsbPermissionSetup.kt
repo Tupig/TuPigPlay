@@ -97,7 +97,7 @@ internal object UsbPermissionSetup {
         }
     }
 
-    private const val EXIT_MARKER = "DIPLAY_PERMISSION_EXIT"
+    private const val EXIT_MARKER = "TUPIGCARPLAY_PERMISSION_EXIT"
 
     private fun withExitStatus(command: String): String =
         "( $command ); result=\$?; printf '\\n$EXIT_MARKER:%s\\n' \"\$result\""

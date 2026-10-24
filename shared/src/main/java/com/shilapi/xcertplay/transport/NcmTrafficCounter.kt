@@ -3,7 +3,7 @@ package com.shilapi.xcertplay.transport
 /**
  * Counts the Ethernet frames on the NCM link, so a wired attempt that never gets its AirPlay session can tell an
  * iPhone that never tried (no frames, or no TCP connection attempt) from one whose packets arrive but do not reach
- * DiPlay's listener (#889, #890). Only headers are read, never payloads. Free of Android types for JVM tests.
+ * TuPigCarPlay's listener (#889, #890). Only headers are read, never payloads. Free of Android types for JVM tests.
  */
 internal class NcmTrafficCounter(private val nanoTime: () -> Long = System::nanoTime) {
     private var fromIphone = 0L
@@ -45,7 +45,7 @@ internal class NcmTrafficCounter(private val nanoTime: () -> Long = System::nano
         toIphone++
     }
 
-    /** One line for the report; [airPlayPort] is DiPlay's listener, whose connection attempts are named apart. */
+    /** One line for the report; [airPlayPort] is TuPigCarPlay's listener, whose connection attempts are named apart. */
     @Synchronized fun summary(airPlayPort: Int?): String {
         val toAirPlay = airPlayPort?.let { synsByPort[it] } ?: 0
         val others = synsByPort.filterKeys { it != airPlayPort }.entries.joinToString(",") { "${it.key}:${it.value}" }

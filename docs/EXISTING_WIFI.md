@@ -1,7 +1,7 @@
 # Existing Wi-Fi / Same LAN
 
 Connect the Android receiver and iPhone to the same third-party router or portable
-Wi-Fi in system settings. In DiPlay → Connection setup → Wireless, select
+Wi-Fi in system settings. In TuPigCarPlay → Connection setup → Wireless, select
 **Existing Wi-Fi / Same LAN**, enter the exact SSID and WPA2 password, and save.
 For an open network, leave the password empty. Keep Bluetooth enabled and the iPhone
 paired with the receiver, then start wireless CarPlay as usual.
@@ -10,7 +10,7 @@ Use WPA2-Personal or WPA2/WPA3 mixed mode. WPA3-only, enterprise authentication 
 captive portals are outside this mode’s current scope. Both clients must be able to
 communicate; allow multicast DNS for service discovery. Prefer 5 GHz when supported.
 
-DiPlay attaches to the existing connection without creating an AP, joining another
+TuPigCarPlay attaches to the existing connection without creating an AP, joining another
 network or changing the default route. The router supplies Internet access.
 Existing Wi-Fi credentials are stored separately from car-hotspot settings.
 Android cannot expose saved passwords to ordinary apps, so the password is entered
@@ -47,7 +47,7 @@ Network loss or a change to either selected address restarts the wireless sessio
 Closing the backend unregisters its callback without disconnecting Wi-Fi. Saved
 automatic car-hotspot startup applies only to car-hotspot mode.
 
-Related work: [PR #22](https://github.com/shihabal3amri/DiPlay/pull/22) also implements
+Related work: [PR #22](https://github.com/shihabal3amri/TuPigCarPlay/pull/22) also implements
 external Wi-Fi within an Android 7 port. This feature uses the current architecture
 without importing that port or its system network modifications.
 
@@ -59,7 +59,7 @@ publication/listening, port fallback, mode transitions and bootstrap encoding. E
 P2P and hotspot tests run alongside them.
 
 The contributor reports a successful clean install of the final implementation on a
-2022 BYD Han DM-i with DiLink 4.0 / Android 10 (API 29), firmware
+2022 TuPig Han DM-i with DiLink 4.0 / Android 10 (API 29), firmware
 21.1.21.2401160.1: the previous test app was uninstalled, the standalone test APK was
 installed and configured normally, and Same LAN entered CarPlay with no issues noticed
 during use. This validates that setup; it does not establish compatibility with every

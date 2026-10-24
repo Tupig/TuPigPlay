@@ -11,7 +11,7 @@ import androidx.core.graphics.ColorUtils
 import com.shilapi.xcertplay.airplay.ClusterSpeedometerOverlay
 
 /**
- * Optional speedometer drawn by DiPlay over the dashboard map.
+ * Optional speedometer drawn by TuPigCarPlay over the dashboard map.
  *
  * The speed value is supplied independently from the CarPlay video stream so the
  * overlay remains available on clusters where full-screen projection hides the
@@ -20,7 +20,7 @@ import com.shilapi.xcertplay.airplay.ClusterSpeedometerOverlay
 internal class ClusterSpeedometerView(
     context: Context,
     private val observeSpeed: ((Int?) -> Unit) -> (() -> Unit) = { changed ->
-        com.shilapi.xcertplay.hud.BydClusterSpeedReader.observe(context, changed)
+        com.shilapi.xcertplay.hud.TuPigClusterSpeedReader.observe(context, changed)
     },
 ) : View(context) {
 

@@ -24,10 +24,10 @@ class ResolutionDialogTest {
     @Test @Config(qualifiers = "ru") fun russianDialogs() = numericDialogsKeepNaturalHeightWhenResetting()
     @Test @Config(qualifiers = "uk") fun ukrainianDialogs() = numericDialogsKeepNaturalHeightWhenResetting()
     @Test fun numericDialogsKeepNaturalHeightWhenResetting() {
-        val a = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val a = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         val parent = LinearLayout(a)
         var saved = 56
-        val integer = DiPlayActivity::class.java.declaredMethods.first { it.name == "resolutionSettingControl" }
+        val integer = TuPigCarPlayActivity::class.java.declaredMethods.first { it.name == "resolutionSettingControl" }
         integer.isAccessible = true
         integer.invoke(a, parent, R.string.resolution, R.string.custom_resolution_hint,
             CarPlayDisplayScale.MIN_PERCENT..CarPlayDisplayScale.MAX_PERCENT, 100,

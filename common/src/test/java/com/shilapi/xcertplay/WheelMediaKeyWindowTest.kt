@@ -8,7 +8,7 @@ import android.view.KeyEvent
 import com.shilapi.xcertplay.airplay.AirPlaySession
 import com.shilapi.xcertplay.airplay.CarPlayMediaButton
 import com.shilapi.xcertplay.airplay.AirPlayKnobState
-import com.shilapi.xcertplay.hud.BydCarPlayCall
+import com.shilapi.xcertplay.hud.TuPigCarPlayCall
 import com.shilapi.xcertplay.hud.CarPlayCallState
 import com.shilapi.xcertplay.iap2.message.Iap2Messages
 import com.shilapi.xcertplay.orchestration.CarPlayController
@@ -39,10 +39,10 @@ class WheelMediaKeyWindowTest {
     private lateinit var controller: CarPlayController
 
     @Before fun setUp() {
-        BydCarPlayCall.end()
+        TuPigCarPlayCall.end()
         CarPlayBackgroundSession.clear()
         host = Robolectric.buildActivity(CarPlayHostActivity::class.java).get()
-        host.getSharedPreferences("diplay_wheel_map_zoom", Context.MODE_PRIVATE).edit().clear().commit()
+        host.getSharedPreferences("tupigcarplay_wheel_map_zoom", Context.MODE_PRIVATE).edit().clear().commit()
         host.getSharedPreferences("xcertplay_airplay", Context.MODE_PRIVATE).edit().clear().commit()
         host.getSystemService(AudioManager::class.java).mode = AudioManager.MODE_NORMAL
         // A session has to exist: outside one the wheel keeps the car's own action.
@@ -58,7 +58,7 @@ class WheelMediaKeyWindowTest {
         }
         (host.javaClass.getDeclaredField("mainHandler").apply { isAccessible = true }.get(host) as Handler)
             .removeCallbacksAndMessages(null)
-        BydCarPlayCall.end()
+        TuPigCarPlayCall.end()
         CarPlayBackgroundSession.clear()
         host.getSharedPreferences("xcertplay_airplay", Context.MODE_PRIVATE).edit().clear().commit()
     }
@@ -71,8 +71,8 @@ class WheelMediaKeyWindowTest {
     }
 
     @Test fun oneTapSendsOnePress() {
-        // BYD sends a tap as an instant down/up pair, and a hold as repeats. Either way CarPlay must
-        // see one press, and the release must not reach BYD's own player as an unpaired key.
+        // TuPig sends a tap as an instant down/up pair, and a hold as repeats. Either way CarPlay must
+        // see one press, and the release must not reach TuPig's own player as an unpaired key.
         assertTrue(host.dispatchKeyEvent(key(KeyEvent.KEYCODE_MEDIA_NEXT, true)))
         assertTrue(host.dispatchKeyEvent(key(KeyEvent.KEYCODE_MEDIA_NEXT, true, repeat = 1)))
         assertTrue(host.dispatchKeyEvent(key(KeyEvent.KEYCODE_MEDIA_NEXT, false)))
@@ -80,7 +80,7 @@ class WheelMediaKeyWindowTest {
     }
 
     @Test fun theKeysKeepTheCarsOwnActionDuringACall() {
-        BydCarPlayCall.onFrame(Iap2Messages.buildRaw(CarPlayCallState.CALL_STATE_UPDATE) {
+        TuPigCarPlayCall.onFrame(Iap2Messages.buildRaw(CarPlayCallState.CALL_STATE_UPDATE) {
             u8(2, 4); string(4, "active-call")
         })
         assertEquals(AudioManager.MODE_NORMAL, host.getSystemService(AudioManager::class.java).mode)
@@ -96,9 +96,9 @@ class WheelMediaKeyWindowTest {
     }
 
     @Test fun playPauseIsLeftAlone() {
-        // The wheel key service and BYD itself both own this key; the window must not take it.
+        // The wheel key service and TuPig itself both own this key; the window must not take it.
         assertFalse(host.dispatchKeyEvent(key(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, true)))
-        assertFalse(host.dispatchKeyEvent(key(CarPlayMediaButton.KEYCODE_BYD_AUTO_MEDIA_PLAY_PAUSE, true)))
+        assertFalse(host.dispatchKeyEvent(key(CarPlayMediaButton.KEYCODE_TUPIG_AUTO_MEDIA_PLAY_PAUSE, true)))
         verify(controller, never()).sendMediaButton(anyInt())
     }
 
@@ -119,7 +119,7 @@ class WheelMediaKeyWindowTest {
         field("activeAirPlaySession", null)
         assertFalse(host.dispatchKeyEvent(key(KeyEvent.KEYCODE_F9, true)))
         field("activeAirPlaySession", mock(AirPlaySession::class.java))
-        BydCarPlayCall.onFrame(Iap2Messages.buildRaw(CarPlayCallState.CALL_STATE_UPDATE) {
+        TuPigCarPlayCall.onFrame(Iap2Messages.buildRaw(CarPlayCallState.CALL_STATE_UPDATE) {
             u8(2, 4); string(4, "call")
         })
         assertFalse(host.dispatchKeyEvent(key(KeyEvent.KEYCODE_F9, true)))

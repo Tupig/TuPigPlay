@@ -24,7 +24,7 @@ import com.shilapi.xcertplay.airplay.MicrophoneConfig
 import com.shilapi.xcertplay.airplay.VideoCodec
 import com.shilapi.xcertplay.airplay.toHexString
 import com.shilapi.xcertplay.compat.AudioFocusRequestCompat
-import com.shilapi.xcertplay.hud.BydBluetoothSuspend
+import com.shilapi.xcertplay.hud.TuPigBluetoothSuspend
 import java.io.Closeable
 import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
@@ -167,7 +167,7 @@ internal class AudioFocusCoordinator(
     }
 
     private companion object {
-        const val TAG = "DiPlay-AudioFocus"
+        const val TAG = "TuPigCarPlay-AudioFocus"
         const val FULL_VOLUME = 1f
         const val DUCKED_VOLUME = 0.2f
     }
@@ -559,7 +559,7 @@ class AndroidMediaSink(
         // This callback runs on the downlink thread; microphone failures must not stop playback.
         try {
             val speakerphoneCall = config.audioType == "telephony" &&
-                appContext != null && BydBluetoothSuspend.isSuspendedByUs(appContext)
+                appContext != null && TuPigBluetoothSuspend.isSuspendedByUs(appContext)
             if (config.audioType == "telephony" && !speakerphoneCall) enterCommunicationMode(id)
             val uplink = microphoneUplinks.computeIfAbsent(id) {
                 MicrophoneUplink(config, onAudioDiagnostic,
@@ -611,7 +611,7 @@ class AndroidMediaSink(
 
     /**
      * A head unit built on a phone chip plays communication audio on an earpiece, which nobody hears in a car: the
-     * Podofo SM4250 in #782 routed a whole call there (`routeType=1`), and the navigation prompts during it. BYD
+     * Podofo SM4250 in #782 routed a whole call there (`routeType=1`), and the navigation prompts during it. TuPig
      * head units route calls to the loudspeaker (`routeType=2`) and never get here. Once a call's track is routed
      * to the earpiece, the call moves to the loudspeaker as **Calls on the loudspeaker** would, once per call.
      */
@@ -638,9 +638,9 @@ class AndroidMediaSink(
             // would let a failing callback be caught as a failed restore.
             val line = try {
                 // AudioService keeps one mode request per process and uses the newest. Setting back the mode found
-                // at the start would keep DiPlay asking for it after the process that set it, such as the Telecom
+                // at the start would keep TuPigCarPlay asking for it after the process that set it, such as the Telecom
                 // call for the car's phone audio, lets go, and the head unit stays in the voice path (#987).
-                // MODE_NORMAL withdraws DiPlay's request: the mode returns to another process's, or to normal.
+                // MODE_NORMAL withdraws TuPigCarPlay's request: the mode returns to another process's, or to normal.
                 manager.mode = AudioManager.MODE_NORMAL
                 Log.i("xcertplay-usb", "audio mode restored to ${manager.mode}")
                 "Audio: mode restored requested=${AudioManager.MODE_NORMAL} now=${manager.mode} stream=$active"
@@ -747,7 +747,7 @@ class AndroidMediaSink(
             onAudioDiagnostic,
             ambientSinkToken,
             speakerphoneCall = format.audioType == "telephony" &&
-                appContext != null && BydBluetoothSuspend.isSuspendedByUs(appContext),
+                appContext != null && TuPigBluetoothSuspend.isSuspendedByUs(appContext),
             echoReference = echoReference,
             voiceFilter = callVoiceFilter && format.audioType == TELEPHONY_AUDIO_TYPE,
         ).also {
@@ -2110,7 +2110,7 @@ private class AudioRenderer(
 
     /**
      * Worker-thread only. The guidance is scaled in [attenuateNavigation] as it is written, not with
-     * AudioTrack.setVolume: on a BYD DiLink 3.0 the track accepted every setVolume and the guidance on
+     * AudioTrack.setVolume: on a TuPig DiLink 3.0 the track accepted every setVolume and the guidance on
      * stream 14 stayed as loud (#719). Each change is reported once, when it reaches this stream.
      */
     private fun applyNavigationAttenuation() {
@@ -2704,7 +2704,7 @@ private class AudioRenderer(
         // Holds a burst after a Wi-Fi gap (~4 s of AAC) instead of dropping it.
         const val MAX_QUEUED_PACKETS = 192
         const val PREBUFFER_WRITE_CHUNK_BYTES = 2 * 1024
-        const val STATS_TAG = "DiPlay-AudioStats"
+        const val STATS_TAG = "TuPigCarPlay-AudioStats"
         const val STATS_WINDOW_NS = 5_000_000_000L
         const val DECODED_BUFFER_LOG_INTERVAL = 50
         const val MAX_REBUFFER_REPORTS = 5

@@ -75,8 +75,8 @@ Read-only checks on a OnePlus 7T Pro / Android 13 established that:
 - Full stored-configuration readback matched the private baseline afterward.
   No hotspot writes or restarts were performed during these API checks.
 
-These observations are outside the project's BYD support scope. The separate
-broadcast add/remove/re-add comparison used the original DiPlay 0.2.12 APK and
+These observations are outside the project's TuPig support scope. The separate
+broadcast add/remove/re-add comparison used the original TuPigCarPlay 0.2.12 APK and
 a privileged experimental helper: automatic joining and CarPlay succeeded with
 the tested element, failed after removal and succeeded after re-add. Channel 0
 and IPv6 worked, and other stored fields were preserved. This comparison does
@@ -86,7 +86,7 @@ not validate the new app's complete Apply/Restore path.
 
 App-issued ADB authorization, on-device journal durability, Apply/Restore,
 broadcast refresh, automatic joining with the new app, reboot persistence and
-long sessions still require physical acceptance on supported BYD firmware.
+long sessions still require physical acceptance on supported TuPig firmware.
 The source-only debug APK contains no private CarPlay authentication identity.
 Android TLS wireless debugging alone cannot exercise the plain localhost:5555
 LocalAdb path. Older firmware without the required APIs is refused.

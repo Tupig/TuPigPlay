@@ -207,9 +207,9 @@ class CarButtonImagePickerTest {
         assertTrue(!intent.getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false))
     }
 
-    private fun homeButtons(activity: DiPlayActivity): List<Button> {
+    private fun homeButtons(activity: TuPigCarPlayActivity): List<Button> {
         val controls = LinearLayout(activity)
-        DiPlayActivity::class.java.getDeclaredMethod("carButtonControls", LinearLayout::class.java)
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("carButtonControls", LinearLayout::class.java)
             .apply { isAccessible = true }.invoke(activity, controls)
         return views(controls).filterIsInstance<Button>().toList()
     }
@@ -235,9 +235,9 @@ class CarButtonImagePickerTest {
             override fun getContract() = contract
         }
 
-    private fun withHome(check: (DiPlayActivity) -> Unit) {
+    private fun withHome(check: (TuPigCarPlayActivity) -> Unit) {
         CarPlayBackgroundSession.clear()
-        val controller = Robolectric.buildActivity(DiPlayActivity::class.java)
+        val controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java)
         val activity = controller.get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         controller.setup().visible()

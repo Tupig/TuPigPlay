@@ -20,16 +20,16 @@ class UpdateApkExportTest {
 
     @Test fun copiesTheApkAndKeepsOnlyTheNewestOne() {
         val directory = File(context.getExternalFilesDir(null), "update").apply { mkdirs() }
-        File(directory, "DiPlay-0.2.14.apk").writeText("old")
-        val apk = File(context.cacheDir, "DiPlay-0.2.15.apk").apply { writeText("new") }
+        File(directory, "TuPigCarPlay-0.2.14.apk").writeText("old")
+        val apk = File(context.cacheDir, "TuPigCarPlay-0.2.15.apk").apply { writeText("new") }
 
         val saved = UpdateApkExport.copy(context, apk)!!
         val path = saved.path
 
-        assertEquals(File(directory, "DiPlay-0.2.15.apk").absolutePath, path)
+        assertEquals(File(directory, "TuPigCarPlay-0.2.15.apk").absolutePath, path)
         assertEquals("new", File(path).readText())
         assertNull(saved.uri)
-        assertFalse(File(directory, "DiPlay-0.2.14.apk").exists())
+        assertFalse(File(directory, "TuPigCarPlay-0.2.14.apk").exists())
         assertTrue(apk.exists())
     }
 }

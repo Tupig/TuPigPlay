@@ -7,7 +7,7 @@ import kotlin.math.log10
 
 /**
  * Sixteen band magnitudes of the PCM being played, in the form the car's lamp controller takes for its music
- * rhythm: values from 1 to 15 at the frequencies BYD's own audio service samples. Goertzel filters run over the last
+ * rhythm: values from 1 to 15 at the frequencies TuPig's own audio service samples. Goertzel filters run over the last
  * [WINDOW_FRAMES] mono frames, so the low bands see more than one cycle. The result is relative: the loudest recent
  * band sits near 15 and the rest follow in dB below it, with silence at 1.
  */
@@ -78,7 +78,7 @@ internal class AmbientMusicBandAnalyzer(private val sampleRate: Int, private val
     companion object {
         const val BAND_COUNT = 16
         const val MAX_LEVEL = 15
-        /** The frequencies BYD's audio service reads for the rhythm. */
+        /** The frequencies TuPig's audio service reads for the rhythm. */
         val FREQUENCIES = intArrayOf(40, 80, 120, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1200, 1600, 1800, 3500)
         private const val WINDOW_FRAMES = 2048
         private const val ANALYSIS_FRAMES = 1920

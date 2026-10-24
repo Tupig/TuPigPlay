@@ -13,7 +13,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 
 /**
  * An accessibility service to automatically check "Always allow / Use by default"
- * and click "OK / Confirm" when the Android system USB permission dialog appears for DiPlay.
+ * and click "OK / Confirm" when the Android system USB permission dialog appears for TuPigCarPlay.
  */
 class UsbAutoConfirmService : AccessibilityService() {
 
@@ -46,7 +46,7 @@ class UsbAutoConfirmService : AccessibilityService() {
             if (!isTargetPrompt(texts.joinToString(" "), appLabel)) {
                 if (ignoredWindowId != usbWindowId) {
                     ignoredWindowId = usbWindowId
-                    Log.i(TAG, "System dialog does not ask for DiPlay USB access; left alone")
+                    Log.i(TAG, "System dialog does not ask for TuPigCarPlay USB access; left alone")
                 }
                 return
             }
@@ -64,7 +64,7 @@ class UsbAutoConfirmService : AccessibilityService() {
             }
             if (confirmed) {
                 lastClickTime = now
-                Log.i(TAG, "Successfully auto-confirmed DiPlay USB permission dialog")
+                Log.i(TAG, "Successfully auto-confirmed TuPigCarPlay USB permission dialog")
             }
         } finally {
             @Suppress("DEPRECATION")
@@ -100,7 +100,7 @@ class UsbAutoConfirmService : AccessibilityService() {
         /**
          * Both USB activities extend AlertActivity, which reports its window to accessibility as
          * android.app.Dialog rather than by activity name, on Android 7 to 14 alike. So the USB
-         * dialog never matched, and auto-confirm did nothing even when BYD showed the system
+         * dialog never matched, and auto-confirm did nothing even when TuPig showed the system
          * UsbPermissionActivity (#409). Other systemui dialog activities, such as screen-capture
          * consent, report the same name, so [isTargetPrompt] must also find a USB device.
          */
@@ -112,10 +112,10 @@ class UsbAutoConfirmService : AccessibilityService() {
             pkg in SYSTEM_PACKAGES && (className in USB_ACTIVITIES || className == ALERT_ACTIVITY_CLASS)
 
         /**
-         * The prompt must name this app and a USB device. Android 10+ words it "Allow DiPlay to
+         * The prompt must name this app and a USB device. Android 10+ words it "Allow TuPigCarPlay to
          * access iPhone?" with no "USB", Android 7.1 names "the USB device" instead of the phone,
-         * and Chinese puts the name between letters ("要允许DiPlay访问iPhone吗？"), so only ASCII
-         * word characters count as part of a longer name such as "FakeDiPlay".
+         * and Chinese puts the name between letters ("要允许TuPigCarPlay访问iPhone吗？"), so only ASCII
+         * word characters count as part of a longer name such as "FakeTuPigCarPlay".
          */
         internal fun isTargetPrompt(text: String, appLabel: String): Boolean =
             appLabel.isNotBlank() &&
@@ -144,7 +144,7 @@ class UsbAutoConfirmService : AccessibilityService() {
             return false
         }
 
-        /** BYD's settings app does not answer the standard action but has its own screen (#409). */
+        /** TuPig's settings app does not answer the standard action but has its own screen (#409). */
         private val ACCESSIBILITY_SCREENS = listOf(
             ComponentName("com.byd.systemsettings", "com.byd.systemsettings.accessibility.AccessibilityMainActivity"),
             ComponentName("com.android.settings", "com.android.settings.Settings\$AccessibilitySettingsActivity"),

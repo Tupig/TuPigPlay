@@ -22,65 +22,65 @@ class VehicleProbeBatteryConcurrencyTest {
     private val context get() = RuntimeEnvironment.getApplication()
 
     @Before fun reset() {
-        context.getSharedPreferences("diplay_byd_vehicle_fields", Context.MODE_PRIVATE).edit().clear().commit()
-        context.getSharedPreferences("diplay_byd_outputs", Context.MODE_PRIVATE).edit().clear().commit()
-        BydVehicleFieldStore.clearMemoryForTests()
-        BydBatteryStatus.read(context) { null }
+        context.getSharedPreferences("tupigcarplay_leapmotor_vehicle_fields", Context.MODE_PRIVATE).edit().clear().commit()
+        context.getSharedPreferences("tupigcarplay_leapmotor_outputs", Context.MODE_PRIVATE).edit().clear().commit()
+        TuPigVehicleFieldStore.clearMemoryForTests()
+        TuPigBatteryStatus.read(context) { null }
     }
 
     @After fun cleanup() = reset()
 
     @Test fun savingAnAcceptedProbeDoesNotWaitForAnOlderBatteryRead() =
         acceptedProbeWhileReadPaused { _, candidate ->
-            BydVehicleFieldStore.save(context, candidate)
+            TuPigVehicleFieldStore.save(context, candidate)
             true
         }
 
     @Test fun automaticReplacementDoesNotWaitForAnOlderBatteryRead() =
         acceptedProbeWhileReadPaused { saved, candidate ->
-            BydVehicleFieldStore.replaceAutomatically(context, saved, candidate).saved
+            TuPigVehicleFieldStore.replaceAutomatically(context, saved, candidate).saved
         }
 
     @Test fun explicitReplacementDoesNotWaitForAnOlderBatteryRead() =
         acceptedProbeWhileReadPaused { saved, candidate ->
-            BydVehicleFieldStore.replaceAnyway(context, saved, candidate)
+            TuPigVehicleFieldStore.replaceAnyway(context, saved, candidate)
         }
 
     @Test fun anAcceptedProbeInDefaultModeDoesNotPublishItsBatteryReading() {
-        BydOutputSettings.setLegacyVehicleProbe(context, false)
+        TuPigOutputSettings.setLegacyVehicleProbe(context, false)
         val saved = capabilities(25.0)
-        BydVehicleFieldStore.save(context, saved)
-        BydBatteryStatus.read(context) { reading(25.0) }
+        TuPigVehicleFieldStore.save(context, saved)
+        TuPigBatteryStatus.read(context) { reading(25.0) }
         val candidate = capabilities(90.0)
 
-        assertTrue(BydVehicleFieldStore.replaceAutomatically(context, saved, candidate).saved)
+        assertTrue(TuPigVehicleFieldStore.replaceAutomatically(context, saved, candidate).saved)
 
-        assertEquals(candidate, BydVehicleFieldStore.load(context))
+        assertEquals(candidate, TuPigVehicleFieldStore.load(context))
         assertBattery(25.0)
     }
 
     @Test fun staleAutomaticAndExplicitCandidatesDoNotPublishTheirBatteryReading() {
-        BydOutputSettings.setLegacyVehicleProbe(context, true)
+        TuPigOutputSettings.setLegacyVehicleProbe(context, true)
         val expected = capabilities(25.0)
-        BydVehicleFieldStore.save(context, expected)
+        TuPigVehicleFieldStore.save(context, expected)
         val newer = capabilities(60.0)
-        BydVehicleFieldStore.save(context, newer)
+        TuPigVehicleFieldStore.save(context, newer)
         val candidate = capabilities(90.0)
 
-        val automatic = BydVehicleFieldStore.replaceAutomatically(context, expected, candidate)
+        val automatic = TuPigVehicleFieldStore.replaceAutomatically(context, expected, candidate)
         assertFalse(automatic.saved)
         assertTrue(automatic.snapshotChanged)
-        assertFalse(BydVehicleFieldStore.replaceAnyway(context, expected, candidate))
-        assertEquals(newer, BydVehicleFieldStore.load(context))
+        assertFalse(TuPigVehicleFieldStore.replaceAnyway(context, expected, candidate))
+        assertEquals(newer, TuPigVehicleFieldStore.load(context))
         assertBattery(60.0)
     }
 
     private fun acceptedProbeWhileReadPaused(
-        replace: (BydVehicleCapabilities, BydVehicleCapabilities) -> Boolean,
+        replace: (TuPigVehicleCapabilities, TuPigVehicleCapabilities) -> Boolean,
     ) {
-        BydOutputSettings.setLegacyVehicleProbe(context, true)
+        TuPigOutputSettings.setLegacyVehicleProbe(context, true)
         val saved = capabilities(25.0)
-        BydVehicleFieldStore.save(context, saved)
+        TuPigVehicleFieldStore.save(context, saved)
         val candidate = capabilities(90.0)
         val readEntered = CountDownLatch(1)
         val releaseRead = CountDownLatch(1)
@@ -88,10 +88,10 @@ class VehicleProbeBatteryConcurrencyTest {
             Thread(task, "probe-battery-regression").apply { isDaemon = true }
         }
         try {
-            val oldRead = workers.submit<BydBatteryReading?> {
-                BydBatteryStatus.read(context) {
+            val oldRead = workers.submit<TuPigBatteryReading?> {
+                TuPigBatteryStatus.read(context) {
                     // Polling holds readLock and loads the store before doing slow shell I/O.
-                    check(BydVehicleFieldStore.load(context) == saved)
+                    check(TuPigVehicleFieldStore.load(context) == saved)
                     readEntered.countDown()
                     check(releaseRead.await(5, TimeUnit.SECONDS)) { "controlled battery read was not released" }
                     reading(25.0)
@@ -104,14 +104,14 @@ class VehicleProbeBatteryConcurrencyTest {
             // lets that broken implementation fail within a bound without stranding workers.
             assertTrue("Accepted publication must complete while shell I/O is still paused",
                 accepted.get(1, TimeUnit.SECONDS))
-            assertEquals(candidate, BydVehicleFieldStore.load(context))
+            assertEquals(candidate, TuPigVehicleFieldStore.load(context))
             assertBattery(90.0)
 
             releaseRead.countDown()
             assertEquals(25.0, oldRead.get(1, TimeUnit.SECONDS)!!.percent, 0.0)
             assertBattery(90.0) // The older read cannot overwrite the accepted probe.
 
-            BydBatteryStatus.read(context) { reading(70.0) }
+            TuPigBatteryStatus.read(context) { reading(70.0) }
             assertBattery(70.0) // A fresh reader can still update normally.
         } finally {
             releaseRead.countDown()
@@ -123,18 +123,18 @@ class VehicleProbeBatteryConcurrencyTest {
         }
     }
 
-    private fun reading(percent: Double) = BydBatteryReading(percent, 150, 20.0, false)
+    private fun reading(percent: Double) = TuPigBatteryReading(percent, 150, 20.0, false)
 
     private fun assertBattery(percent: Double) =
-        assertEquals(percent, BydBatteryStatus.snapshot()!!.batteryPercent, 0.0)
+        assertEquals(percent, TuPigBatteryStatus.snapshot()!!.batteryPercent, 0.0)
 
-    private fun capabilities(percent: Double) = BydVehicleCapabilities(
-        fields = BydVehicleField.entries.associateWith { field ->
-            BydFieldProbeResult(field, true, BydVehicleFieldStore.defaultAddress(field), when (field) {
-                BydVehicleField.SOC -> percent
-                BydVehicleField.RANGE -> 150.0
-                BydVehicleField.REMAINING_KWH -> 20.0
+    private fun capabilities(percent: Double) = TuPigVehicleCapabilities(
+        fields = TuPigVehicleField.entries.associateWith { field ->
+            TuPigFieldProbeResult(field, true, TuPigVehicleFieldStore.defaultAddress(field), when (field) {
+                TuPigVehicleField.SOC -> percent
+                TuPigVehicleField.RANGE -> 150.0
+                TuPigVehicleField.REMAINING_KWH -> 20.0
                 else -> 1.0
             })
-        }, catalogAvailable = true, firmwareKey = BydVehicleFieldStore.firmwareKey())
+        }, catalogAvailable = true, firmwareKey = TuPigVehicleFieldStore.firmwareKey())
 }

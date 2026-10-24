@@ -3,7 +3,7 @@ package com.shilapi.xcertplay
 import android.content.Context
 import com.shilapi.xcertplay.airplay.CarPlaySize
 import com.shilapi.xcertplay.host.R
-import com.shilapi.xcertplay.hud.BydClusterNaviMode
+import com.shilapi.xcertplay.hud.TuPigClusterNaviMode
 import com.shilapi.xcertplay.orchestration.ManualHotspotValidation
 import com.shilapi.xcertplay.transport.EvChargingConnectors
 
@@ -39,11 +39,11 @@ internal fun DiLink51ClusterLayout.Contrast.localizedLabel(context: Context): St
     DiLink51ClusterLayout.Contrast.DARK -> R.string.option_contrast_dark
 })
 
-internal fun BydClusterNaviMode.localizedLabel(context: Context): String = context.getString(when (this) {
-    BydClusterNaviMode.OFF -> R.string.navi_mode_off
-    BydClusterNaviMode.TURN_ON_BY_NAVI -> R.string.navi_mode_turn_on_by_navi
-    BydClusterNaviMode.SMALL -> R.string.navi_mode_small
-    BydClusterNaviMode.FULL -> R.string.navi_mode_full
+internal fun TuPigClusterNaviMode.localizedLabel(context: Context): String = context.getString(when (this) {
+    TuPigClusterNaviMode.OFF -> R.string.navi_mode_off
+    TuPigClusterNaviMode.TURN_ON_BY_NAVI -> R.string.navi_mode_turn_on_by_navi
+    TuPigClusterNaviMode.SMALL -> R.string.navi_mode_small
+    TuPigClusterNaviMode.FULL -> R.string.navi_mode_full
 })
 
 internal fun EvChargingConnectors.localizedLabel(context: Context): String = context.getString(when (this) {
@@ -59,8 +59,8 @@ internal fun ManualHotspotValidation.Error.messageResource(): Int = when (this) 
     ManualHotspotValidation.Error.PASSWORD_LENGTH -> R.string.hotspot_error_password_length
 }
 
-internal fun com.shilapi.xcertplay.hud.BydOemClusterHold.localizedLabel(context: Context): String = context.getString(when (this) {
-    com.shilapi.xcertplay.hud.BydOemClusterHold.OFF -> R.string.oem_cluster_hold_off
-    com.shilapi.xcertplay.hud.BydOemClusterHold.COMPONENT -> R.string.oem_cluster_hold_component
-    com.shilapi.xcertplay.hud.BydOemClusterHold.PACKAGE -> R.string.oem_cluster_hold_package
+internal fun com.shilapi.xcertplay.hud.TuPigOemClusterHold.localizedLabel(context: Context): String = context.getString(when (this) {
+    com.shilapi.xcertplay.hud.TuPigOemClusterHold.OFF -> R.string.oem_cluster_hold_off
+    com.shilapi.xcertplay.hud.TuPigOemClusterHold.COMPONENT -> R.string.oem_cluster_hold_component
+    com.shilapi.xcertplay.hud.TuPigOemClusterHold.PACKAGE -> R.string.oem_cluster_hold_package
 })

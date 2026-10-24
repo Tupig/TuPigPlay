@@ -11,12 +11,12 @@ import os
 import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'site' / 'assets' / 'downloads.json'
-REPO = os.environ.get('GITHUB_REPOSITORY', 'shihabal3amri/DiPlay')
+REPO = os.environ.get('GITHUB_REPOSITORY', 'shihabal3amri/TuPigCarPlay')
 
 
 def releases():
     url = f'https://api.github.com/repos/{REPO}/releases?per_page=100'
-    headers = {'Accept': 'application/vnd.github+json', 'User-Agent': 'DiPlay-download-site'}
+    headers = {'Accept': 'application/vnd.github+json', 'User-Agent': 'TuPigCarPlay-download-site'}
     if os.environ.get('GITHUB_TOKEN'):
         headers['Authorization'] = 'Bearer ' + os.environ['GITHUB_TOKEN']
     while url:

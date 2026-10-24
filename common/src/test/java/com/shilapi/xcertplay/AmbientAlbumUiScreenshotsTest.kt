@@ -117,7 +117,7 @@ class AmbientAlbumUiScreenshotsTest {
         }
     }
 
-    private fun openDialog(widthDp: Int, fontScale: Float): Pair<DiPlayActivity, AlertDialog> {
+    private fun openDialog(widthDp: Int, fontScale: Float): Pair<TuPigCarPlayActivity, AlertDialog> {
         RuntimeEnvironment.setQualifiers("en-w${widthDp}dp-h960dp-mdpi")
         val app = RuntimeEnvironment.getApplication()
         app.resources.updateConfiguration(
@@ -128,7 +128,7 @@ class AmbientAlbumUiScreenshotsTest {
             },
             app.resources.displayMetrics,
         )
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         activity.ambientSupportCheck = { CompletableFuture.completedFuture(false) }
         ReflectionHelpers.callInstanceMethod<Unit>(activity, "showAmbientConfiguration")

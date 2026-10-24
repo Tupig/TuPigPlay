@@ -11,7 +11,7 @@ import com.shilapi.xcertplay.host.R
 import kotlin.math.roundToInt
 
 /**
- * Scales DiPlay's own screens. Some head units report a low density for a large screen, so Android
+ * Scales TuPigCarPlay's own screens. Some head units report a low density for a large screen, so Android
  * lays them out like a very wide tablet with tiny text and controls. CarPlay's picture is not affected.
  */
 object InterfaceSize {
@@ -20,7 +20,7 @@ object InterfaceSize {
 
     // Auto scales up until the shorter side is this wide; screens already narrower stay at 100%.
     private const val AUTO_SMALLEST_WIDTH_DP = 720
-    private const val PREFS = "diplay"
+    private const val PREFS = "tupigcarplay"
     private const val KEY = "interface_size"
 
     fun preference(context: Context): Int =

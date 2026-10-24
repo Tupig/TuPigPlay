@@ -214,8 +214,8 @@ class WirelessStartupRecoveryTest {
     @Test fun anIphoneThatDoesNotConnectInTimeIsNamedAndTheStopIsSaid() =
         assertNamedUntilRetriesStop(failure, R.string.first_tcp_timeout)
 
-    // Nothing is retried for a car hotspot DiPlay cannot use, so the screen does not say "Retrying…".
-    @Test fun aHotspotDiPlayCannotUseSaysTheRetriesStopped() {
+    // Nothing is retried for a car hotspot TuPigCarPlay cannot use, so the screen does not say "Retrying…".
+    @Test fun aHotspotTuPigCarPlayCannotUseSaysTheRetriesStopped() {
         val stage = TextView(activity)
         ReflectionHelpers.setField(activity, "stageStatusView", stage)
         listOf("The car hotspot is off. Turn it on in the car settings and connect again.",
@@ -253,7 +253,7 @@ class WirelessStartupRecoveryTest {
         ReflectionHelpers.setField(activity, "stageStatusView", stage)
         val log = File(activity.filesDir, "known-cause.log")
         ReflectionHelpers.setField(activity, "sessionLog", SessionLogFile(log))
-        val notPaired = "The selected iPhone is no longer paired. Choose it again in DiPlay."
+        val notPaired = "The selected iPhone is no longer paired. Choose it again in TuPigCarPlay."
         report(status = CarPlayStatus.Failed(notPaired, knownCause = ConnectionFailureCause.CHOSEN_IPHONE_NOT_PAIRED))
         assertEquals(activity.getString(R.string.chosen_iphone_not_paired), stage.text.toString())
         assertEquals(0, budget().retries)

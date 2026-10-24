@@ -1,6 +1,6 @@
 package com.shilapi.xcertplay.media
 
-import com.shilapi.xcertplay.hud.BydAmbientLightPolicy
+import com.shilapi.xcertplay.hud.TuPigAmbientLightPolicy
 import java.util.concurrent.CompletableFuture
 
 /** Serialized lamp lifecycle used by the real controller and fake-client tests. No audio or timer thread here. */
@@ -13,7 +13,7 @@ internal class AmbientLampSession(
 ) {
     interface Client {
         fun unhealthy(): Boolean
-        fun begin(seed: BydAmbientLightPolicy.Snapshot?): CompletableFuture<BydAmbientLightPolicy.Snapshot>
+        fun begin(seed: TuPigAmbientLightPolicy.Snapshot?): CompletableFuture<TuPigAmbientLightPolicy.Snapshot>
         fun apply(desired: Triple<Int, Int, Int>): CompletableFuture<Unit>
         fun stop(): CompletableFuture<Unit>
         /** Called after stop completes; must close stdin/transport before returning control to future retries. */
@@ -26,7 +26,7 @@ internal class AmbientLampSession(
     private var stopping = false
     private var failures = 0
     private var retryAt = 0L
-    private var original: BydAmbientLightPolicy.Snapshot? = null
+    private var original: TuPigAmbientLightPolicy.Snapshot? = null
     private var restoreUnconfirmed = false
     private var lastApplied: Triple<Int, Int, Int>? = null
     private val cadence = AmbientMusicApplyCadence()
@@ -60,11 +60,11 @@ internal class AmbientLampSession(
             ready = false
             log("lamp begin retry=$failures seeded=${original != null}")
             val started = try { opening.begin(original) } catch (error: Throwable) {
-                CompletableFuture<BydAmbientLightPolicy.Snapshot>().also { it.completeExceptionally(error) }
+                CompletableFuture<TuPigAmbientLightPolicy.Snapshot>().also { it.completeExceptionally(error) }
             }
             started.whenComplete { snapshot, error -> dispatch {
                 if (client !== opening || stopping) return@dispatch
-                if (error != null || snapshot == null || !BydAmbientLightPolicy.validSnapshot(snapshot)) {
+                if (error != null || snapshot == null || !TuPigAmbientLightPolicy.validSnapshot(snapshot)) {
                     failOwned("begin")
                 } else {
                     if (original == null) original = snapshot
@@ -101,7 +101,7 @@ internal class AmbientLampSession(
     private fun scheduleRetry(uncertainStop: Boolean) {
         val backoff = when (failures.coerceAtMost(3)) { 0 -> 5_000L; 1 -> 10_000L; 2 -> 20_000L; else -> 30_000L }
         failures = (failures + 1).coerceAtMost(4)
-        val delay = maxOf(backoff, if (uncertainStop) BydAmbientLightPolicy.LEASE_MILLIS + 1_000 else 0)
+        val delay = maxOf(backoff, if (uncertainStop) TuPigAmbientLightPolicy.LEASE_MILLIS + 1_000 else 0)
         retryAt = now() + delay
         log("lamp retry in ${delay}ms enabled=$enabled restorePending=$uncertainStop")
     }

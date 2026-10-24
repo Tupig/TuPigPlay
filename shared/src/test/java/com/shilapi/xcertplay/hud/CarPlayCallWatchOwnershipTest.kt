@@ -13,7 +13,7 @@ import org.junit.rules.TemporaryFolder
 class CarPlayCallWatchOwnershipTest {
     @get:Rule val temporary = TemporaryFolder()
     private val ownership get() = CarPlayCallWatchOwnership(temporary.root)
-    private fun token(packageName: String = "com.example.diplay") = File(temporary.root,
+    private fun token(packageName: String = "com.example.tupigcarplay") = File(temporary.root,
         File(CarPlayCallWatchOwnership.newToken(packageName)).name).path
 
     @Test fun immediateNextCallCannotReuseThePreviousWatchersToken() {

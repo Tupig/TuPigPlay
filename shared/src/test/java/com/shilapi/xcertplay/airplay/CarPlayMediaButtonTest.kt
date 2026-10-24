@@ -12,7 +12,7 @@ class CarPlayMediaButtonTest {
     fun steeringWheelKeysMapToCarPlayMediaPresses() {
         assertEquals(CarPlayMediaButton.NEXT, CarPlayMediaButton.forKeyCode(KeyEvent.KEYCODE_MEDIA_NEXT))
         assertEquals(CarPlayMediaButton.PREVIOUS, CarPlayMediaButton.forKeyCode(KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-        // BYD rewrites its play/pause key into PLAY or PAUSE from the session state; both toggle.
+        // TuPig rewrites its play/pause key into PLAY or PAUSE from the session state; both toggle.
         assertEquals(CarPlayMediaButton.PLAY_PAUSE, CarPlayMediaButton.forKeyCode(KeyEvent.KEYCODE_MEDIA_PLAY))
         assertEquals(CarPlayMediaButton.PLAY_PAUSE, CarPlayMediaButton.forKeyCode(KeyEvent.KEYCODE_MEDIA_PAUSE))
         assertEquals(CarPlayMediaButton.PLAY_PAUSE, CarPlayMediaButton.forKeyCode(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
@@ -81,7 +81,7 @@ class CarPlayMediaButtonTest {
 
     @Test
     fun theWindowLeavesPlayPauseAndUnrelatedKeysAlone() {
-        // BYD acts on play/pause itself, and the wheel key service owns it for DiLink 3. Claiming it
+        // TuPig acts on play/pause itself, and the wheel key service owns it for DiLink 3. Claiming it
         // in the window too would take it away from the car for every driver.
         for (keyCode in listOf(KeyEvent.KEYCODE_MEDIA_PLAY, KeyEvent.KEYCODE_MEDIA_PAUSE,
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_HEADSETHOOK, 353, 331,

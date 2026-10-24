@@ -8,9 +8,9 @@ import android.widget.LinearLayout
 import android.widget.Switch
 import com.shilapi.xcertplay.adb.LocalAdb
 import com.shilapi.xcertplay.host.R
-import com.shilapi.xcertplay.hud.BydAdbAccess
-import com.shilapi.xcertplay.hud.BydOutputSettings
-import com.shilapi.xcertplay.hud.BydVehicleFieldStore
+import com.shilapi.xcertplay.hud.TuPigAdbAccess
+import com.shilapi.xcertplay.hud.TuPigOutputSettings
+import com.shilapi.xcertplay.hud.TuPigVehicleFieldStore
 import com.shilapi.xcertplay.network.CarHotspotSettings
 import com.shilapi.xcertplay.orchestration.WirelessHotspotMode
 import java.util.concurrent.CopyOnWriteArrayList
@@ -36,15 +36,15 @@ import org.robolectric.shadows.ShadowToast
 @Config(sdk = [29], qualifiers = "en", manifest = Config.NONE, shadows = [CarHotspotSwitchTest.Grant::class,
     CarHotspotAdbGrantTest.WritePermission::class, CarHotspotSwitchTest.StatusCheck::class])
 class CarHotspotSwitchTest {
-    private lateinit var activity: DiPlayActivity
+    private lateinit var activity: TuPigCarPlayActivity
     private lateinit var controls: LinearLayout
 
     @Before fun setUp() {
         val app = RuntimeEnvironment.getApplication()
-        for (name in listOf("diplay_byd_outputs", "diplay_byd_vehicle_fields", "diplay_car_hotspot", "xcertplay_airplay", "diplay")) {
+        for (name in listOf("tupigcarplay_leapmotor_outputs", "tupigcarplay_leapmotor_vehicle_fields", "tupigcarplay_car_hotspot", "xcertplay_airplay", "tupigcarplay")) {
             app.getSharedPreferences(name, 0).edit().clear().commit()
         }
-        BydVehicleFieldStore.clearMemoryForTests()
+        TuPigVehicleFieldStore.clearMemoryForTests()
         CarPlayBackgroundSession.clear()
         CarHotspotAdbGrantTest.WritePermission.allowed = false
         ShadowSettings.setCanDrawOverlays(false)
@@ -56,12 +56,12 @@ class CarHotspotSwitchTest {
         StatusCheck.workers.clear()
         Grant.allowed = CarHotspotSetup.Permission.entries.toSet()
         Grant.access = LocalAdb.Access.READY
-        activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         AirPlayPersistence.saveWirelessHotspotMode(activity, WirelessHotspotMode.MANUAL)
         AirPlayPersistence.saveAutoStartOnBoot(activity, false)
         controls = LinearLayout(activity)
-        DiPlayActivity::class.java.getDeclaredMethod("renderBydAdbControls", LinearLayout::class.java,
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("renderTuPigAdbControls", LinearLayout::class.java,
             LocalAdb.Access::class.java).apply { isAccessible = true }.invoke(activity, controls, LocalAdb.Access.READY)
         activity.setContentView(controls)
     }
@@ -72,7 +72,7 @@ class CarHotspotSwitchTest {
         StatusCheck.workers.forEach { it.join(3_000) }
         shadowOf(Looper.getMainLooper()).idle()
         CarPlayBackgroundSession.clear()
-        BydVehicleFieldStore.clearMemoryForTests()
+        TuPigVehicleFieldStore.clearMemoryForTests()
     }
 
     @Test fun enablingDirectlyRequestsPermissionWithoutAnotherDialog() {
@@ -177,14 +177,14 @@ class CarHotspotSwitchTest {
 
     @Test fun vehicleControlsAreNotDuplicatedInTheHotspotPermissionCard() {
         assertEquals(1, switches(controls).size)
-        assertFalse(BydOutputSettings.batteryToIphone(activity))
-        assertFalse(BydOutputSettings.wheelSpeedToIphone(activity))
-        assertFalse(BydOutputSettings.videoWhileParked(activity))
+        assertFalse(TuPigOutputSettings.batteryToIphone(activity))
+        assertFalse(TuPigOutputSettings.wheelSpeedToIphone(activity))
+        assertFalse(TuPigOutputSettings.videoWhileParked(activity))
         assertTrue(Grant.requested.isEmpty())
     }
 
     @Test fun anOutstandingVehicleCheckPreventsASecondAuthorizationFlow() {
-        DiPlayActivity::class.java.getDeclaredField("adbCheckInProgress").apply {
+        TuPigCarPlayActivity::class.java.getDeclaredField("adbCheckInProgress").apply {
             isAccessible = true
         }.setBoolean(activity, true)
         refreshControls()
@@ -196,7 +196,7 @@ class CarHotspotSwitchTest {
         assertTrue(Grant.requested.isEmpty())
         assertNull(Grant.worker)
 
-        DiPlayActivity::class.java.getDeclaredField("adbCheckInProgress").apply {
+        TuPigCarPlayActivity::class.java.getDeclaredField("adbCheckInProgress").apply {
             isAccessible = true
         }.setBoolean(activity, false)
         refreshControls()
@@ -244,20 +244,20 @@ class CarHotspotSwitchTest {
     }
 
     private fun lifecycle(name: String) {
-        DiPlayActivity::class.java.getDeclaredMethod(name).apply { isAccessible = true }.invoke(activity)
+        TuPigCarPlayActivity::class.java.getDeclaredMethod(name).apply { isAccessible = true }.invoke(activity)
     }
 
     private fun prepareResume() {
         for ((name, value) in mapOf("initialLaunch" to false, "page" to "settings")) {
-            DiPlayActivity::class.java.getDeclaredField(name).apply { isAccessible = true }.set(activity, value)
+            TuPigCarPlayActivity::class.java.getDeclaredField(name).apply { isAccessible = true }.set(activity, value)
         }
     }
 
-    @Implements(BydAdbAccess::class, isInAndroidSdk = false)
+    @Implements(TuPigAdbAccess::class, isInAndroidSdk = false)
     class StatusCheck {
-        @Implementation fun check(context: Context, mayAsk: Boolean): BydAdbAccess.Status {
+        @Implementation fun check(context: Context, mayAsk: Boolean): TuPigAdbAccess.Status {
             workers.add(Thread.currentThread())
-            return BydAdbAccess.Status(BydAdbAccess.State.READY, batteryPercent = 74.0, rangeKm = 48)
+            return TuPigAdbAccess.Status(TuPigAdbAccess.State.READY, batteryPercent = 74.0, rangeKm = 48)
         }
         companion object { val workers = CopyOnWriteArrayList<Thread>() }
     }
@@ -278,7 +278,7 @@ class CarHotspotSwitchTest {
     }
 
     private fun refreshControls() {
-        DiPlayActivity::class.java.getDeclaredMethod("updateAdbSwitches").apply {
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("updateAdbSwitches").apply {
             isAccessible = true
         }.invoke(activity)
     }
@@ -288,7 +288,7 @@ class CarHotspotSwitchTest {
             it.contentDescription == activity.getString(R.string.open_after_the_car_starts)
         }?.let { return it }
         val bootControls = LinearLayout(activity)
-        DiPlayActivity::class.java.getDeclaredMethod("connectionSettings", LinearLayout::class.java).apply {
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("connectionSettings", LinearLayout::class.java).apply {
             isAccessible = true
         }.invoke(activity, bootControls)
         controls.addView(bootControls)

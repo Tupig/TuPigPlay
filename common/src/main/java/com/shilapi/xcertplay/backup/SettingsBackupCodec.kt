@@ -9,14 +9,14 @@ data class SettingsImportOutcome(val applied: Int, val skipped: Int, val invalid
 
 /** Reads and writes the settings documents exchanged through the backup web page. */
 object SettingsBackupCodec {
-    const val FORMAT = "diplay-settings"
+    const val FORMAT = "tupigcarplay-settings"
     const val VERSION = 1
 
     /**
      * The settings of the main file that travel, by name. That file also holds the iPhones' pairing keys
      * (`pairing.<id>`), lockdown records, the authentication target and the car's hotspot name and
      * passphrase. An imported file must never set those: a pairing key from someone else's file would make
-     * DiPlay trust their device. So a key travels only once it is listed here; car-specific values (the
+     * TuPigCarPlay trust their device. So a key travels only once it is listed here; car-specific values (the
      * detected screen size, the car's hotspot) and consents (sharing the map with other apps) stay out too.
      */
     private val AIRPLAY_KEYS = setOf(
@@ -39,14 +39,14 @@ object SettingsBackupCodec {
         "temporary_system_bars",
         "harman_fullscreen", "carplay_same_task", "safe_area_draw_outside", "main_display_disable_safe_area",
         "black_corner_radius_dp",
-        "adapt_pip_resolution", "auto_start_on_boot", "bt_suspend_during_carplay", "hide_byd_call_popup",
+        "adapt_pip_resolution", "auto_start_on_boot", "bt_suspend_during_carplay", "hide_tupig_call_popup",
         "launcher_bubble", "launcher_bubble_size",
         "bt_suspend_delay_seconds", "location_reporting_enabled", "external_controller", "usb_charging_current",
     )
 
     /** Families of layout settings with many keys and nothing sensitive in them. */
     private val AIRPLAY_PREFIXES = listOf("cluster_", "carplay_night_")
-    private val DIPLAY_KEYS = setOf(
+    private val TUPIGCARPLAY_KEYS = setOf(
         "auto_connect",
         "connect_on_phone_bluetooth",
         "default_connection_mode",
@@ -58,10 +58,18 @@ object SettingsBackupCodec {
     )
     private val FILES = mapOf(
         "xcertplay_airplay" to Policy.Allow(AIRPLAY_KEYS, AIRPLAY_PREFIXES),
-        "diplay" to Policy.Allow(DIPLAY_KEYS),
+        "tupigcarplay" to Policy.Allow(TUPIGCARPLAY_KEYS),
         "carplay_picture" to Policy.All,
-        "diplay_car_hotspot" to Policy.All,
+        "tupigcarplay_car_hotspot" to Policy.All,
     )
+
+    /** Legacy DiPlay backup file names → current TuPigCarPlay prefs files. */
+    private val IMPORT_FILE_ALIASES = mapOf(
+        "diplay" to "tupigcarplay",
+        "diplay_car_hotspot" to "tupigcarplay_car_hotspot",
+    )
+
+    private val ACCEPTED_FORMATS = setOf(FORMAT, "diplay-settings")
 
     private sealed interface Policy {
         fun includes(key: String): Boolean
@@ -99,7 +107,9 @@ object SettingsBackupCodec {
     fun import(context: Context, document: ByteArray): SettingsImportOutcome {
         val root = runCatching { JSONObject(document.toString(Charsets.UTF_8)) }.getOrNull()
             ?: return SettingsImportOutcome(0, 0, invalid = true)
-        if (root.optString("format") != FORMAT || root.optInt("version", Int.MIN_VALUE) !in 1..VERSION) {
+        if (root.optString("format") !in ACCEPTED_FORMATS ||
+            root.optInt("version", Int.MIN_VALUE) !in 1..VERSION
+        ) {
             return SettingsImportOutcome(0, 0, invalid = true)
         }
         val files = root.optJSONObject("settings")
@@ -107,13 +117,14 @@ object SettingsBackupCodec {
         var applied = 0
         var skipped = 0
         for (name in files.keys()) {
-            val policy = FILES[name]
+            val targetName = IMPORT_FILE_ALIASES[name] ?: name
+            val policy = FILES[targetName]
             val file = files.optJSONObject(name)
             if (policy == null || file == null) {
                 skipped += files.optJSONObject(name)?.length() ?: 1
                 continue
             }
-            val prefs = context.getSharedPreferences(name, Context.MODE_PRIVATE)
+            val prefs = context.getSharedPreferences(targetName, Context.MODE_PRIVATE)
             val current = prefs.all
             val editor = prefs.edit()
             for (key in file.keys()) {

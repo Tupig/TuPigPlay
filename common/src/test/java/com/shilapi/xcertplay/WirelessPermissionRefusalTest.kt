@@ -81,17 +81,17 @@ class WirelessPermissionRefusalTest {
         val activity = open()
         assertEquals(listOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
             answer(activity))
-        assertEquals(activity.getString(R.string.allow_precise_location_for_diplay_in_the_head_unit_s_app_p), stage(activity))
+        assertEquals(activity.getString(R.string.allow_precise_location_for_tupigcarplay_in_the_head_unit_s_app_p), stage(activity))
         // Back on the screen without the access, it still says so.
         requireNotNull(controller).pause().resume()
-        assertEquals(activity.getString(R.string.allow_precise_location_for_diplay_in_the_head_unit_s_app_p), stage(activity))
+        assertEquals(activity.getString(R.string.allow_precise_location_for_tupigcarplay_in_the_head_unit_s_app_p), stage(activity))
     }
 
     @Config(sdk = [33])
     @Test fun refusedNearbyDevicesIsNamedOnAndroid13() {
         val activity = open()
         answer(activity)
-        assertEquals(activity.getString(R.string.allow_nearby_devices_for_diplay_in_the_head_unit_s_app_per), stage(activity))
+        assertEquals(activity.getString(R.string.allow_nearby_devices_for_tupigcarplay_in_the_head_unit_s_app_per), stage(activity))
     }
 
     // Android 17's local network access alone gets the sentence that sends the driver to the app permissions,
@@ -102,7 +102,7 @@ class WirelessPermissionRefusalTest {
         ReflectionHelpers.callInstanceMethod<Unit>(activity, "setConnectionStage",
             ReflectionHelpers.ClassParameter.from(Int::class.javaPrimitiveType,
                 WirelessPermissions.refusalMessage(listOf(Manifest.permission.ACCESS_LOCAL_NETWORK))))
-        assertEquals(activity.getString(R.string.could_not_start_carplay_return_to_diplay_and_check_app_per), stage(activity))
+        assertEquals(activity.getString(R.string.could_not_start_carplay_return_to_tupigcarplay_and_check_app_per), stage(activity))
     }
 
     // Android 12 needs both: once Location is allowed in the app permissions, the screen names the other one.
@@ -110,10 +110,10 @@ class WirelessPermissionRefusalTest {
     @Test fun theScreenNamesWhatIsStillMissingAfterTheDriverAllowsPartOfIt() {
         val activity = open()
         answer(activity)
-        assertEquals(activity.getString(R.string.allow_precise_location_for_diplay_in_the_head_unit_s_app_p), stage(activity))
+        assertEquals(activity.getString(R.string.allow_precise_location_for_tupigcarplay_in_the_head_unit_s_app_p), stage(activity))
         requireNotNull(controller).pause()
         shadowOf(context).grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
         requireNotNull(controller).resume()
-        assertEquals(activity.getString(R.string.allow_nearby_devices_for_diplay_in_the_head_unit_s_app_per), stage(activity))
+        assertEquals(activity.getString(R.string.allow_nearby_devices_for_tupigcarplay_in_the_head_unit_s_app_per), stage(activity))
     }
 }

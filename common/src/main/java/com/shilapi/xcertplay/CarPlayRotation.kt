@@ -13,8 +13,8 @@ import android.util.Log
  * A square is heavier to encode and decode; the smoother picture caps it at 1920.
  */
 object CarPlayRotation {
-    private const val TAG = "DiPlay-Rotation"
-    private const val PREFS = "diplay_carplay_rotation"
+    private const val TAG = "TuPigCarPlay-Rotation"
+    private const val PREFS = "tupigcarplay_carplay_rotation"
     private const val KEY_ENABLED = "enabled"
     private const val KEY_PICTURE = "picture"
     private val SIDES = listOf(2560, 2304, 2048, 1920, 1600, 1280)

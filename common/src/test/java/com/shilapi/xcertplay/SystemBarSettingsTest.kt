@@ -19,7 +19,7 @@ import org.robolectric.annotation.Config
 @Config(sdk = [29])
 class SystemBarSettingsTest {
     private val context get() = RuntimeEnvironment.getApplication()
-    private var controller: ActivityController<DiPlayActivity>? = null
+    private var controller: ActivityController<TuPigCarPlayActivity>? = null
     private val activity get() = requireNotNull(controller).get()
 
     @After fun tearDown() {
@@ -108,8 +108,8 @@ class SystemBarSettingsTest {
     }
 
     private fun openSettings() {
-        controller = Robolectric.buildActivity(DiPlayActivity::class.java,
-            Intent(context, DiPlayActivity::class.java).putExtra("page", "settings")).setup()
+        controller = Robolectric.buildActivity(TuPigCarPlayActivity::class.java,
+            Intent(context, TuPigCarPlayActivity::class.java).putExtra("page", "settings")).setup()
         descendants(activity.window.decorView)
             .single { it.contentDescription == activity.getString(
                 R.string.settings_open_category,

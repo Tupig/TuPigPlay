@@ -57,12 +57,12 @@ class HotspotJoinRepair {
                         it.shell(command(application.packageCodePath, application.packageName, "cancel", operation, null))
                 }
             }
-        }, "diplay-hotspot-cancel").apply { isDaemon = true; start() }
+        }, "tupigcarplay-hotspot-cancel").apply { isDaemon = true; start() }
     }
 
     companion object {
         private val operations = ReentrantLock()
-        internal const val HEADER = "DIPLAY_HOTSPOT_JOIN_V1"
+        internal const val HEADER = "TUPIGCARPLAY_HOTSPOT_JOIN_V1"
         internal fun validToken(value: String) = value.matches(Regex("[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}"))
         internal fun command(apk: String, packageName: String, action: String, request: String, token: String?): String {
             require(packageName.matches(Regex("[a-zA-Z][a-zA-Z0-9_]*(?:\\.[a-zA-Z0-9_]+)+")))

@@ -26,7 +26,7 @@ import org.robolectric.util.ReflectionHelpers
 @Config(sdk = [29], qualifiers = "en-w1000dp-h700dp-land", shadows = [CarHotspotOffConnectTest.HotspotState::class])
 class HomeLastConnectionProblemTest {
     private val context: Context = RuntimeEnvironment.getApplication()
-    private val opened = mutableListOf<DiPlayActivity>()
+    private val opened = mutableListOf<TuPigCarPlayActivity>()
 
     @Before fun setUp() {
         clearSettings()
@@ -46,7 +46,7 @@ class HomeLastConnectionProblemTest {
     }
 
     private fun clearSettings() {
-        for (name in listOf("diplay", "xcertplay_airplay", "diplay_car_hotspot", "diplay_last_problem")) {
+        for (name in listOf("tupigcarplay", "xcertplay_airplay", "tupigcarplay_car_hotspot", "tupigcarplay_last_problem")) {
             context.getSharedPreferences(name, 0).edit().clear().commit()
         }
     }
@@ -54,10 +54,10 @@ class HomeLastConnectionProblemTest {
     private fun fail(cause: ConnectionFailureCause) = LastConnectionProblem.follow(context,
         CarPlayStatus.Failed("failed", startupFailure = WirelessStartupFailure.HOTSPOT_CONFIGURATION, knownCause = cause))
 
-    private fun openHome(): DiPlayActivity = Robolectric.buildActivity(DiPlayActivity::class.java,
-        Intent(context, DiPlayActivity::class.java).putExtra("page", "home")).setup().get().also { opened += it }
+    private fun openHome(): TuPigCarPlayActivity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java,
+        Intent(context, TuPigCarPlayActivity::class.java).putExtra("page", "home")).setup().get().also { opened += it }
 
-    private fun shown(screen: DiPlayActivity): List<String> =
+    private fun shown(screen: TuPigCarPlayActivity): List<String> =
         descendants(screen.window.decorView).filterIsInstance<TextView>().filter { it.isShown }.map { it.text.toString() }.toList()
 
     private fun descendants(view: View): Sequence<View> = sequence {
@@ -65,10 +65,10 @@ class HomeLastConnectionProblemTest {
         if (view is ViewGroup) for (index in 0 until view.childCount) yieldAll(descendants(view.getChildAt(index)))
     }
 
-    private fun refresh(home: DiPlayActivity) = ReflectionHelpers.callInstanceMethod<Unit>(home, "refreshStatus")
+    private fun refresh(home: TuPigCarPlayActivity) = ReflectionHelpers.callInstanceMethod<Unit>(home, "refreshStatus")
 
     private fun reportLines(): List<String> {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         return (ReflectionHelpers.callInstanceMethod<String>(activity, "diagnosticReportText",
             ReflectionHelpers.ClassParameter.from(Context::class.java, context))).lines()
     }
@@ -78,14 +78,14 @@ class HomeLastConnectionProblemTest {
     @Test fun homeSaysWhatTheLastAttemptRanInto() {
         fail(ConnectionFailureCause.CHOSEN_IPHONE_NOT_PAIRED)
         val shown = shown(openHome())
-        val line = Regex("Last connection attempt \\($time\\): The iPhone chosen in DiPlay is no longer paired with the car")
+        val line = Regex("Last connection attempt \\($time\\): The iPhone chosen in TuPigCarPlay is no longer paired with the car")
         assertEquals(shown.toString(), 1, shown.count(line::matches))
     }
 
     @Test @Config(qualifiers = "zh-rTW-w1000dp-h700dp-land") fun homeSaysItInTraditionalChinese() {
         fail(ConnectionFailureCause.CHOSEN_IPHONE_NOT_PAIRED)
         val shown = shown(openHome())
-        val line = Regex("上次連線嘗試（$time）：在 DiPlay 選擇的 iPhone 已不再與車機配對")
+        val line = Regex("上次連線嘗試（$time）：在 TuPigCarPlay 選擇的 iPhone 已不再與車機配對")
         assertEquals(shown.toString(), 1, shown.count(line::matches))
     }
 
@@ -120,7 +120,7 @@ class HomeLastConnectionProblemTest {
     @Test @Config(qualifiers = "zh-rTW") fun theReportSaysTheLastProblemInEnglishOnItsSecondLine() {
         fail(ConnectionFailureCause.CAR_HOTSPOT_OFF)
         val lines = reportLines()
-        assertTrue(lines[0], lines[0].startsWith("DiPlay ") && lines[0].endsWith(" · private beta diagnostic report"))
+        assertTrue(lines[0], lines[0].startsWith("TuPigCarPlay ") && lines[0].endsWith(" · private beta diagnostic report"))
         assertTrue(lines[1], lines[1].matches(Regex(
             "Last problem: Car hotspot is off \\(cause:CAR_HOTSPOT_OFF\\) at \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} [+-]\\d{4}")))
         assertTrue(lines[2], lines[2].startsWith("Android "))

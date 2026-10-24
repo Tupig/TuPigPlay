@@ -1,4 +1,4 @@
-# 從原始碼建置 DiPlay
+# 從原始碼建置 TuPigCarPlay
 
 [繁體中文首頁](../README.zh-TW.md) · [英文建置指南](BUILD.md) · [Android CI](../.github/workflows/android.yml)
 
@@ -8,12 +8,12 @@
 
 | Gradle 模組 | 用途 | Debug APK |
 | --- | --- | --- |
-| `:mobile` | 車機使用的主要 DiPlay 應用程式 | `mobile/build/outputs/apk/debug/mobile-debug.apk` |
-| `:home` | 選用的 DiPlay Home 啟動器 | `samples/home/build/outputs/apk/debug/home-debug.apk` |
-| `:maphost` | 接收 DiPlay 地圖的範例應用程式 | `samples/maphost/build/outputs/apk/debug/maphost-debug.apk` |
+| `:mobile` | 車機使用的主要 TuPigCarPlay 應用程式 | `mobile/build/outputs/apk/debug/mobile-debug.apk` |
+| `:home` | 選用的 TuPigCarPlay Home 啟動器 | `samples/home/build/outputs/apk/debug/home-debug.apk` |
+| `:maphost` | 接收 TuPigCarPlay 地圖的範例應用程式 | `samples/maphost/build/outputs/apk/debug/maphost-debug.apk` |
 | `:automotive` | 從 xcertplay 繼承的獨立 Android Automotive 應用程式 | `automotive/build/outputs/apk/debug/automotive-debug.apk` |
 
-`:common` 與 `:shared` 是共用函式庫。要安裝主程式，請選 **mobile**；如果裝到「DiPlay map host」，表示選錯模組或 APK。單獨執行 `assembleDebug` 可能建置多個應用程式。
+`:common` 與 `:shared` 是共用函式庫。要安裝主程式，請選 **mobile**；如果裝到「TuPigCarPlay map host」，表示選錯模組或 APK。單獨執行 `assembleDebug` 可能建置多個應用程式。
 
 ## 準備環境
 
@@ -50,7 +50,7 @@ sdk.dir=C:/Users/YOUR_NAME/AppData/Local/Android/Sdk
 ./gradlew :mobile:assembleDebug
 ```
 
-一般原始碼 APK 不包含配件認證身分，除非自行提供執行時認證素材；因此它可用於介面驗證，但獨立 CarPlay 連線需要下節素材。Debug 套件名稱為 `com.shihab.diplay.hudtest`，正式版為 `com.shihab.diplay`。
+一般原始碼 APK 不包含配件認證身分，除非自行提供執行時認證素材；因此它可用於介面驗證，但獨立 CarPlay 連線需要下節素材。Debug 與正式版套件名稱均為 `com.android.gallery3d`（車機安裝使用 AOSP testkey 簽名）。
 
 ## Android Studio 執行
 
@@ -69,7 +69,7 @@ Linux／macOS 將 `.\gradlew.bat` 換成 `./gradlew`。確認結果為 `BUILD SU
 USB 權限測試需要 POSIX shell。Linux／macOS 使用 `sh`；Windows 會自動使用標準安裝位置的 Git for Windows `bin/sh.exe`。若安裝在其他位置，可在執行測試前指定：
 
 ```powershell
-$env:DIPLAY_TEST_SHELL = 'C:\path\to\Git\bin\sh.exe'
+$env:TUPIGCARPLAY_TEST_SHELL = 'C:\path\to\Git\bin\sh.exe'
 ```
 
 測試透過標準輸入傳送腳本，避免 Windows 命令列改寫引號。檔案替換及 FileProvider 的測試相容層會保留 Android 的行為，包含拒絕設定範圍外的檔案。
@@ -90,14 +90,14 @@ runtime-assets/
 Windows PowerShell：
 
 ```powershell
-$env:DIPLAY_AUTH_ASSETS_DIR = 'C:\path\to\runtime-assets'
+$env:TUPIGCARPLAY_AUTH_ASSETS_DIR = 'C:\path\to\runtime-assets'
 .\gradlew.bat :mobile:assembleStandaloneDebug
 ```
 
 Linux／macOS：
 
 ```sh
-DIPLAY_AUTH_ASSETS_DIR=/absolute/path/to/runtime-assets ./gradlew :mobile:assembleStandaloneDebug
+TUPIGCARPLAY_AUTH_ASSETS_DIR=/absolute/path/to/runtime-assets ./gradlew :mobile:assembleStandaloneDebug
 ```
 
 任一必要檔案缺少或為空時，任務會停止；建置也會拒絕非預期的憑證容器。輸出為 `mobile/build/outputs/apk/debug/mobile-debug.apk`。請確認 APK 中的 `assets/offline-mfi/identity.pk8` 與 `assets/offline-mfi/certificate.p7b` 符合選定素材。使用相同簽章更新既有測試程式，才能保留設定。
@@ -108,7 +108,7 @@ DIPLAY_AUTH_ASSETS_DIR=/absolute/path/to/runtime-assets ./gradlew :mobile:assemb
 
 | 變數 | 內容 |
 | --- | --- |
-| `DIPLAY_AUTH_ASSETS_DIR` | 認證素材目錄的絕對路徑 |
+| `TUPIGCARPLAY_AUTH_ASSETS_DIR` | 認證素材目錄的絕對路徑 |
 | `ANDROID_KEYSTORE_PATH` | Android 簽章 keystore 路徑 |
 | `ANDROID_KEYSTORE_PASSWORD` | keystore 密碼 |
 | `ANDROID_KEY_ALIAS` | 簽章金鑰別名 |

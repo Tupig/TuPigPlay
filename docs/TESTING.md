@@ -11,7 +11,7 @@ Record the exact candidate APK and each untested setup before a release.
 Run the complete unit-test, lint and debug-build command in [AGENTS.md](../AGENTS.md).
 The USB permission command tests need a POSIX shell: `sh` on Linux/macOS, or Git for Windows.
 On Windows the tests find the standard `%ProgramFiles%/Git/bin/sh.exe` installation automatically;
-set `DIPLAY_TEST_SHELL` to the executable path for a custom installation.
+set `TUPIGCARPLAY_TEST_SHELL` to the executable path for a custom installation.
 Scripts are sent through stdin so the host cannot reinterpret their embedded quotes.
 
 Robolectric uses host files even when executing Android framework code. Journal tests use a narrow
@@ -34,7 +34,7 @@ Temporarily make the authorized ADB connection unavailable during teardown, then
 
 ## Diagnostic export without a picker
 
-On an Android 9 emulator or head unit without a document picker, open **Settings → Diagnostics → Save diagnostic report**. Confirm that no picker is required and that the success dialog shows a TXT file under `Android/data/<package>/files/diagnostic-reports/`. Read that file and verify the app/device information and UTF-8 text. Use **View** and **Share** from the confirmation. Export twice and confirm that the reports have distinct file names and the earlier file is not overwritten. On Android 10+, normal exports should still use `Downloads/DiPlay`; **Choose save location** should still open a working picker, and cancelling it should not export anything. If external storage is unavailable, confirm that the private in-app fallback can still be viewed and shared. Do not disable system components on a car to simulate the missing-picker case; use an emulator for that simulation.
+On an Android 9 emulator or head unit without a document picker, open **Settings → Diagnostics → Save diagnostic report**. Confirm that no picker is required and that the success dialog shows a TXT file under `Android/data/<package>/files/diagnostic-reports/`. Read that file and verify the app/device information and UTF-8 text. Use **View** and **Share** from the confirmation. Export twice and confirm that the reports have distinct file names and the earlier file is not overwritten. On Android 10+, normal exports should still use `Downloads/TuPigCarPlay`; **Choose save location** should still open a working picker, and cancelling it should not export anything. If external storage is unavailable, confirm that the private in-app fallback can still be viewed and shared. Do not disable system components on a car to simulate the missing-picker case; use an emulator for that simulation.
 
 For channel memory, connect until authenticated CarPlay renders, disconnect and reconnect without changing the car's Wi-Fi association. Look for `remembered saved` followed by `remembered first`. Report absent events; creating a hotspot alone is insufficient.
 
@@ -64,7 +64,7 @@ Include head-unit model, DiLink/Android, iPhone/iOS, wired/wireless, app version
 
 On an Android device that supports screen rotation, connect until CarPlay renders, then rotate from landscape to portrait and back while the connection is rebuilding. Repeat in both directions, including several quick rotations and a 180-degree turn. Let the device settle after the last rotation and check that the CarPlay picture has the correct aspect ratio and that touch targets match the displayed controls.
 
-In the diagnostic report, the next `Starting CarPlay controller at` and `Display request` must use the latest settled dimensions, including a `Display updated while handshake is reset` event that arrived during teardown. A queued size change must settle before startup; cancelling it by returning to the accepted size must still resume the connection. On a BYD head unit, also open and close the camera window to confirm that a shrink/restore within the original window keeps the existing CarPlay session.
+In the diagnostic report, the next `Starting CarPlay controller at` and `Display request` must use the latest settled dimensions, including a `Display updated while handshake is reset` event that arrived during teardown. A queued size change must settle before startup; cancelling it by returning to the accepted size must still resume the connection. On a TuPig head unit, also open and close the camera window to confirm that a shrink/restore within the original window keeps the existing CarPlay session.
 
 ## Location reporting
 
@@ -72,24 +72,24 @@ With the car parked, open **Settings → Location → Report location to iPhone*
 
 - On a fresh installation, the switch is off. Enabling it requests precise location if needed; denying the request or granting only approximate location leaves it off.
 - Grant precise location, enable the switch, then reopen Settings to confirm the saved state. With no connection running, the setting applies to the next connection.
-- During wired and wireless CarPlay, enabling or disabling the switch reconnects the session. When enabled and requested by the iPhone, check for `start-location-information` and `location-information` in the DiPlay diagnostics; on wireless, also verify that reporting continues after the Bluetooth-to-Wi-Fi handoff.
+- During wired and wireless CarPlay, enabling or disabling the switch reconnects the session. When enabled and requested by the iPhone, check for `start-location-information` and `location-information` in the TuPigCarPlay diagnostics; on wireless, also verify that reporting continues after the Bluetooth-to-Wi-Fi handoff.
 - Disable the switch and confirm the next session does not advertise location reporting. These checks verify the accessory reporting path; they do not establish which inputs iOS uses in each fused location result.
 
 ## Advanced vehicle data
 
 - Expand **Settings → Location → Advanced vehicle data**. Confirm a fresh install uses **Default mode · verified on DiLink 5.0 head units** and shows the battery, wheel-speed and parked-video switches without a field probe.
 - In Default mode, tap **Check ADB access** and record the battery, speed and gear it shows. With CarPlay connected, turn on a switch whose data cannot be read: CarPlay must stay connected and the page must show what cannot be read.
-- Select **Legacy head-unit detection · tested on controller 13 / DiLink 3.0**. Approve the key if the car asks; the same action must continue into the read-only field probe. With “Always allow” ticked, the page must not say the car allowed DiPlay only once. A failed probe must leave Default mode selected.
-- Reopen Settings, restart DiPlay, change gear and reconnect CarPlay. The successful probe, resolved fields and enabled battery/wheel-speed/video switches must remain saved without another tap, even when the current firmware metadata differs.
+- Select **Legacy head-unit detection · tested on controller 13 / DiLink 3.0**. Approve the key if the car asks; the same action must continue into the read-only field probe. With “Always allow” ticked, the page must not say the car allowed TuPigCarPlay only once. A failed probe must leave Default mode selected.
+- Reopen Settings, restart TuPigCarPlay, change gear and reconnect CarPlay. The successful probe, resolved fields and enabled battery/wheel-speed/video switches must remain saved without another tap, even when the current firmware metadata differs.
 - Switch back to Default mode and confirm the saved legacy probe remains available when Legacy mode is selected again.
 - Turn ADB off temporarily. Saved functions and switches must remain visible; turning ADB back on allows automatic validation. Two READY-but-unreadable validations trigger one automatic re-probe, while an incomplete re-probe preserves the previous snapshot and shows manual retry.
 - Press the first probe, authorization and retry controls after scrolling down the page. Progress and results must remain at the same scroll position rather than jumping to the top.
-- Scroll down Settings, open CarPlay, then return to Settings (Back to DiPlay or the three-finger gesture). The page must keep its scroll position.
-- When the BYD navigation card is available, confirm **Dashboard song** exists there exactly once and does not appear in Advanced vehicle data. Without that card, it must appear once under Advanced vehicle data, and turning it on must show the CarPlay song on the dashboard. With **Song only when it changes** on, a new song must show for about 5 seconds and the card must then empty; pause and play alone must not show it again.
+- Scroll down Settings, open CarPlay, then return to Settings (Back to TuPigCarPlay or the three-finger gesture). The page must keep its scroll position.
+- When the TuPig navigation card is available, confirm **Dashboard song** exists there exactly once and does not appear in Advanced vehicle data. Without that card, it must appear once under Advanced vehicle data, and turning it on must show the CarPlay song on the dashboard. With **Song only when it changes** on, a new song must show for about 5 seconds and the card must then empty; pause and play alone must not show it again.
 
 ## Hotspot and vehicle-settings interaction
 
-- On a supported BYD unit, choose the built-in car hotspot. Automatic hotspot startup stays off on a fresh installation. Enable it explicitly and approve the ADB prompt; the setting saves only after DiPlay confirms its own required permissions. Denial must leave it off. Choosing Wi-Fi Direct hides the hotspot card and preserves its saved preference.
+- On a supported TuPig unit, choose the built-in car hotspot. Automatic hotspot startup stays off on a fresh installation. Enable it explicitly and approve the ADB prompt; the setting saves only after TuPigCarPlay confirms its own required permissions. Denial must leave it off. Choosing Wi-Fi Direct hides the hotspot card and preserves its saved preference.
 - Expand Advanced vehicle data. Battery, wheel-speed and parked-video switches must appear only in that section, with unavailable legacy fields hidden. The hotspot card must not provide duplicate switches that bypass the selected mode.
 - Start a user vehicle check or probe, then try the hotspot switch before it finishes. A second authorization flow must not start. After the vehicle operation finishes, the hotspot switch becomes usable again.
 - Start hotspot authorization while Advanced vehicle data is expanded. Mode and vehicle choices must stay disabled until it completes; an automatic saved-field validation must resume afterwards without another authorization prompt.
@@ -108,7 +108,7 @@ With the car parked, open **Settings → Location → Report location to iPhone*
 - On a fresh installation, wheel zoom is off. Enable the key service explicitly and configure the mode/zoom keys with the car parked. Confirm leaving settings, disabling wheel zoom, or waiting ten seconds cancels a pending key assignment. Subsequent hardware keys must keep their ordinary action.
 - With the dashboard map visible, test both toggle and five-second modes. The mode key selects zoom, the zoom keys change the map, and pressing the mode key again restores volume. With the map hidden, stopped, or configured as a turn card, keys must keep their ordinary car action.
 - Disconnect/reconnect CarPlay and disable/re-enable wheel zoom while zoom is active. Zoom must stay off until another mode-key press. Repeat while the CarPlay screen moves to the background and while the instrument map/card closes.
-- Hold a volume key while a call starts or ends, the zoom timer expires, the map disappears, or the feature is disabled. Confirm every press has its matching release, with no stuck volume action or stray car key action. Test CarPlay and BYD Bluetooth calls; audio-mode call detection still needs firmware-specific vehicle confirmation.
+- Hold a volume key while a call starts or ends, the zoom timer expires, the map disappears, or the feature is disabled. Confirm every press has its matching release, with no stuck volume action or stray car key action. Test CarPlay and TuPig Bluetooth calls; audio-mode call detection still needs firmware-specific vehicle confirmation.
 - Recheck the current cluster/HUD controls, Same LAN connection, and diagnostic-report export after the update.
 
 ## Live dashboard content switching
@@ -122,4 +122,4 @@ With the car parked, open **Settings → Location → Report location to iPhone*
 - On a fresh installation the joystick is off. Turn it on (the key service as for zoom) and check the joystick, previous/next, select and mode keys with the car parked.
 - With CarPlay connected, the media key turns the joystick on (toast with the keys, "Joystick on" on the dashboard where the song shows). Previous/next and the volume roller move CarPlay's focus on the main screen (lists, the Maps side panel), play/pause selects and the custom key goes back. The media key turns it off and every key has its usual action again; the custom key switches the map zoom again.
 - With "Joystick turns off by itself" on, the joystick ends 15 seconds after the last press and when a route starts; with it off, it stays on until the media key. Disconnect CarPlay or turn the setting off while it is on: it must be off afterwards.
-- Without a CarPlay session the media key opens BYD media. During a CarPlay or Bluetooth call every key keeps its usual action, and no press loses its release.
+- Without a CarPlay session the media key opens TuPig media. During a CarPlay or Bluetooth call every key keeps its usual action, and no press loses its release.

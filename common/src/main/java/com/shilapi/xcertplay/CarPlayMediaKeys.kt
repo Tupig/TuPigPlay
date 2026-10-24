@@ -21,7 +21,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.shilapi.xcertplay.airplay.CarPlayMediaButton
 import com.shilapi.xcertplay.compat.AudioFocusRequestCompat
 import com.shilapi.xcertplay.host.R
-import com.shilapi.xcertplay.hud.BydOutputSettings
+import com.shilapi.xcertplay.hud.TuPigOutputSettings
 import com.shilapi.xcertplay.media.CarPlayNowPlaying
 import com.shilapi.xcertplay.orchestration.CarPlayController
 import java.util.concurrent.Executors
@@ -32,19 +32,19 @@ import kotlin.math.roundToInt
  * Steering-wheel and other hardware media buttons for CarPlay.
  *
  * Android delivers media keys to a media session; some head units pick the session of the
- * audio-focus owner. DiPlay normally holds focus and an active session until the CarPlay session
+ * audio-focus owner. TuPigCarPlay normally holds focus and an active session until the CarPlay session
  * ends, but focus can be disabled on head units that otherwise route physical volume buttons to
- * DiPlay. Keys go to the iPhone as CarPlay media HID presses ([CarPlayMediaButton]).
+ * TuPigCarPlay. Keys go to the iPhone as CarPlay media HID presses ([CarPlayMediaButton]).
  */
 internal object CarPlayMediaKeys {
-    private const val TAG = "DiPlay-MediaKeys"
+    private const val TAG = "TuPigCarPlay-MediaKeys"
     private const val ACTIONS = PlaybackState.ACTION_PLAY or PlaybackState.ACTION_PAUSE or
         PlaybackState.ACTION_PLAY_PAUSE or PlaybackState.ACTION_SKIP_TO_NEXT or PlaybackState.ACTION_SKIP_TO_PREVIOUS
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private val artworkQueue = NowPlayingArtworkQueue(
         worker = Executors.newSingleThreadExecutor { task ->
-            Thread(task, "diplay-now-playing-artwork").apply { isDaemon = true }
+            Thread(task, "tupigcarplay-now-playing-artwork").apply { isDaemon = true }
         },
         main = Executor { mainHandler.post(it) },
         decode = ::decodeAmbientArtwork,
@@ -322,7 +322,7 @@ internal object CarPlayMediaKeys {
                 if (it) forwardGrantedFocusLocked()
             }
         }
-        session = MediaSession(context, "DiPlay CarPlay").apply {
+        session = MediaSession(context, "TuPigCarPlay CarPlay").apply {
             setCallback(callback, mainHandler)
             setMetadata(androidMetadata(nowPlaying, shownArtworkLocked()))
             isActive = true
@@ -446,7 +446,7 @@ internal object CarPlayMediaKeys {
     }
 
     private val callback = CarPlayMediaCallback(
-        experimentalDiLink3Keys = { appContext?.let(BydOutputSettings::carPlayCallControls) == true },
+        experimentalDiLink3Keys = { appContext?.let(TuPigOutputSettings::carPlayCallControls) == true },
         notUsed = ::notUsed,
         send = ::send,
     )
@@ -474,7 +474,7 @@ internal object CarPlayMediaKeys {
             }
         }.build()
 
-    // Without art the car draws DiPlay's bright launcher icon instead.
+    // Without art the car draws TuPigCarPlay's bright launcher icon instead.
     private fun shownArtworkLocked(): Bitmap? =
         artwork ?: placeholder ?: appContext?.let(::placeholderArt)?.also { placeholder = it }
 

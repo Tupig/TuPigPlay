@@ -44,7 +44,7 @@ internal class VideoInCarGate(
                     return@Thread
                 }
             }
-        }, "diplay-video-gate").apply { isDaemon = true }.start()
+        }, "tupigcarplay-video-gate").apply { isDaemon = true }.start()
     }
 
     internal fun update(parked: Boolean?) {

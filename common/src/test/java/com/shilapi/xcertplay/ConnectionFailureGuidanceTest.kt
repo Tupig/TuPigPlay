@@ -36,7 +36,7 @@ class ConnectionFailureGuidanceTest {
 
     @Test fun aKnownCauseNamesItsOwnHelp() {
         assertEquals(R.string.connection_help_chosen_iphone_not_paired, guide(
-            "The selected iPhone is no longer paired. Choose it again in DiPlay.", known = ConnectionFailureCause.CHOSEN_IPHONE_NOT_PAIRED))
+            "The selected iPhone is no longer paired. Choose it again in TuPigCarPlay.", known = ConnectionFailureCause.CHOSEN_IPHONE_NOT_PAIRED))
         assertEquals(R.string.on_your_iphone_open_settings_bluetooth_and_pair_with_the_c, guide(
             "No unambiguous bonded iPhone found; pair one iPhone and retry", known = ConnectionFailureCause.NO_PAIRED_IPHONE))
         assertEquals(R.string.connection_help_choose_iphone, guide(
@@ -80,12 +80,10 @@ class ConnectionFailureGuidanceTest {
     }
 
     @Test fun onlyTheCarHotspotAsksTheDriverToJoinANetworkOnTheIphone() {
-        for (mode in listOf(WirelessHotspotMode.WIFI_P2P, WirelessHotspotMode.LOCAL_ONLY_HOTSPOT)) {
-            assertEquals(R.string.connection_help_wifi_direct,
-                guide("unknown", startup = WirelessStartupFailure.FIRST_TCP_TIMEOUT, mode = mode))
-            assertEquals(R.string.connection_help_wifi_direct, guide("createGroup failed", mode = mode))
-            assertEquals(R.string.connection_help_wifi_direct, guide("AirPlay TCP timeout", mode = mode))
-        }
+        assertEquals(R.string.connection_help_wifi_direct,
+            guide("unknown", startup = WirelessStartupFailure.FIRST_TCP_TIMEOUT, mode = WirelessHotspotMode.WIFI_P2P))
+        assertEquals(R.string.connection_help_wifi_direct, guide("createGroup failed", mode = WirelessHotspotMode.WIFI_P2P))
+        assertEquals(R.string.connection_help_wifi_direct, guide("AirPlay TCP timeout", mode = WirelessHotspotMode.WIFI_P2P))
         assertEquals(R.string.connection_help_existing_wifi,
             guide("unknown", startup = WirelessStartupFailure.FIRST_TCP_TIMEOUT, mode = WirelessHotspotMode.EXISTING_WIFI))
         assertEquals(R.string.connection_help_existing_wifi,

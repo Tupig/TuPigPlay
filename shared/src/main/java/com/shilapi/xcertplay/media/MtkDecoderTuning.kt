@@ -59,7 +59,7 @@ object MtkDecoderTuning {
     fun legacyAcodecDecoderName(mime: String): String? = candidates(mime)
         .firstOrNull()?.name?.takeIf(::supportsLegacyAcodecKeys)
 
-    // The codec list does not change while DiPlay runs, and Settings asks on every render.
+    // The codec list does not change while TuPigCarPlay runs, and Settings asks on every render.
     private val candidatesByMime = java.util.concurrent.ConcurrentHashMap<String, List<MtkDecoderCandidate>>()
 
     private fun candidates(mime: String): List<MtkDecoderCandidate> =

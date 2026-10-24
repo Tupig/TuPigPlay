@@ -3,7 +3,7 @@ package com.shilapi.xcertplay
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import com.shilapi.xcertplay.adb.LocalAdb
-import com.shilapi.xcertplay.hud.BydOutputSettings
+import com.shilapi.xcertplay.hud.TuPigOutputSettings
 import com.shilapi.xcertplay.network.CarHotspotSettings
 import com.shilapi.xcertplay.orchestration.WirelessHotspotMode
 import org.junit.Assert.*
@@ -22,7 +22,7 @@ class CarHotspotSetupTest {
     private val context get() = RuntimeEnvironment.getApplication()
 
     @Before fun reset() {
-        context.getSharedPreferences("diplay_car_hotspot", 0).edit().clear().commit()
+        context.getSharedPreferences("tupigcarplay_car_hotspot", 0).edit().clear().commit()
         context.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
     }
 
@@ -32,33 +32,33 @@ class CarHotspotSetupTest {
         assertFalse(eligible())
     }
 
-    @Test fun qualcommBydWithoutNavigationServicesCanReachHotspotSetup() {
+    @Test fun qualcommTuPigWithoutNavigationServicesCanReachHotspotSetup() {
         ShadowBuild.setManufacturer("QUALCOMM")
         ShadowBuild.setBrand("qti")
         installPackage("com.byd.carsettings", system = true)
-        assertFalse(BydOutputSettings.navigationAvailable(context))
-        assertTrue(CarHotspotSetup.isBydHeadUnit(context))
-        assertTrue(CarHotspotSettings.visible(CarHotspotSetup.isBydHeadUnit(context), LocalAdb.Access.NOT_APPROVED))
-        assertFalse(CarHotspotSettings.visible(CarHotspotSetup.isBydHeadUnit(context), LocalAdb.Access.UNREACHABLE))
+        assertFalse(TuPigOutputSettings.navigationAvailable(context))
+        assertTrue(CarHotspotSetup.isTuPigHeadUnit(context))
+        assertTrue(CarHotspotSettings.visible(CarHotspotSetup.isTuPigHeadUnit(context), LocalAdb.Access.NOT_APPROVED))
+        assertFalse(CarHotspotSettings.visible(CarHotspotSetup.isTuPigHeadUnit(context), LocalAdb.Access.UNREACHABLE))
     }
 
-    @Test fun userInstalledLookalikeDoesNotIdentifyABydHeadUnit() {
+    @Test fun userInstalledLookalikeDoesNotIdentifyATuPigHeadUnit() {
         installPackage("com.byd.carsettings", system = false)
-        assertFalse(CarHotspotSetup.isBydHeadUnit(context))
+        assertFalse(CarHotspotSetup.isTuPigHeadUnit(context))
     }
 
     @Test fun genericHeadUnitRemainsHiddenEvenWithAdbReady() {
-        assertFalse(CarHotspotSetup.isBydHeadUnit(context))
-        assertFalse(CarHotspotSettings.visible(CarHotspotSetup.isBydHeadUnit(context), LocalAdb.Access.READY))
+        assertFalse(CarHotspotSetup.isTuPigHeadUnit(context))
+        assertFalse(CarHotspotSettings.visible(CarHotspotSetup.isTuPigHeadUnit(context), LocalAdb.Access.READY))
     }
 
     @Test fun existingNavigationBasedDetectionIsPreserved() {
         installPackage("com.byd.amapservice", system = true)
-        assertTrue(BydOutputSettings.navigationAvailable(context))
-        assertTrue(CarHotspotSetup.isBydHeadUnit(context))
+        assertTrue(TuPigOutputSettings.navigationAvailable(context))
+        assertTrue(CarHotspotSetup.isTuPigHeadUnit(context))
     }
 
-    @Test fun onlyBydWithSupportedAdbSeesTheSettingIncludingBeforeApproval() {
+    @Test fun onlyTuPigWithSupportedAdbSeesTheSettingIncludingBeforeApproval() {
         for (access in LocalAdb.Access.entries) {
             assertFalse(CarHotspotSettings.visible(false, access))
         }
@@ -95,12 +95,12 @@ class CarHotspotSetupTest {
         assertTrue(CarHotspotSettings.enabled(context))
     }
 
-    @Test fun wifiDirectAndLocalOnlyHotspotAreNotAutomaticallyManaged() {
+    @Test fun wifiDirectIsNotAutomaticallyManaged() {
         configureHotspot()
         CarHotspotSettings.setEnabled(context, true)
         AirPlayPersistence.saveWirelessHotspotMode(context, WirelessHotspotMode.WIFI_P2P)
         assertFalse(eligible())
-        assertFalse(CarHotspotSettings.shouldEnable(context, true, WirelessHotspotMode.LOCAL_ONLY_HOTSPOT))
+        assertFalse(CarHotspotSettings.shouldEnable(context, true, WirelessHotspotMode.WIFI_P2P))
     }
 
     @Test fun disablingTheChoiceCancelsFutureStartupWithoutChangingConnectionSettings() {

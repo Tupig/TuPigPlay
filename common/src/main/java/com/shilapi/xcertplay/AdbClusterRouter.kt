@@ -69,7 +69,7 @@ internal object AdbClusterRouter {
             appendLine("platform21Route=" + AirPlayPersistence.loadLegacyClusterEnabled(context))
             appendLine("diLink3ModeSwitchSuppressed=" + (AirPlayPersistence.loadAdbClusterEnabled(context) || AirPlayPersistence.loadLegacyClusterEnabled(context)))
             appendLine("calibrationOnly=${!holdStockMap}")
-            appendLine("stockMapHoldMode=" + com.shilapi.xcertplay.hud.BydOutputSettings.oemClusterHold(context))
+            appendLine("stockMapHoldMode=" + com.shilapi.xcertplay.hud.TuPigOutputSettings.oemClusterHold(context))
             try {
                 LocalAdb(AdbKeys.load(context)).use { adb ->
                     val access = adb.connect(mayAsk = false)
@@ -78,7 +78,7 @@ internal object AdbClusterRouter {
                     val display = displayId(adb.shell("dumpsys display").orEmpty())
                     appendLine("routeTarget=${display ?: "none"}")
                     if (display == null || !enabled(context) || !prepare(display)) return@use
-                    val held = AirPlayPersistence.loadLegacyClusterEnabled(context) || !holdStockMap || com.shilapi.xcertplay.hud.BydOemClusterNavi.holdForLaunch(context, token) {
+                    val held = AirPlayPersistence.loadLegacyClusterEnabled(context) || !holdStockMap || com.shilapi.xcertplay.hud.TuPigOemClusterNavi.holdForLaunch(context, token) {
                         enabled(context) && prepare(display)
                     }
                     appendLine("stockMapHoldReady=$held")

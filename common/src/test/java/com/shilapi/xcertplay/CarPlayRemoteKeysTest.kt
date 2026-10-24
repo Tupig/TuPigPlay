@@ -28,8 +28,8 @@ class CarPlayRemoteKeysTest {
             KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_NEXT,
             KeyEvent.KEYCODE_MEDIA_PREVIOUS, KeyEvent.KEYCODE_MEDIA_FAST_FORWARD,
             KeyEvent.KEYCODE_MEDIA_REWIND, KeyEvent.KEYCODE_POWER,
-            com.shilapi.xcertplay.airplay.CarPlayMediaButton.KEYCODE_BYD_CARPLAY_VOICE,
-            com.shilapi.xcertplay.airplay.CarPlayMediaButton.KEYCODE_BYD_AUTO_MEDIA_PLAY_PAUSE,
+            com.shilapi.xcertplay.airplay.CarPlayMediaButton.KEYCODE_TUPIG_CARPLAY_VOICE,
+            com.shilapi.xcertplay.airplay.CarPlayMediaButton.KEYCODE_TUPIG_AUTO_MEDIA_PLAY_PAUSE,
         )
         for (code in reserved) {
             assertTrue("existing remote control changed for keycode $code",

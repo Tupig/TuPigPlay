@@ -21,7 +21,7 @@ class StatusBarHiddenByAnotherWindowTest {
     }
 
     @Test fun aDriverWhoHidesTheStatusBarGetsTheLargerCanvas() {
-        // #536: DiPlay hid the bar itself, so the larger window is the one the driver chose.
+        // #536: TuPigCarPlay hid the bar itself, so the larger window is the one the driver chose.
         assertFalse(statusBarHiddenByAnotherWindow(session(hideTopBar = true), 1280, 720, statusBarShown = false))
     }
 

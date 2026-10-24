@@ -34,7 +34,7 @@ class OemClusterHoldSessionTest {
         for (original in 0..4) {
             val r = Rig(original)
             val s = r.session()
-            assertTrue(s.acquire(BydOemClusterHold.COMPONENT, "one") { r.current })
+            assertTrue(s.acquire(TuPigOemClusterHold.COMPONENT, "one") { r.current })
             assertEquals("journal=$original", r.events.first())
             assertEquals(3, r.state)
             assertTrue(s.release("one"))
@@ -45,7 +45,7 @@ class OemClusterHoldSessionTest {
 
     @Test fun diskFailurePreventsAnyOemWrite() {
         val r = Rig().apply { journalWritable = false }
-        assertFalse(r.session().acquire(BydOemClusterHold.PACKAGE, "one") { true })
+        assertFalse(r.session().acquire(TuPigOemClusterHold.PACKAGE, "one") { true })
         assertEquals(0, r.state)
         assertFalse(r.events.any { it.startsWith("set=") })
     }
@@ -54,7 +54,7 @@ class OemClusterHoldSessionTest {
         val r = Rig()
         val s = r.session()
         val queue = java.util.ArrayDeque<() -> Unit>()
-        queue.add { assertFalse(s.acquire(BydOemClusterHold.COMPONENT, "one") { r.current }) }
+        queue.add { assertFalse(s.acquire(TuPigOemClusterHold.COMPONENT, "one") { r.current }) }
         r.current = false
         queue.add { assertTrue(s.release("one")) }
         while (!queue.isEmpty()) queue.removeFirst().invoke()
@@ -65,14 +65,14 @@ class OemClusterHoldSessionTest {
         val r = Rig()
         val s = r.session()
         r.duringCommand = { r.current = false }
-        assertFalse(s.acquire(BydOemClusterHold.COMPONENT, "one") { r.current })
+        assertFalse(s.acquire(TuPigOemClusterHold.COMPONENT, "one") { r.current })
         assertEquals(0, r.state)
         assertNull(r.journal)
     }
 
     @Test fun restartRecoversACrashAfterDisable() {
         val r = Rig(1)
-        assertTrue(r.session().acquire(BydOemClusterHold.PACKAGE, "one") { true })
+        assertTrue(r.session().acquire(TuPigOemClusterHold.PACKAGE, "one") { true })
         assertTrue(r.session().release())
         assertEquals(1, r.state)
         assertNull(r.journal)
@@ -89,7 +89,7 @@ class OemClusterHoldSessionTest {
     @Test fun failedRestorationKeepsJournalAndCanBeRetried() {
         val r = Rig(1)
         val s = r.session()
-        assertTrue(s.acquire(BydOemClusterHold.COMPONENT, "one") { true })
+        assertTrue(s.acquire(TuPigOemClusterHold.COMPONENT, "one") { true })
         r.applyCommands = false
         r.commandsSucceed = false
         assertFalse(s.release("one"))
@@ -103,15 +103,15 @@ class OemClusterHoldSessionTest {
 
     @Test fun successfulCommandWithoutStateChangeCannotStartTheMirror() {
         val r = Rig().apply { applyCommands = false }
-        assertFalse(r.session().acquire(BydOemClusterHold.COMPONENT, "one") { true })
+        assertFalse(r.session().acquire(TuPigOemClusterHold.COMPONENT, "one") { true })
         assertEquals(0, r.state)
     }
 
     @Test fun staleReleaseCannotUndoANewerLease() {
         val r = Rig()
         val s = r.session()
-        assertTrue(s.acquire(BydOemClusterHold.COMPONENT, "one") { true })
-        assertTrue(s.acquire(BydOemClusterHold.PACKAGE, "two") { true })
+        assertTrue(s.acquire(TuPigOemClusterHold.COMPONENT, "one") { true })
+        assertTrue(s.acquire(TuPigOemClusterHold.PACKAGE, "two") { true })
         assertTrue(s.release("one"))
         assertEquals(3, r.state)
         assertEquals("two", r.journal?.lease)
@@ -122,10 +122,10 @@ class OemClusterHoldSessionTest {
     @Test fun componentCommandsUseTheFlattenedNameAndSupportAllOriginalStates() {
         val component = "com.byd.automap/com.byd.automap.extra.MeterActivity"
         assertEquals("pm disable-user --user 0 $component",
-            BydOemClusterNavi.command(OemClusterHoldSession.Target.COMPONENT, 3))
+            TuPigOemClusterNavi.command(OemClusterHoldSession.Target.COMPONENT, 3))
         assertEquals("pm default-state --user 0 $component",
-            BydOemClusterNavi.command(OemClusterHoldSession.Target.COMPONENT, 0))
-        for (state in 0..4) assertTrue(BydOemClusterNavi.command(OemClusterHoldSession.Target.PACKAGE, state)
+            TuPigOemClusterNavi.command(OemClusterHoldSession.Target.COMPONENT, 0))
+        for (state in 0..4) assertTrue(TuPigOemClusterNavi.command(OemClusterHoldSession.Target.PACKAGE, state)
             .endsWith("--user 0 com.byd.automap"))
     }
 }

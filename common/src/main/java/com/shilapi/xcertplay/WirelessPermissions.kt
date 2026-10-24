@@ -45,9 +45,9 @@ internal object WirelessPermissions {
     @StringRes
     fun refusalMessage(missing: Collection<String>): Int = when {
         Manifest.permission.ACCESS_FINE_LOCATION in missing || Manifest.permission.ACCESS_COARSE_LOCATION in missing ->
-            R.string.allow_precise_location_for_diplay_in_the_head_unit_s_app_p
+            R.string.allow_precise_location_for_tupigcarplay_in_the_head_unit_s_app_p
         Manifest.permission.BLUETOOTH_CONNECT in missing || Manifest.permission.NEARBY_WIFI_DEVICES in missing ->
-            R.string.allow_nearby_devices_for_diplay_in_the_head_unit_s_app_per
-        else -> R.string.could_not_start_carplay_return_to_diplay_and_check_app_per
+            R.string.allow_nearby_devices_for_tupigcarplay_in_the_head_unit_s_app_per
+        else -> R.string.could_not_start_carplay_return_to_tupigcarplay_and_check_app_per
     }
 }

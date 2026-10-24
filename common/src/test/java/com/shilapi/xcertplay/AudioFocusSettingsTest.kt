@@ -16,14 +16,14 @@ import org.robolectric.annotation.Config
 @Config(sdk = [28, 33], qualifiers = "en", manifest = Config.NONE)
 class AudioFocusSettingsTest {
     @Test fun transientMuteIsOneDependentOptionAndRetainsPreferenceWhenFocusIsOff() {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         activity.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
         assertFalse(AirPlayPersistence.loadDisableMediaKeyAudioFocus(activity))
         AirPlayPersistence.saveAudioFocusEnabled(activity, false)
         AirPlayPersistence.saveAudioFocusAutoYield(activity, false)
         val page = LinearLayout(activity)
-        DiPlayActivity::class.java.getDeclaredMethod("audioFocusControls", LinearLayout::class.java)
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("audioFocusControls", LinearLayout::class.java)
             .apply { isAccessible = true }.invoke(activity, page)
         activity.setContentView(page)
         val switches = views(page).filterIsInstance<Switch>().toList()
@@ -51,12 +51,12 @@ class AudioFocusSettingsTest {
     }
 
     @Test fun navigationPromptFocusIsOffByDefaultAndShownOnlyWithAudioFocus() {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         activity.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
         assertFalse(AirPlayPersistence.loadNavigationPromptAudioFocus(activity))
         val page = LinearLayout(activity)
-        DiPlayActivity::class.java.getDeclaredMethod("audioFocusControls", LinearLayout::class.java)
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("audioFocusControls", LinearLayout::class.java)
             .apply { isAccessible = true }.invoke(activity, page)
         activity.setContentView(page)
         val switches = views(page).filterIsInstance<Switch>().toList()

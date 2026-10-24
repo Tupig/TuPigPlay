@@ -3,10 +3,10 @@ package com.shilapi.xcertplay.orchestration
 import com.shilapi.xcertplay.transport.Iap2WiredControlClient.StartAgain
 
 /**
- * Whether DiPlay sends `carplay-start-session` again on USB.
+ * Whether TuPigCarPlay sends `carplay-start-session` again on USB.
  *
- * The iPhone tries DiPlay's AirPlay listener right after the request, for about 7 s, and does not try again on its
- * own. While it still holds the CarPlay session of a DiPlay that ended without closing it (DiPlay stopped or
+ * The iPhone tries TuPigCarPlay's AirPlay listener right after the request, for about 7 s, and does not try again on its
+ * own. While it still holds the CarPlay session of a TuPigCarPlay that ended without closing it (TuPigCarPlay stopped or
  * replaced while connected), it keeps the NCM link NAKed 15–26 s after the request: every SYN-ACK is dropped and
  * the attempt fails at [WiredStartWatchdog.TIMEOUT_MILLIS] (#889, #610). Once the link opens, a second request
  * makes it connect at once. A link that was open before the request let the iPhone's own attempt through, as on head

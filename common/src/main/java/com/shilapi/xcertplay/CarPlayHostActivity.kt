@@ -200,23 +200,23 @@ open class CarPlayHostActivity : ComponentActivity() {
         remoteMfiServer = remoteMfiServer.trim().takeIf { it.isNotEmpty() },
         remoteMfiToken = remoteMfiToken.takeIf { it.isNotEmpty() },
         identification = Iap2IdentificationConfig(
-            name = "DiPlay",
+            name = "TuPigCarPlay",
             modelIdentifier = normalizedModel(),
             manufacturer = normalizedManufacturer(),
-            serialNumber = "DIPLAY-" + DiPlayBootstrap.deviceId(airPlayIdentity).replace(":", ""),
+            serialNumber = "TUPIGCARPLAY-" + TuPigCarPlayBootstrap.deviceId(airPlayIdentity).replace(":", ""),
             firmwareVersion = "0.1.0",
             hardwareVersion = "1.0",
             carPlayUsbInterfaceNumber = 3,
             locationInformationEnabled = locationReportingEnabled,
-            vehicleStatusEnabled = com.shilapi.xcertplay.hud.BydOutputSettings.batteryToIphoneActive(this),
-            chargingConnectors = com.shilapi.xcertplay.hud.BydOutputSettings.chargingConnectors(this),
+            vehicleStatusEnabled = com.shilapi.xcertplay.hud.TuPigOutputSettings.batteryToIphoneActive(this),
+            chargingConnectors = com.shilapi.xcertplay.hud.TuPigOutputSettings.chargingConnectors(this),
             vehicleSpeedEnabled = locationReportingEnabled &&
-                (com.shilapi.xcertplay.hud.BydOutputSettings.wheelSpeedToIphoneActive(this) || EcarxWheelSpeed.present()),
+                (com.shilapi.xcertplay.hud.TuPigOutputSettings.wheelSpeedToIphoneActive(this) || EcarxWheelSpeed.present()),
         ),
-        label = "DiPlay",
-        hostName = "diplay-" + DiPlayBootstrap.deviceId(airPlayIdentity).replace(":", "").lowercase(),
-        hostMac = DiPlayBootstrap.deviceId(airPlayIdentity).split(":").map { it.toInt(16).toByte() }.toByteArray(),
-        wirelessBluetoothDeviceAddress = DiPlayPreferences.phoneAddress(this),
+        label = "TuPigCarPlay",
+        hostName = "tupigcarplay-" + TuPigCarPlayBootstrap.deviceId(airPlayIdentity).replace(":", "").lowercase(),
+        hostMac = TuPigCarPlayBootstrap.deviceId(airPlayIdentity).split(":").map { it.toInt(16).toByte() }.toByteArray(),
+        wirelessBluetoothDeviceAddress = TuPigCarPlayPreferences.phoneAddress(this),
         transport = if (wirelessEnabled) CarPlayTransport.WIRELESS else CarPlayTransport.WIRED,
         wirelessHotspotMode = wirelessHotspotMode,
         wifiP2pPreferredChannel = AirPlayPersistence.loadWifiP2pPreferredChannel(this),
@@ -358,11 +358,11 @@ open class CarPlayHostActivity : ComponentActivity() {
                     }
                 } else decoded?.blackPixels?.recycle()
             }
-        }, "diplay-iphone-corner-mask").start()
+        }, "tupigcarplay-iphone-corner-mask").start()
     }
     private var fallbackVideoView: SurfaceView? = null
     private var fallbackVideoBounds: CarPlaySurfaceBounds? = null
-    // The last picture of a SurfaceView video output, kept when its surface goes (DiPlay leaves the screen) and
+    // The last picture of a SurfaceView video output, kept when its surface goes (TuPigCarPlay leaves the screen) and
     // shown over the new surface until a new frame is rendered there: a still CarPlay screen sends no frame, so
     // the new surface would otherwise stay black until the next change (a touch).
     private var lastPicture: Bitmap? = null
@@ -372,7 +372,7 @@ open class CarPlayHostActivity : ComponentActivity() {
     private var pictureCopyThreadStarted = false
     private val pictureCopyThread by lazy {
         pictureCopyThreadStarted = true
-        android.os.HandlerThread("diplay-picture-copy").apply { start() }
+        android.os.HandlerThread("tupigcarplay-picture-copy").apply { start() }
     }
     private val pictureHoldTick = object : Runnable {
         override fun run() {
@@ -598,7 +598,7 @@ open class CarPlayHostActivity : ComponentActivity() {
     private var appNight = true
     private var hostAppearanceResumed = false
     private var callPopupSessionReady = false
-    private var hideBydCallPopup = false
+    private var hideTuPigCallPopup = false
     private var paintWaitingScreen: () -> Unit = {}
     private var carPlayNightMode = CarPlayNightMode.SYSTEM
     private var nightSchedule = CarPlayNightSchedule()
@@ -650,7 +650,7 @@ open class CarPlayHostActivity : ComponentActivity() {
     private var controlRunningCount = 0
     private var lossSinceControlRunning = false
     private var requestedSmallWindowForStream: Boolean? = null
-    @Volatile private var adbNaviMode: com.shilapi.xcertplay.hud.BydClusterNaviMode? = null
+    @Volatile private var adbNaviMode: com.shilapi.xcertplay.hud.TuPigClusterNaviMode? = null
     private var sessionLog: SessionLogFile? = null
     private var gestureFingerCount = 3
     private var settingsGestureHint: TextView? = null
@@ -753,11 +753,11 @@ open class CarPlayHostActivity : ComponentActivity() {
     private val expireOldLogLines = Runnable { refreshLogView(System.currentTimeMillis()) }
     private val refreshTurnOverlay = object : Runnable {
         override fun run() {
-            com.shilapi.xcertplay.hud.BydNavigationOutputs.refreshTurnOverlay()
+            com.shilapi.xcertplay.hud.TuPigNavigationOutputs.refreshTurnOverlay()
             mainHandler.postDelayed(this, 1_000L)
         }
     }
-    // Some head units (e.g. BYD DiLink) update resources.configuration for day/night
+    // Some head units (e.g. TuPig DiLink) update resources.configuration for day/night
     // without delivering onConfigurationChanged, so poll while the activity is visible.
     private val pollConfiguration = object : Runnable {
         override fun run() {
@@ -868,8 +868,8 @@ open class CarPlayHostActivity : ComponentActivity() {
         if (isIphoneUsbAttachment(intent)) {
             AirPlayPersistence.saveWirelessEnabled(this, false)
         }
-        if (runCatching { DiPlayBootstrap.ensure(this, AirPlayPersistence.loadMfiTarget(this)) }.isFailure) {
-            OwnScreenStart.start(this, Intent(this, DiPlayActivity::class.java), ::appendLog)
+        if (runCatching { TuPigCarPlayBootstrap.ensure(this, AirPlayPersistence.loadMfiTarget(this)) }.isFailure) {
+            OwnScreenStart.start(this, Intent(this, TuPigCarPlayActivity::class.java), ::appendLog)
             finish(); return
         }
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -897,7 +897,7 @@ open class CarPlayHostActivity : ComponentActivity() {
                     } else if (menuOpen) {
                         if (safeAreaEditorActive) closeSafeAreaEditor() else leaveSettingsMenu()
                     } else {
-                        showDiPlayHome()
+                        showTuPigCarPlayHome()
                     }
                 }
             },
@@ -906,7 +906,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         appendLog(
             "Host started; MFI target=${mfiTargetLabel(mfiTarget)}; " +
                 "transport=${if (wirelessEnabled) "wireless" else "wired"}; " +
-                "task=$taskId (${if (this is SameTaskCarPlayHostActivity) "DiPlay's task" else "own task"})",
+                "task=$taskId (${if (this is SameTaskCarPlayHostActivity) "TuPigCarPlay's task" else "own task"})",
         )
         val reusedBackgroundSession = adoptBackgroundSession()
         microphoneAvailable =
@@ -975,13 +975,13 @@ open class CarPlayHostActivity : ComponentActivity() {
     }
 
     /**
-     * Connection settings owned by the settings screen ([DiPlayActivity]). It saves them in this
+     * Connection settings owned by the settings screen ([TuPigCarPlayActivity]). It saves them in this
      * process while this screen keeps running, so they are re-read on every resume instead of
      * relying on the snapshot [onCreate] took: otherwise the next handshake would keep using the
      * mode, hotspot and MFI settings that were current when this screen was first opened.
      */
     private fun loadConnectionSettings() {
-        hideBydCallPopup = AirPlayPersistence.loadHideBydCallPopup(this)
+        hideTuPigCallPopup = AirPlayPersistence.loadHideTuPigCallPopup(this)
         wirelessEnabled = AirPlayPersistence.loadWirelessEnabled(this)
         mfiTarget = AirPlayPersistence.loadMfiTarget(this)
         mfiI2cPath = AirPlayPersistence.loadMfiI2cPath(this)
@@ -1117,7 +1117,7 @@ open class CarPlayHostActivity : ComponentActivity() {
                     }
                 }
             }
-        }, "diplay-vpn-adb-consent").start()
+        }, "tupigcarplay-vpn-adb-consent").start()
     }
 
     private fun requestWirelessPermissions() {
@@ -1190,7 +1190,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         logThemeState(ThemeModeDiagnostics.Source.START, resources.configuration)
         mainHandler.removeCallbacks(pollConfiguration)
         mainHandler.post(pollConfiguration)
-        CenterMapOverlay.onDiPlayScreenShown()
+        CenterMapOverlay.onTuPigCarPlayScreenShown()
         LauncherBubble.attach(this)
         LauncherBubble.onAppScreenShown()
         homeMonitor?.stop()
@@ -1257,11 +1257,11 @@ open class CarPlayHostActivity : ComponentActivity() {
             clusterMonitor = null
         }
         if (AirPlayPersistence.loadClusterSmallWindowMode(this) == CLUSTER_SMALL_WINDOW_AUTO) {
-            com.shilapi.xcertplay.hud.BydNavigationOutputs.setClusterNaviModeListener { mode ->
+            com.shilapi.xcertplay.hud.TuPigNavigationOutputs.setClusterNaviModeListener { mode ->
                 mainHandler.post { onAdbNaviMode(mode) }
             }
         } else {
-            com.shilapi.xcertplay.hud.BydNavigationOutputs.setClusterNaviModeListener(null)
+            com.shilapi.xcertplay.hud.TuPigNavigationOutputs.setClusterNaviModeListener(null)
             adbNaviMode = null
         }
         if (!menuOpen) gestureFingerCount = AirPlayPersistence.loadSettingsGestureFingers(this)
@@ -1269,7 +1269,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         settingsGestureHint?.text = settingsGestureHintText()
         ensureClusterPresentation()
         AirPlayPersistence.overlaySettingsListener = { runOnUiThread { applyClusterTurnOverlay() } }
-        com.shilapi.xcertplay.hud.BydNavigationOutputs.setTurnOverlayListener(clusterTurnOverlayListener)
+        com.shilapi.xcertplay.hud.TuPigNavigationOutputs.setTurnOverlayListener(clusterTurnOverlayListener)
         mainHandler.removeCallbacks(refreshTurnOverlay)
         mainHandler.post(refreshTurnOverlay)
         var systemBarsChanged = false
@@ -1296,19 +1296,19 @@ open class CarPlayHostActivity : ComponentActivity() {
     }
 
 
-    // Experimental: the CarPlay instrument-cluster stream on the BYD cluster projection display.
+    // Experimental: the CarPlay instrument-cluster stream on the TuPig cluster projection display.
     private fun effectiveClusterTheme(): DiLink51ClusterLayout.Theme =
         if (DiLink51ClusterLayout.automatic(this)) detectedCluster.theme ?: DiLink51ClusterLayout.theme(this)
         else DiLink51ClusterLayout.theme(this)
 
-    private fun onAdbNaviMode(mode: com.shilapi.xcertplay.hud.BydClusterNaviMode?) {
+    private fun onAdbNaviMode(mode: com.shilapi.xcertplay.hud.TuPigClusterNaviMode?) {
         val previous = adbNaviMode
         if (mode == previous) return
         adbNaviMode = mode
         appendLog("Cluster map: ADB navi mode=${mode?.label ?: "unknown"}")
         if (AirPlayPersistence.loadClusterSmallWindowMode(this) != CLUSTER_SMALL_WINDOW_AUTO) return
-        if (mode == com.shilapi.xcertplay.hud.BydClusterNaviMode.SMALL ||
-            mode == com.shilapi.xcertplay.hud.BydClusterNaviMode.FULL) {
+        if (mode == com.shilapi.xcertplay.hud.TuPigClusterNaviMode.SMALL ||
+            mode == com.shilapi.xcertplay.hud.TuPigClusterNaviMode.FULL) {
             applyClusterTurnOverlay()
             if (CarPlayBackgroundSession.active && requestedSmallWindowForStream != null &&
                 requestedSmallWindowForStream != smallWindowActive()) {
@@ -1341,8 +1341,8 @@ open class CarPlayHostActivity : ComponentActivity() {
     private fun smallWindowActive(): Boolean = when (AirPlayPersistence.loadClusterSmallWindowMode(this)) {
         CLUSTER_SMALL_WINDOW_ON -> true
         CLUSTER_SMALL_WINDOW_AUTO -> when (adbNaviMode) {
-            com.shilapi.xcertplay.hud.BydClusterNaviMode.SMALL -> true
-            com.shilapi.xcertplay.hud.BydClusterNaviMode.FULL -> false
+            com.shilapi.xcertplay.hud.TuPigClusterNaviMode.SMALL -> true
+            com.shilapi.xcertplay.hud.TuPigClusterNaviMode.FULL -> false
             else -> detectedCluster.smallWindow
         }
         else -> false
@@ -1392,7 +1392,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         presentation.setOnDismissListener {
             if (clusterPresentation === presentation) {
                 clusterPresentation = null
-                com.shilapi.xcertplay.hud.BydNavigationOutputs.setClusterMapShown(false)
+                com.shilapi.xcertplay.hud.TuPigNavigationOutputs.setClusterMapShown(false)
                 updateClusterMapShown()
             }
         }
@@ -1523,7 +1523,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         clusterSurface?.let { sink?.clearSurface(SCREEN_TYPE_ALT, it) }
         clusterSurface = null
         presentations.forEach { runCatching { it.dismiss() } }
-        com.shilapi.xcertplay.hud.BydNavigationOutputs.setClusterMapShown(false)
+        com.shilapi.xcertplay.hud.TuPigNavigationOutputs.setClusterMapShown(false)
         controller?.setDashboardMapOutputVisible(false)
     }
 
@@ -1550,7 +1550,7 @@ open class CarPlayHostActivity : ComponentActivity() {
     // Whether the running session's cluster stream was sized for a physical cluster display.
     private var clusterStreamOnDisplay = false
 
-    // DiLink 3 creates its cluster display only after DiPlay first projects to the cluster, which can
+    // DiLink 3 creates its cluster display only after TuPigCarPlay first projects to the cluster, which can
     // finish after the session has already asked for the virtual fallback stream.
     private val clusterDisplayListener = object : android.hardware.display.DisplayManager.DisplayListener {
         override fun onDisplayAdded(displayId: Int) {
@@ -1717,7 +1717,7 @@ open class CarPlayHostActivity : ComponentActivity() {
             return true
         }
 
-        // During a CarPlay call the wheel's call key answers on the iPhone instead of opening BYD's phone app.
+        // During a CarPlay call the wheel's call key answers on the iPhone instead of opening TuPig's phone app.
         if (CarPlayCallKeys.onKey(this, event.keyCode, event.action == KeyEvent.ACTION_DOWN, controller)) return true
 
         // The wheel key service, when it runs, takes an assigned Siri key before this window sees it.
@@ -1799,7 +1799,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         if (assignedAction != WheelZoomKeys.Action.PASS) return true
         if (downOrUp && assignedKey) return super.dispatchKeyEvent(event)
 
-        // Steering-wheel next/previous, claimed by the CarPlay screen itself. BYD gives these keys to
+        // Steering-wheel next/previous, claimed by the CarPlay screen itself. TuPig gives these keys to
         // whichever window is in front, and this is the only route that reaches CarPlay without the
         // wheel key service — which a head unit with no ADB cannot turn on at all.
         val mediaPress = CarPlayMediaButton.forCarPlayWindow(
@@ -1808,8 +1808,8 @@ open class CarPlayHostActivity : ComponentActivity() {
             inCall = inCall(this),
         )
         if (downOrUp && mediaPress != null) {
-            // A media button is a tap, and BYD sends each tap as an instant down/up pair: send once,
-            // on the press. The release is swallowed rather than passed on, or BYD's own player would
+            // A media button is a tap, and TuPig sends each tap as an instant down/up pair: send once,
+            // on the press. The release is swallowed rather than passed on, or TuPig's own player would
             // receive an unpaired key.
             if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
                 val sent = controller?.sendMediaButton(mediaPress) == true
@@ -1818,7 +1818,7 @@ open class CarPlayHostActivity : ComponentActivity() {
             return true
         }
 
-        // Keep DiPlay's existing steering-wheel/voice-key Siri handling intact.
+        // Keep TuPigCarPlay's existing steering-wheel/voice-key Siri handling intact.
         if (CarPlayMediaButton.isShortVoiceKey(event.keyCode) && WheelZoomSettings.siriLongPressOnly(this)) return true
         if (!CarPlayMediaButton.opensSiri(event.keyCode)) return super.dispatchKeyEvent(event)
         if (event.action == KeyEvent.ACTION_DOWN) legacySiriPresses.add(physicalKey)
@@ -1872,7 +1872,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         }
     }
 
-    /** Shows the dashboard map as a card on the centre screen while DiPlay is in the background. */
+    /** Shows the dashboard map as a card on the centre screen while TuPigCarPlay is in the background. */
     private fun showCenterMap() {
         if (isDestroyed || shuttingDown.get() || sink == null || isActivityStarted) return
         if (!AirPlayPersistence.loadCenterMapOverlay(this) || !AirPlayPersistence.loadClusterMapEnabled(this)) return
@@ -1908,9 +1908,9 @@ open class CarPlayHostActivity : ComponentActivity() {
         appendLog("Centre map: home screen ${if (visible) "in front" else "not in front"}")
         if (!AirPlayPersistence.loadCenterMapAutoHide(this)) {
             homeMonitor?.stop()
-            if (!isActivityStarted && !CenterMapOverlay.diPlayInFront()) showCenterMap()
+            if (!isActivityStarted && !CenterMapOverlay.tuPigCarPlayInFront()) showCenterMap()
         } else if (!visible) CenterMapOverlay.hide()
-        else if (!isActivityStarted && !CenterMapOverlay.diPlayInFront()) showCenterMap()
+        else if (!isActivityStarted && !CenterMapOverlay.tuPigCarPlayInFront()) showCenterMap()
     }
 
     private fun onCenterMapSurface(surface: Surface?) {
@@ -1920,7 +1920,7 @@ open class CarPlayHostActivity : ComponentActivity() {
 
     // The dashboard map pause must not stop the stream while a copy of the map is on screen.
     private fun updateClusterMapShown() {
-        com.shilapi.xcertplay.hud.BydNavigationOutputs.setClusterMapShown((clusterPresentation != null ||
+        com.shilapi.xcertplay.hud.TuPigNavigationOutputs.setClusterMapShown((clusterPresentation != null ||
             (ClusterActivityOutput.hasConfirmedRoute() && clusterSurface != null)) && !MapMirrors.any)
         // Wheel zoom needs a physical map; centre-screen copies must not suppress that eligibility.
         val surface = clusterSurface?.takeIf { it.isValid }
@@ -1983,8 +1983,8 @@ open class CarPlayHostActivity : ComponentActivity() {
         pendingDoubleSiri = null
         delayedDoubleSiri = null
         AirPlayPersistence.overlaySettingsListener = null
-        com.shilapi.xcertplay.hud.BydNavigationOutputs.setTurnOverlayListener(null)
-        com.shilapi.xcertplay.hud.BydNavigationOutputs.setClusterNaviModeListener(null)
+        com.shilapi.xcertplay.hud.TuPigNavigationOutputs.setTurnOverlayListener(null)
+        com.shilapi.xcertplay.hud.TuPigNavigationOutputs.setClusterNaviModeListener(null)
         clusterMonitor?.stop()
         getSystemService(android.hardware.display.DisplayManager::class.java)
             ?.unregisterDisplayListener(clusterDisplayListener)
@@ -2051,7 +2051,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         }
         panel.addView(icon, LinearLayout.LayoutParams(dp(88), dp(88)))
         val title = TextView(this).apply {
-            text = getString(R.string.diplay)
+            text = getString(R.string.tupigcarplay)
             gravity = Gravity.CENTER
             typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         }
@@ -2071,14 +2071,14 @@ open class CarPlayHostActivity : ComponentActivity() {
             visibility = View.GONE
         }
         panel.addView(help)
-        val recovery = DiPlayButton(this).apply {
+        val recovery = TuPigCarPlayButton(this).apply {
             text = getString(R.string.reset_carplay_wi_fi)
             visibility = View.GONE
-            setOnClickListener { showDiPlayHome("wireless-recovery") }
+            setOnClickListener { showTuPigCarPlayHome("wireless-recovery") }
             wifiRecoveryButton = this
         }
         panel.addView(recovery, LinearLayout.LayoutParams(dp(300), dp(64)).apply { bottomMargin = dp(12) })
-        val retry = DiPlayButton(this).apply {
+        val retry = TuPigCarPlayButton(this).apply {
             text = getString(R.string.retry_carplay_connection)
             visibility = View.GONE
             setOnClickListener {
@@ -2093,9 +2093,9 @@ open class CarPlayHostActivity : ComponentActivity() {
             startupRetryButton = this
         }
         panel.addView(retry, LinearLayout.LayoutParams(dp(300), dp(64)).apply { bottomMargin = dp(12) })
-        val back = DiPlayButton(this).apply {
-            text = getString(R.string.back_to_diplay)
-            setOnClickListener { showDiPlayHome() }
+        val back = TuPigCarPlayButton(this).apply {
+            text = getString(R.string.back_to_tupigcarplay)
+            setOnClickListener { showTuPigCarPlayHome() }
         }
         panel.addView(back, LinearLayout.LayoutParams(dp(300), dp(64)))
         val gestureHint = TextView(this).apply {
@@ -2104,7 +2104,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         }
         panel.addView(gestureHint)
         paintWaitingScreen = {
-            // The connection screen is DiPlay chrome: follow the app theme, not the day/night mode sent to CarPlay.
+            // The connection screen is TuPigCarPlay chrome: follow the app theme, not the day/night mode sent to CarPlay.
             val colors = WaitingScreenColors.of(appNight)
             viewport.setBackgroundColor(colors.background)
             title.setTextColor(colors.text)
@@ -2112,10 +2112,10 @@ open class CarPlayHostActivity : ComponentActivity() {
             instructions.setTextColor(colors.secondary)
             help.setTextColor(colors.secondary)
             gestureHint.setTextColor(colors.secondary)
-            val buttonPalette = DiPlayPalette.of(appNight)
-            back.style(DiPlayButtonKind.PRIMARY, buttonPalette, overlay = false)
-            retry.style(DiPlayButtonKind.SECONDARY, buttonPalette, overlay = false)
-            recovery.style(DiPlayButtonKind.SECONDARY, buttonPalette, overlay = false)
+            val buttonPalette = TuPigCarPlayPalette.of(appNight)
+            back.style(TuPigCarPlayButtonKind.PRIMARY, buttonPalette, overlay = false)
+            retry.style(TuPigCarPlayButtonKind.SECONDARY, buttonPalette, overlay = false)
+            recovery.style(TuPigCarPlayButtonKind.SECONDARY, buttonPalette, overlay = false)
         }
         paintWaitingScreen()
         viewport.addView(panel, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER))
@@ -2206,7 +2206,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         return root
     }
 
-    // DiPlay's side panel: placed over the part of the stream CarPlay leaves black (placeSidePanel), so it
+    // TuPigCarPlay's side panel: placed over the part of the stream CarPlay leaves black (placeSidePanel), so it
     // follows the video when it is letterboxed; touches elsewhere still reach the gesture layer and CarPlay.
     private fun buildSidePanel(): LinearLayout {
         val panel = LinearLayout(this).apply {
@@ -2731,7 +2731,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         sidePanelShown = show
         sidePanel?.visibility = if (show) View.VISIBLE else View.GONE
         mainHandler.removeCallbacks(sidePanelTick)
-        if (show) startSidePanelTyres() else com.shilapi.xcertplay.hud.BydTyreStatus.stop()
+        if (show) startSidePanelTyres() else com.shilapi.xcertplay.hud.TuPigTyreStatus.stop()
         if (show) sidePanelTick.run()
         if (show) showSidePanelGripHint()
         updateVideoLayout(view.width, view.height)
@@ -2741,13 +2741,13 @@ open class CarPlayHostActivity : ComponentActivity() {
         sidePanelShown = false
         sidePanel?.visibility = View.GONE
         mainHandler.removeCallbacks(sidePanelTick)
-        com.shilapi.xcertplay.hud.BydTyreStatus.stop()
+        com.shilapi.xcertplay.hud.TuPigTyreStatus.stop()
         videoView?.let { placeSidePanelTab(it.width, it.height) }
     }
 
-    // Tyres through the head unit's adb shell; the reader stops by itself where there is no BYD autoservice.
+    // Tyres through the head unit's adb shell; the reader stops by itself where there is no TuPig autoservice.
     private fun startSidePanelTyres() {
-        com.shilapi.xcertplay.hud.BydTyreStatus.start(this)
+        com.shilapi.xcertplay.hud.TuPigTyreStatus.start(this)
     }
 
     // Stops the hints and the blur of a host that goes away.
@@ -2778,13 +2778,13 @@ open class CarPlayHostActivity : ComponentActivity() {
         }
     }
 
-    // The battery shows only where DiPlay already reads it for the iPhone.
+    // The battery shows only where TuPigCarPlay already reads it for the iPhone.
     private fun refreshSidePanel() {
-        val battery = if (com.shilapi.xcertplay.hud.BydOutputSettings.batteryToIphoneActive(this)) {
-            com.shilapi.xcertplay.hud.BydNavigationOutputs.batteryStatus(applicationContext).snapshot()
+        val battery = if (com.shilapi.xcertplay.hud.TuPigOutputSettings.batteryToIphoneActive(this)) {
+            com.shilapi.xcertplay.hud.TuPigNavigationOutputs.batteryStatus(applicationContext).snapshot()
         } else null
         sidePanelBattery?.text = battery?.let { "🔋 ${Math.round(it.batteryPercent)} %  ·  ${it.rangeKm} km" }.orEmpty()
-        val tyres = com.shilapi.xcertplay.hud.BydTyreStatus.latest()
+        val tyres = com.shilapi.xcertplay.hud.TuPigTyreStatus.latest()
         sidePanelTyres?.visibility = if (tyres == null) View.GONE else View.VISIBLE
         if (tyres != null) sidePanelTyreTexts.forEachIndexed { tyre, text ->
             val pressure = tyres.pressureKpa.getOrNull(tyre)?.let { "$it kPa" } ?: "—"
@@ -2793,7 +2793,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         }
     }
 
-    private val overlayPalette: DiPlayPalette get() = DiPlayPalette.of(appNight)
+    private val overlayPalette: TuPigCarPlayPalette get() = TuPigCarPlayPalette.of(appNight)
     private val settingsOverlayTheme: SettingsTheme get() = SettingsTheme.overlay(overlayPalette)
     private val MENU_BACKGROUND: Int get() = overlayPalette.overlayBackground
     // The side panel card follows the app theme: black when dark, white (for now) when light.
@@ -2871,7 +2871,7 @@ open class CarPlayHostActivity : ComponentActivity() {
 
     private fun settingsGestureHintText(): String =
         if (gestureFingerCount == 0) getString(R.string.settings_gesture_disabled_hint)
-        else getString(R.string.open_diplay_settings_hint, gestureFingerCount)
+        else getString(R.string.open_tupigcarplay_settings_hint, gestureFingerCount)
 
     private fun settingsGestureButtonText(): String =
         if (gestureFingerCount == 0) getString(R.string.settings_gesture_disabled_action)
@@ -2942,11 +2942,11 @@ open class CarPlayHostActivity : ComponentActivity() {
         fun pageFor(key: String) = pages.getValue(key)
         var content = pageFor("connection")
         if (sessionDisplay?.viewAreas?.sidePanel() != null) {
-            pageFor("advanced").addView(DiPlayButton(this).apply {
+            pageFor("advanced").addView(TuPigCarPlayButton(this).apply {
                 text = getString(if (sidePanelShown) R.string.side_panel_full_screen else R.string.side_panel_show)
                 textSize = 17f
                 minHeight = dp(52)
-                style(DiPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
+                style(TuPigCarPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
                 setOnClickListener {
                     cancelSettingsEdits()
                     showSidePanel(!sidePanelShown)
@@ -3069,12 +3069,12 @@ open class CarPlayHostActivity : ComponentActivity() {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
             ).apply { topMargin = dp(12) },
         )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && CarHotspotSetup.isBydHeadUnit(this)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && CarHotspotSetup.isTuPigHeadUnit(this)) {
             content.addView(settingsSwitchRow(
-                label = getString(R.string.settings_hide_byd_call_popup),
-                checked = hideBydCallPopup,
-                description = getString(R.string.settings_hide_byd_call_popup_description),
-            ) { hideBydCallPopup = it })
+                label = getString(R.string.settings_hide_tupig_call_popup),
+                checked = hideTuPigCallPopup,
+                description = getString(R.string.settings_hide_tupig_call_popup_description),
+            ) { hideTuPigCallPopup = it })
         }
         pageFor("display").addView(
             buildAirPlayIconSection(),
@@ -3277,33 +3277,33 @@ open class CarPlayHostActivity : ComponentActivity() {
         }
 
         content = pageFor("more")
-        val save = DiPlayButton(this).apply {
+        val save = TuPigCarPlayButton(this).apply {
             text = getString(R.string.save_and_reconnect)
             textSize = 17f
             minHeight = dp(SWIPE_ACTION_HEIGHT_DP)
-            style(DiPlayButtonKind.PRIMARY, overlayPalette, overlay = true)
+            style(TuPigCarPlayButtonKind.PRIMARY, overlayPalette, overlay = true)
             setOnClickListener { saveSettingsAndReconnect() }
         }
-        val exitApplicationButton = DiPlayButton(this).apply {
+        val exitApplicationButton = TuPigCarPlayButton(this).apply {
             text = getString(R.string.exit_application)
             textSize = 17f
             minHeight = dp(SWIPE_ACTION_HEIGHT_DP)
-            style(DiPlayButtonKind.TONAL_DANGER, overlayPalette, overlay = true)
+            style(TuPigCarPlayButtonKind.TONAL_DANGER, overlayPalette, overlay = true)
             setOnClickListener { exitApplication() }
         }
 
-        content.addView(DiPlayButton(this).apply {
+        content.addView(TuPigCarPlayButton(this).apply {
             text = getString(R.string.language_app_language)
             textSize = 17f
             minHeight = dp(52)
-            style(DiPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
+            style(TuPigCarPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
             setOnClickListener { AppLocale.showPicker(this@CarPlayHostActivity) }
         }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) })
 
-        val gestureButton = DiPlayButton(this).apply {
+        val gestureButton = TuPigCarPlayButton(this).apply {
             textSize = 17f
             minHeight = dp(52)
-            style(DiPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
+            style(TuPigCarPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
             setOnClickListener {
                 gestureFingerCount = when (gestureFingerCount) { 0 -> 2; 4 -> 0; else -> gestureFingerCount + 1 }
                 text = settingsGestureButtonText()
@@ -3312,17 +3312,17 @@ open class CarPlayHostActivity : ComponentActivity() {
         gestureButton.text = settingsGestureButtonText()
         pageFor("vehicle").addView(gestureButton, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) })
 
-        val openDiPlaySettingsButton = DiPlayButton(this).apply {
+        val openTuPigCarPlaySettingsButton = TuPigCarPlayButton(this).apply {
             text = "${getString(R.string.app_name)} ${getString(R.string.settings)}"
             textSize = 17f
             minHeight = dp(52)
-            style(DiPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
+            style(TuPigCarPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
             setOnClickListener {
-                leaveSettingsMenu { showDiPlayHome("settings") }
+                leaveSettingsMenu { showTuPigCarPlayHome("settings") }
             }
         }
         content.addView(
-            openDiPlaySettingsButton,
+            openTuPigCarPlaySettingsButton,
             LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -3358,7 +3358,7 @@ open class CarPlayHostActivity : ComponentActivity() {
             )
         }
         settingsMenuContentScroll = scroll
-        val categoryButtons = mutableListOf<Pair<String, DiPlayButton>>()
+        val categoryButtons = mutableListOf<Pair<String, TuPigCarPlayButton>>()
         lateinit var chips: HorizontalScrollView
         fun selectCategory(key: String) {
             settingsMenuCategoryKey = key
@@ -3366,7 +3366,7 @@ open class CarPlayHostActivity : ComponentActivity() {
                 page.visibility = if (candidate == key) View.VISIBLE else View.GONE
             }
             categoryButtons.forEach { (candidate, button) ->
-                button.style(if (candidate == key) DiPlayButtonKind.PRIMARY else DiPlayButtonKind.SECONDARY,
+                button.style(if (candidate == key) TuPigCarPlayButtonKind.PRIMARY else TuPigCarPlayButtonKind.SECONDARY,
                     overlayPalette, overlay = true)
             }
             scroll.scrollTo(0, 0)
@@ -3376,12 +3376,12 @@ open class CarPlayHostActivity : ComponentActivity() {
             pages.entries.firstOrNull { (_, page) -> generateSequence(view.parent) { it.parent }.any { it === page } }
                 ?.let { (key, _) -> selectCategory(key) }
         }
-        fun categoryButton(key: String, title: Int) = DiPlayButton(this).apply {
+        fun categoryButton(key: String, title: Int) = TuPigCarPlayButton(this).apply {
             text = getString(title)
             textSize = 16f
             minHeight = dp(SWIPE_CATEGORY_ACTION_HEIGHT_DP)
             categoryButtons += key to this
-            style(if (key == selectedPage) DiPlayButtonKind.PRIMARY else DiPlayButtonKind.SECONDARY,
+            style(if (key == selectedPage) TuPigCarPlayButtonKind.PRIMARY else TuPigCarPlayButtonKind.SECONDARY,
                 overlayPalette, overlay = true)
             setOnClickListener { selectCategory(key) }
         }
@@ -3453,10 +3453,10 @@ open class CarPlayHostActivity : ComponentActivity() {
             ellipsize = android.text.TextUtils.TruncateAt.END
             layoutDirection = resources.configuration.layoutDirection
         }
-        val closeButton = DiPlayButton(this).apply {
+        val closeButton = TuPigCarPlayButton(this).apply {
             text = getString(R.string.close)
             textSize = 16f
-            style(DiPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
+            style(TuPigCarPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
             contentDescription = getString(R.string.discard_changes_and_exit_settings)
             minHeight = dp(SWIPE_ACTION_HEIGHT_DP)
             setOnClickListener { cancelSettingsEdits() }
@@ -3516,7 +3516,7 @@ open class CarPlayHostActivity : ComponentActivity() {
     }
 
     private fun persistMenuSettings() {
-        AirPlayPersistence.saveHideBydCallPopup(this, hideBydCallPopup)
+        AirPlayPersistence.saveHideTuPigCallPopup(this, hideTuPigCallPopup)
         AirPlayPersistence.saveSettingsGestureFingers(this, gestureFingerCount)
         AirPlayPersistence.saveWirelessEnabled(this, wirelessEnabled)
         AirPlayPersistence.saveMfiTarget(this, mfiTarget)
@@ -4013,9 +4013,9 @@ open class CarPlayHostActivity : ComponentActivity() {
             orientation = LinearLayout.VERTICAL
         }
         actions.addView(
-            DiPlayButton(this).apply {
+            TuPigCarPlayButton(this).apply {
                 text = getString(R.string.choose_image)
-                style(DiPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
+                style(TuPigCarPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
                 setOnClickListener {
                     externalActivityInProgress = true
                     launchCarButtonImagePicker(
@@ -4037,9 +4037,9 @@ open class CarPlayHostActivity : ComponentActivity() {
             ),
         )
         actions.addView(
-            DiPlayButton(this).apply {
+            TuPigCarPlayButton(this).apply {
                 text = getString(R.string.default_icon)
-                style(DiPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
+                style(TuPigCarPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
                 setOnClickListener {
                     AirPlayPersistence.clearCustomAirPlayIcon(this@CarPlayHostActivity)
                     updateAirPlayIconPreview()
@@ -4245,17 +4245,17 @@ open class CarPlayHostActivity : ComponentActivity() {
             orientation = LinearLayout.HORIZONTAL
         }
         buttons.addView(
-            DiPlayButton(this).apply {
+            TuPigCarPlayButton(this).apply {
                 text = getString(R.string.set)
-                style(DiPlayButtonKind.PRIMARY, overlayPalette, overlay = true)
+                style(TuPigCarPlayButtonKind.PRIMARY, overlayPalette, overlay = true)
                 setOnClickListener { openSafeAreaEditor() }
             },
             LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f),
         )
         buttons.addView(
-            DiPlayButton(this).apply {
+            TuPigCarPlayButton(this).apply {
                 text = getString(R.string.reset)
-                style(DiPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
+                style(TuPigCarPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
                 setOnClickListener { resetSafeAreaForCurrentSize() }
             },
             LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
@@ -4356,17 +4356,17 @@ open class CarPlayHostActivity : ComponentActivity() {
             setPadding(dp(16), dp(10), dp(16), dp(16))
         }
         controls.addView(
-            DiPlayButton(this).apply {
+            TuPigCarPlayButton(this).apply {
                 text = getString(R.string.cancel)
-                style(DiPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
+                style(TuPigCarPlayButtonKind.SECONDARY, overlayPalette, overlay = true)
                 setOnClickListener { closeSafeAreaEditor() }
             },
             LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f),
         )
         controls.addView(
-            DiPlayButton(this).apply {
+            TuPigCarPlayButton(this).apply {
                 text = getString(R.string.save)
-                style(DiPlayButtonKind.PRIMARY, overlayPalette, overlay = true)
+                style(TuPigCarPlayButtonKind.PRIMARY, overlayPalette, overlay = true)
                 setOnClickListener { saveSafeAreaEditor() }
             },
             LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
@@ -4667,7 +4667,7 @@ open class CarPlayHostActivity : ComponentActivity() {
 
     private fun validateMfiSettings(): Boolean {
         val error = when {
-            mfiTarget == MfiTarget.LOCAL && runCatching { DiPlayBootstrap.ensure(this, mfiTarget) }.isFailure ->
+            mfiTarget == MfiTarget.LOCAL && runCatching { TuPigCarPlayBootstrap.ensure(this, mfiTarget) }.isFailure ->
                 getString(R.string.setup_error_auth)
             mfiTarget == MfiTarget.I2C && mfiI2cPath.isBlank() ->
                 getString(R.string.i2c_device_path_is_required)
@@ -4720,7 +4720,6 @@ open class CarPlayHostActivity : ComponentActivity() {
 
     private fun hotspotModeLabel(mode: WirelessHotspotMode): String = when (mode) {
         WirelessHotspotMode.WIFI_P2P -> getString(R.string.wi_fi_p2p_5_ghz)
-        WirelessHotspotMode.LOCAL_ONLY_HOTSPOT -> getString(R.string.localonlyhotspot)
         WirelessHotspotMode.MANUAL -> getString(R.string.manual_hotspot)
         WirelessHotspotMode.EXISTING_WIFI -> getString(R.string.existing_wifi_title)
     }
@@ -5010,7 +5009,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         val screenShort = minOf(screen.widthPixels, screen.heightPixels)
         val (landscapeWindow, portraitWindow) = CarPlayRotation.turnedWindows(size.width, size.height,
             screen.widthPixels, screen.heightPixels)
-        // Before DiPlay has seen a split window, expect one from the screen, its bars and Android's divider.
+        // Before TuPigCarPlay has seen a split window, expect one from the screen, its bars and Android's divider.
         val statusBar = systemDimension("status_bar_height")
         val navigationBar = systemDimension("navigation_bar_height")
         val divider = (systemDimension("docked_stack_divider_thickness") -
@@ -5078,9 +5077,9 @@ open class CarPlayHostActivity : ComponentActivity() {
         val carBluetoothAudio = AirPlayPersistence.loadCarBluetoothAudio(this)
         if (carBluetoothAudio) logCarBluetoothAudio()
         return AirPlayConfig(
-            deviceName = "DiPlay",
-            deviceId = DiPlayBootstrap.deviceId(airPlayIdentity),
-            btMac = DiPlayBluetooth.localAddress(this) ?: DiPlayBootstrap.deviceId(airPlayIdentity),
+            deviceName = "TuPigCarPlay",
+            deviceId = TuPigCarPlayBootstrap.deviceId(airPlayIdentity),
+            btMac = TuPigCarPlayBluetooth.localAddress(this) ?: TuPigCarPlayBootstrap.deviceId(airPlayIdentity),
             sourceVersion = "950.7.1",
             main = declared,
             cluster = clusterDisplayConfig(),
@@ -5092,7 +5091,7 @@ open class CarPlayHostActivity : ComponentActivity() {
             model = normalizedModel(),
             oemLabel = oemLabel,
             icons = listOf(loadAirPlayIcon()),
-            videoInCar = com.shilapi.xcertplay.hud.BydOutputSettings.videoWhileParkedActive(this),
+            videoInCar = com.shilapi.xcertplay.hud.TuPigOutputSettings.videoWhileParkedActive(this),
             mainBufferedAudio = AirPlayPersistence.loadMainBufferedAudio(this),
             speechWithout8And16Khz = AirPlayPersistence.loadSpeechWithout8And16Khz(this),
             callAtCallRate = AirPlayPersistence.loadCallAtCallRate(this),
@@ -5549,7 +5548,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         CarPlayBackgroundSession.store(snapshot.controller, snapshot.sink, snapshot.width, snapshot.height,
             this, snapshot.display) { completion ->
             runOnUiThread {
-                shutdown(false, "DiPlay disconnect", completion)
+                shutdown(false, "TuPigCarPlay disconnect", completion)
                 finish()
             }
         }
@@ -5612,7 +5611,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         val controllerGeneration = restartGeneration
         // Settings → Connection can change the target while this screen stays open (#696).
         mfiTarget = AirPlayPersistence.loadMfiTarget(this)
-        runCatching { DiPlayBootstrap.ensure(this, mfiTarget) }
+        runCatching { TuPigCarPlayBootstrap.ensure(this, mfiTarget) }
         val config = createRuntimeConfig()
         val effectiveSize = if (isMultiWindowActive() && !AirPlayPersistence.loadAdaptPipResolution(this) &&
             maximumDetectedWidthPixels >= size.width && maximumDetectedHeightPixels >= size.height &&
@@ -5626,7 +5625,7 @@ open class CarPlayHostActivity : ComponentActivity() {
             when {
                 !config.locationReportingEnabled -> null
                 config.identification.vehicleSpeedEnabled &&
-                    !com.shilapi.xcertplay.hud.BydOutputSettings.wheelSpeedToIphoneActive(this) ->
+                    !com.shilapi.xcertplay.hud.TuPigOutputSettings.wheelSpeedToIphoneActive(this) ->
                     // ECARX: the head unit has no GPS of its own, so only the wheel speed goes to the iPhone.
                     VehicleSpeedLocationProvider(
                         EcarxWheelSpeed.NoPosition,
@@ -5635,7 +5634,7 @@ open class CarPlayHostActivity : ComponentActivity() {
                     )
                 config.identification.vehicleSpeedEnabled -> VehicleSpeedLocationProvider(
                     AndroidCarPlayLocationProvider(this),
-                    com.shilapi.xcertplay.hud.BydNavigationOutputs.wheelSpeed(applicationContext),
+                    com.shilapi.xcertplay.hud.TuPigNavigationOutputs.wheelSpeed(applicationContext),
                     log = ::appendLog,
                 )
                 else -> AndroidCarPlayLocationProvider(this)
@@ -5690,8 +5689,8 @@ open class CarPlayHostActivity : ComponentActivity() {
             savePairRecord = { record -> AirPlayPersistence.saveLockdownRecord(this, record) },
             clearPairRecord = { AirPlayPersistence.clearLockdownRecord(this) },
             locationProvider = locationProvider,
-            vehicleStatusProvider = if (com.shilapi.xcertplay.hud.BydOutputSettings.batteryToIphoneActive(this)) {
-                com.shilapi.xcertplay.hud.BydNavigationOutputs.batteryStatus(applicationContext)
+            vehicleStatusProvider = if (com.shilapi.xcertplay.hud.TuPigOutputSettings.batteryToIphoneActive(this)) {
+                com.shilapi.xcertplay.hud.TuPigNavigationOutputs.batteryStatus(applicationContext)
             } else {
                 null
             },
@@ -5711,17 +5710,17 @@ open class CarPlayHostActivity : ComponentActivity() {
         videoView?.let { updateVideoLayout(it.width, it.height) }
         CarPlayBackgroundSession.store(next, renderer, size.width, size.height, this, display) { completion ->
             runOnUiThread {
-                shutdown(terminateProcess = false, reason = "DiPlay disconnect", completion = completion)
+                shutdown(terminateProcess = false, reason = "TuPigCarPlay disconnect", completion = completion)
                 finish()
             }
         }
         try {
-            ContextCompat.startForegroundService(this, Intent(this, DiPlaySessionService::class.java))
+            ContextCompat.startForegroundService(this, Intent(this, TuPigCarPlaySessionService::class.java))
             next.start()
         } catch (error: RuntimeException) {
             appendLog("Connection could not start: ${error.javaClass.simpleName}")
             shutdown(false, "foreground service could not start")
-            setConnectionStage(R.string.could_not_start_carplay_return_to_diplay_and_check_app_per)
+            setConnectionStage(R.string.could_not_start_carplay_return_to_tupigcarplay_and_check_app_per)
         }
     }
 
@@ -5884,7 +5883,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         val turned = previous != null && !split && (previous.height > previous.width) != portrait
         if (turned && !areas.turnsWithScreen) return false
         if (split) {
-            // Against the whole screen, which the system bars (shown in BYD's split screen) do not change.
+            // Against the whole screen, which the system bars (shown in TuPig's split screen) do not change.
             val screen = android.util.DisplayMetrics().also { windowManager.defaultDisplay.getRealMetrics(it) }
             val screenLong = maxOf(screen.widthPixels, screen.heightPixels).toFloat()
             val screenShort = minOf(screen.widthPixels, screen.heightPixels).toFloat()
@@ -5909,7 +5908,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         return true
     }
 
-    /** Whether the screen itself is portrait now (DiPlay's own window may be a split-screen part of it). */
+    /** Whether the screen itself is portrait now (TuPigCarPlay's own window may be a split-screen part of it). */
     @Suppress("DEPRECATION")
     private fun screenPortrait(): Boolean {
         val metrics = android.util.DisplayMetrics()
@@ -6152,9 +6151,9 @@ open class CarPlayHostActivity : ComponentActivity() {
         }
     }
 
-    private fun showDiPlayHome(page: String = "home") {
+    private fun showTuPigCarPlayHome(page: String = "home") {
         releaseCarPlayTouches()
-        OwnScreenStart.start(this, Intent(this, DiPlayActivity::class.java)
+        OwnScreenStart.start(this, Intent(this, TuPigCarPlayActivity::class.java)
             .putExtra("page", page).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT), ::appendLog)
     }
 
@@ -6257,7 +6256,7 @@ open class CarPlayHostActivity : ComponentActivity() {
     private fun leaveSettingsMenu(onLeft: () -> Unit = {}) {
         if (!menuOpen) return
         if (menuSettingsSignature?.let { it != menuSettingsSignature() } == true) {
-            // Follow the menu's light or dark palette, like DiPlay's other dialogs.
+            // Follow the menu's light or dark palette, like TuPigCarPlay's other dialogs.
             AlertDialog.Builder(this, if (appNight) R.style.Theme_Xcertplay_Dialog_Dark else R.style.Theme_Xcertplay_Dialog_Light)
                 .setTitle(getString(R.string.settings_discard_pending_title))
                 .setMessage(getString(R.string.settings_discard_pending_message))
@@ -6347,7 +6346,7 @@ open class CarPlayHostActivity : ComponentActivity() {
                 applicationContext.stopService(Intent(applicationContext, CarPlayVpnService::class.java))
             }
             Log.i(TAG, "shutdown complete clean=$clean")
-            applicationContext.stopService(Intent(applicationContext, DiPlaySessionService::class.java))
+            applicationContext.stopService(Intent(applicationContext, TuPigCarPlaySessionService::class.java))
             teardownExecutor.shutdown()
             mainHandler.post { completion() }
             if (terminateProcess) Process.killProcess(Process.myPid())
@@ -6454,7 +6453,7 @@ open class CarPlayHostActivity : ComponentActivity() {
             }, Handler(pictureCopyThread.looper))
         }.isSuccess
         if (requested) done.await(PICTURE_COPY_WAIT_MILLIS, java.util.concurrent.TimeUnit.MILLISECONDS)
-        // Not recycled by hand: the picture shown last may still be on screen when DiPlay leaves again.
+        // Not recycled by hand: the picture shown last may still be on screen when TuPigCarPlay leaves again.
         if (copied.get()) lastPicture = picture
         appendLog("Last picture kept=${copied.get()}")
     }
@@ -6688,8 +6687,8 @@ open class CarPlayHostActivity : ComponentActivity() {
                     }
                 } else {
                     mainHandler.postDelayed(hideIdleCenterMap, CENTER_MAP_IDLE_MILLIS)
-                    // A reconnect is quicker. When the iPhone has gone, the car may stop DiPlay soon after,
-                    // and a cluster still held then stayed in BYD's simple mode until a restart (#883, #803).
+                    // A reconnect is quicker. When the iPhone has gone, the car may stop TuPigCarPlay soon after,
+                    // and a cluster still held then stayed in TuPig's simple mode until a restart (#883, #803).
                     mainHandler.removeCallbacks(releaseIdleCluster)
                     mainHandler.postDelayed(releaseIdleCluster, CLUSTER_IDLE_RELEASE_MILLIS)
                 }
@@ -6698,14 +6697,14 @@ open class CarPlayHostActivity : ComponentActivity() {
         }
     }
 
-    private fun shouldHideBydCallPopup(): Boolean =
+    private fun shouldHideTuPigCallPopup(): Boolean =
         hostAppearanceResumed && callPopupSessionReady && !menuOpen && !shuttingDown.get() &&
             !handshakeResetInProgress && !reconnectScheduled && CarPlayBackgroundSession.active &&
-            CarPlayBackgroundSession.isOwner(this) && AirPlayPersistence.loadHideBydCallPopup(this)
+            CarPlayBackgroundSession.isOwner(this) && AirPlayPersistence.loadHideTuPigCallPopup(this)
 
     private fun updateCallPopupGuard() {
         if (CarPlayBackgroundSession.isOwner(this)) CarPlayBackgroundSession.callPopupReady = callPopupSessionReady
-        com.shilapi.xcertplay.hud.BydCallPopupGuard.update(this, this, shouldHideBydCallPopup()) {
+        com.shilapi.xcertplay.hud.TuPigCallPopupGuard.update(this, this, shouldHideTuPigCallPopup()) {
             CarPlayBackgroundSession.active && CarPlayBackgroundSession.callPopupReady && CarPlayBackgroundSession.isOwner(this)
         }
     }
@@ -6757,11 +6756,11 @@ open class CarPlayHostActivity : ComponentActivity() {
         message == getString(R.string.vpn_authorization_unavailable) ||
             LocalAdb.Access.entries.any { message == getString(VpnPreConsent.stage(it)) } -> message
         // It says where to look itself; its word "permissions" would turn it into the generic permission line.
-        message == getString(R.string.could_not_start_carplay_return_to_diplay_and_check_app_per) -> message
+        message == getString(R.string.could_not_start_carplay_return_to_tupigcarplay_and_check_app_per) -> message
         message == getString(R.string.waiting_for_mfi_coprocessor) ||
             message == getString(R.string.requesting_mfi_usb_permission) -> message
         // A startup failure that names its cause, and a line saying the retries stopped, are shown as they are.
-        // "Getting CarPlay ready…" or "Retrying…" in their place said DiPlay was still connecting (#809).
+        // "Getting CarPlay ready…" or "Retrying…" in their place said TuPigCarPlay was still connecting (#809).
         message == getString(R.string.hotspot_network_not_ready) || message == getString(R.string.first_tcp_timeout) ||
             message == getString(R.string.wifi_direct_refused_beside_hotspot) ||
             message.endsWith(getString(R.string.wireless_startup_retries_exhausted)) -> message
@@ -6771,8 +6770,8 @@ open class CarPlayHostActivity : ComponentActivity() {
         englishMessage.contains("CarPlay configuration request", true) -> getString(R.string.iphone_usb_mode_rejected)
         englishMessage.contains("Turn on Wi-Fi", true) -> getString(R.string.turn_on_wi_fi_in_the_head_unit_s_settings_to_connect)
         englishMessage.contains(BluetoothRadioCheck.RADIO_OFF_MARK, true) -> getString(R.string.turn_on_bluetooth_in_the_head_unit_s_settings_to_connect)
-        englishMessage.contains("Allow precise Location", true) -> getString(R.string.allow_precise_location_for_diplay_in_the_head_unit_s_app_p)
-        englishMessage.contains("Allow Nearby devices", true) -> getString(R.string.allow_nearby_devices_for_diplay_in_the_head_unit_s_app_per)
+        englishMessage.contains("Allow precise Location", true) -> getString(R.string.allow_precise_location_for_tupigcarplay_in_the_head_unit_s_app_p)
+        englishMessage.contains("Allow Nearby devices", true) -> getString(R.string.allow_nearby_devices_for_tupigcarplay_in_the_head_unit_s_app_per)
         englishMessage.contains("createGroup failed", true) -> getString(R.string.the_head_unit_couldn_t_start_carplay_wi_fi_check_wi_fi_and)
         englishMessage.contains("needs a reset", true) -> getString(R.string.a_previous_wi_fi_direct_connection_is_still_running_reset)
         englishMessage.contains(BluetoothLinkCheck.UNREAL_MARK, true) -> getString(R.string.bluetooth_connections_not_real)
@@ -6802,11 +6801,11 @@ open class CarPlayHostActivity : ComponentActivity() {
         "${SimpleDateFormat("HH:mm:ss.SSS", Locale.US).format(Date(nowMillis))}  $message"
 
     private fun initializeSessionLog() {
-        val logFile = File(File(filesDir, "logs"), "diplay.log")
+        val logFile = File(File(filesDir, "logs"), "tupigcarplay.log")
         val activeLog = SessionLogFile(logFile)
         runCatching {
             activeLog.reset(
-                "DiPlay log started " +
+                "TuPigCarPlay log started " +
                     "${SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US).format(Date())} " +
                     "pid=${Process.myPid()} path=${logFile.absolutePath}",
             )

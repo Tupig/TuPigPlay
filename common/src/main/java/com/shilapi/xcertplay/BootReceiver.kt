@@ -10,15 +10,15 @@ import com.shilapi.xcertplay.telecom.PhoneAudioRoute
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
-        // Starts the watcher for other apps' calls when that setting is on, even without opening DiPlay.
+        // Starts the watcher for other apps' calls when that setting is on, even without opening TuPigCarPlay.
         PhoneAudioRoute.attach(context)
         val launchEnabled = AirPlayPersistence.loadAutoStartOnBoot(context)
         StartupDiagnosticSnapshot.received(context, launchEnabled)
         if (!launchEnabled) return
 
         // Shaped like the launcher icon's intent: a USB authenticator or iPhone plugged in can open CarPlay
-        // before this broadcast, and DiPlayActivity then returns to that session instead of showing Home over it.
-        val launch = Intent(context, DiPlayActivity::class.java).apply {
+        // before this broadcast, and TuPigCarPlayActivity then returns to that session instead of showing Home over it.
+        val launch = Intent(context, TuPigCarPlayActivity::class.java).apply {
             action = Intent.ACTION_MAIN
             addCategory(Intent.CATEGORY_LAUNCHER)
             addFlags(
@@ -32,7 +32,7 @@ class BootReceiver : BroadcastReceiver() {
             StartupDiagnosticSnapshot.launchResult(context)
         } catch (error: RuntimeException) {
             StartupDiagnosticSnapshot.launchResult(context, error)
-            Log.w(TAG, "Boot auto-start could not launch DiPlayActivity", error)
+            Log.w(TAG, "Boot auto-start could not launch TuPigCarPlayActivity", error)
         }
     }
 

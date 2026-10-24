@@ -19,12 +19,12 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
-/** What DiPlay says about the car hotspot before and after its name is saved. */
+/** What TuPigCarPlay says about the car hotspot before and after its name is saved. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [29], qualifiers = "en-w1000dp-h700dp-land")
 class CarHotspotNameTextTest {
     private val context: Context = RuntimeEnvironment.getApplication()
-    private var activity: DiPlayActivity? = null
+    private var activity: TuPigCarPlayActivity? = null
 
     @Before fun setUp() {
         clearSettings()
@@ -40,7 +40,7 @@ class CarHotspotNameTextTest {
     }
 
     private fun clearSettings() {
-        context.getSharedPreferences("diplay", 0).edit().clear().commit()
+        context.getSharedPreferences("tupigcarplay", 0).edit().clear().commit()
         context.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
     }
 
@@ -49,12 +49,12 @@ class CarHotspotNameTextTest {
         AirPlayPersistence.saveManualHotspotPassphrase(context, "12345678")
     }
 
-    private fun open(page: String? = null): DiPlayActivity = Robolectric.buildActivity(
-        DiPlayActivity::class.java,
-        Intent(context, DiPlayActivity::class.java).apply { page?.let { putExtra("page", it) } },
+    private fun open(page: String? = null): TuPigCarPlayActivity = Robolectric.buildActivity(
+        TuPigCarPlayActivity::class.java,
+        Intent(context, TuPigCarPlayActivity::class.java).apply { page?.let { putExtra("page", it) } },
     ).setup().get().also { activity = it }
 
-    private fun texts(screen: DiPlayActivity): List<String> =
+    private fun texts(screen: TuPigCarPlayActivity): List<String> =
         descendants(screen.window.decorView).filterIsInstance<TextView>().map { it.text.toString() }.toList()
 
     private fun descendants(view: View): Sequence<View> = sequence {

@@ -156,7 +156,7 @@ class CarPlayVpnConsentTest {
         assertAdbStep(R.string.vpn_authorization_adb_unusable)
     }
 
-    @Test fun adbThatHasNotApprovedDiPlayIsNamed() {
+    @Test fun adbThatHasNotApprovedTuPigCarPlayIsNamed() {
         consentScreenMissingThenAdb(LocalAdb.Access.NOT_APPROVED)
         assertAdbStep(R.string.vpn_authorization_adb_not_approved)
     }
@@ -202,7 +202,7 @@ class CarPlayVpnConsentTest {
     }
 
     private fun awaitAdbConsent() = Thread.getAllStackTraces().keys
-        .filter { it.name == "diplay-vpn-adb-consent" }.forEach { it.join(3_000) }
+        .filter { it.name == "tupigcarplay-vpn-adb-consent" }.forEach { it.join(3_000) }
 
     private fun assertAdbStep(@StringRes cause: Int) {
         assertEquals(activity.getString(cause), stage())
@@ -230,13 +230,13 @@ class CarPlayVpnConsentTest {
         assertNull(ReflectionHelpers.getField<Any?>(activity, "controller"))
         val message = ReflectionHelpers.getField<TextView>(activity, "stageStatusView").text.toString()
         assertTrue(message.contains("VPN authorization"))
-        assertTrue(message.contains("Return to DiPlay"))
+        assertTrue(message.contains("Return to TuPigCarPlay"))
         assertFalse(message.contains("Exception"))
         assertFalse(message.contains("adb shell"))
     }
 
     private fun field(name: String): Boolean = ReflectionHelpers.getField(activity, name)
-    private fun log() = File(activity.filesDir, "logs/diplay.log").readText()
+    private fun log() = File(activity.filesDir, "logs/tupigcarplay.log").readText()
     private fun invoke(name: String) {
         try { activity.javaClass.getDeclaredMethod(name).apply { isAccessible = true }.invoke(activity) }
         catch (error: InvocationTargetException) { throw error.targetException }

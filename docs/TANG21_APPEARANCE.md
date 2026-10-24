@@ -2,7 +2,7 @@
 
 Author: 寒叙 (@Hanxu4131).
 
-The local BYD Carplay implementation was tested on a 2023 BYD Tang DM-i Champion Edition, platform/controller 21. The owner confirmed that ordinary CarPlay followed light/dark head-unit changes after these initial display declarations were added. This is the source implementation's vehicle result, not a vehicle test of this upstream port, and is not a claim of CarPlay Ultra support.
+The local TuPig Carplay implementation was tested on a 2023 TuPig Tang DM-i Champion Edition, platform/controller 21. The owner confirmed that ordinary CarPlay followed light/dark head-unit changes after these initial display declarations were added. This is the source implementation's vehicle result, not a vehicle test of this upstream port, and is not a claim of CarPlay Ultra support.
 
 Both main and alternate displays now declare automatic UI and map appearance in `/info`, before the existing runtime `setNightMode` commands. The upstream theme selection, sensors and configuration-change handling remain unchanged. No reconnect, Wi-Fi configuration, vehicle identifiers or extra polling are introduced.
 

@@ -42,7 +42,7 @@ class WheelJoystickSessionTest {
 
     @Before fun setUp() {
         service = Robolectric.buildService(WheelKeyService::class.java).create().get()
-        service.getSharedPreferences("diplay_wheel_map_zoom", Context.MODE_PRIVATE).edit().clear().commit()
+        service.getSharedPreferences("tupigcarplay_wheel_map_zoom", Context.MODE_PRIVATE).edit().clear().commit()
         controller = CarPlayController(service,
             CarPlayRuntimeConfig(mfiTarget = MfiTarget.LOCAL, identification = Iap2IdentificationConfig(
                 name = "test", modelIdentifier = "test", manufacturer = "test", serialNumber = "test",

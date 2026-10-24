@@ -59,7 +59,7 @@ class CarPlayVideoSurfaceTest {
     }
 
     @Test fun theLastPictureStaysUntilAFrameIsRenderedOrItsTimeRunsOut() {
-        // Still the count from before DiPlay left: nothing new on the screen yet.
+        // Still the count from before TuPigCarPlay left: nothing new on the screen yet.
         assertFalse(lastPictureDone(rendered = 5_000, baseline = 5_000, elapsedMillis = 400, maxMillis = 30_000))
         // A parked decoder rendered on: the new surface has a picture.
         assertTrue(lastPictureDone(rendered = 5_001, baseline = 5_000, elapsedMillis = 400, maxMillis = 30_000))

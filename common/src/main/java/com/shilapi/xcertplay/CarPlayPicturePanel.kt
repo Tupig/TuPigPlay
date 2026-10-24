@@ -11,7 +11,7 @@ import com.shilapi.xcertplay.settings.SettingsWidgets
 internal class CarPlayPicturePanel(
     context: Context,
     adjustmentsAvailable: Boolean = true,
-    initialPalette: DiPlayPalette = DiPlayPalette.DARK,
+    initialPalette: TuPigCarPlayPalette = TuPigCarPlayPalette.DARK,
     close: () -> Unit,
 ) : LinearLayout(context) {
     private var palette = initialPalette
@@ -79,7 +79,7 @@ internal class CarPlayPicturePanel(
         }
         addView(original, LayoutParams(-1, dp(48)))
         val actions = LinearLayout(context)
-        actions.addView(DiPlayButton(context).apply {
+        actions.addView(TuPigCarPlayButton(context).apply {
             text = context.getString(R.string.picture_reset)
             isEnabled = adjustmentsAvailable
             setOnClickListener {
@@ -91,14 +91,14 @@ internal class CarPlayPicturePanel(
                 }
             }
         }, LayoutParams(0, dp(48), 1f))
-        actions.addView(DiPlayButton(context).apply {
+        actions.addView(TuPigCarPlayButton(context).apply {
             text = context.getString(R.string.picture_done)
             setOnClickListener { close() }
         }, LayoutParams(0, dp(48), 1f))
         addView(actions)
     }
 
-    fun applyPalette(palette: DiPlayPalette) {
+    fun applyPalette(palette: TuPigCarPlayPalette) {
         this.palette = palette
         setBackgroundColor(palette.overlayBackground)
         fun apply(view: View) {
@@ -117,7 +117,7 @@ internal class CarPlayPicturePanel(
                     view.progressTintList = android.content.res.ColorStateList.valueOf(palette.overlayAccent)
                     view.thumbTintList = android.content.res.ColorStateList.valueOf(palette.overlayAccent)
                 }
-                is DiPlayButton -> view.style(DiPlayButtonKind.PRIMARY, palette, overlay = true)
+                is TuPigCarPlayButton -> view.style(TuPigCarPlayButtonKind.PRIMARY, palette, overlay = true)
                 is TextView -> view.setTextColor(palette.overlayPrimaryText)
             }
             if (view is android.view.ViewGroup) {

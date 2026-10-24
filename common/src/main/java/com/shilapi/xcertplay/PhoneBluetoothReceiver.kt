@@ -14,9 +14,9 @@ import android.util.Log
 class PhoneBluetoothReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != BluetoothDevice.ACTION_ACL_CONNECTED ||
-            !DiPlayPreferences.connectOnPhoneBluetooth(context) ||
+            !TuPigCarPlayPreferences.connectOnPhoneBluetooth(context) ||
             CarPlayBackgroundSession.hasSession()) return
-        val selected = DiPlayPreferences.phoneAddress(context) ?: return
+        val selected = TuPigCarPlayPreferences.phoneAddress(context) ?: return
         if (Build.VERSION.SDK_INT >= 31 &&
             context.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) return
         val device = if (Build.VERSION.SDK_INT >= 33) {
@@ -30,13 +30,13 @@ class PhoneBluetoothReceiver : BroadcastReceiver() {
 
         // The car can send several ACL events during one wake-up. Commit before launching so
         // another receiver instance cannot open a second connection from the same event burst.
-        val prefs = context.getSharedPreferences("diplay_phone_wake", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences("tupigcarplay_phone_wake", Context.MODE_PRIVATE)
         val now = SystemClock.elapsedRealtime()
         val previous = prefs.getLong("last_launch_elapsed", 0)
         if (prefs.contains("last_launch_elapsed") && now >= previous && now - previous < 15_000) return
         prefs.edit().putLong("last_launch_elapsed", now).commit()
         PhoneWakeDiagnostics.record(context, "matched")
-        val launch = Intent(context, DiPlayActivity::class.java).apply {
+        val launch = Intent(context, TuPigCarPlayActivity::class.java).apply {
             putExtra(EXTRA_AUTO_CONNECT, true)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
@@ -44,18 +44,18 @@ class PhoneBluetoothReceiver : BroadcastReceiver() {
             .onSuccess { PhoneWakeDiagnostics.record(context, "startActivity-returned") }
             .onFailure { error ->
                 PhoneWakeDiagnostics.record(context, "failed", error)
-                Log.w("DiPlayPhoneWake", "Bluetooth wake launch failed: ${error.javaClass.simpleName}")
+                Log.w("TuPigCarPlayPhoneWake", "Bluetooth wake launch failed: ${error.javaClass.simpleName}")
             }
     }
 
     companion object {
-        const val EXTRA_AUTO_CONNECT = "com.shihab.diplay.AUTO_CONNECT_SELECTED_PHONE"
+        const val EXTRA_AUTO_CONNECT = "com.tupigcarplay.AUTO_CONNECT_SELECTED_PHONE"
     }
 }
 
 /** Only a timestamp and fixed outcome; the Bluetooth address and broadcast extras stay out of reports. */
 internal object PhoneWakeDiagnostics {
-    private const val PREFS = "diplay_phone_wake_diagnostics"
+    private const val PREFS = "tupigcarplay_phone_wake_diagnostics"
 
     fun record(context: Context, result: String, error: Throwable? = null) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
@@ -71,6 +71,6 @@ internal object PhoneWakeDiagnostics {
         return if (at == 0L) "Phone Bluetooth wake: no matching event recorded"
         else "Phone Bluetooth wake: matchedAtEpochMs=$at result=${prefs.getString("result", "unknown")} " +
             "failureClass=${prefs.getString("failureClass", "none")}; " +
-            "startActivity-returned does not prove the car displayed DiPlay."
+            "startActivity-returned does not prove the car displayed TuPigCarPlay."
     }
 }

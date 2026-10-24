@@ -12,7 +12,7 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
 /**
- * Whether a home screen is in front (BYD's normal home, map home or MyCar, or whichever
+ * Whether a home screen is in front (TuPig's normal home, map home or MyCar, or whichever
  * launcher is the default home, such as a third-party car launcher), from the newest resumed
  * activity in the owner's Usage Access events or Accessibility events.
  * Overlays and panels are not activities, so they leave the answer as it is.
@@ -47,7 +47,7 @@ internal class HomeScreenMonitor(context: Context, private val onChange: (Boolea
             since = System.currentTimeMillis() - FIRST_LOOK_BACK_MILLIS
             newestTime = 0L
             newestPackage = null
-            executor = Executors.newSingleThreadScheduledExecutor { Thread(it, "diplay-home-monitor").apply { isDaemon = true } }
+            executor = Executors.newSingleThreadScheduledExecutor { Thread(it, "tupigcarplay-home-monitor").apply { isDaemon = true } }
                 .also { it.scheduleWithFixedDelay(::poll, 0, POLL_MILLIS, TimeUnit.MILLISECONDS) }
         }
     }
@@ -107,7 +107,7 @@ internal class HomeScreenMonitor(context: Context, private val onChange: (Boolea
             foregroundListener?.invoke(pkg)
         }
 
-        // BYD's home list (Launcher3 HomeHelper): MyCar, the normal home, and the map home.
+        // TuPig's home list (Launcher3 HomeHelper): MyCar, the normal home, and the map home.
         val HOME_PACKAGES = setOf("com.android.launcher3", "com.byd.launchermap", "com.byd.naviauto", "com.byd.mycar")
 
         // Known third-party car launchers
@@ -145,7 +145,7 @@ internal class HomeScreenMonitor(context: Context, private val onChange: (Boolea
             return set
         }
 
-        /** The launcher Android uses as home now, unless that is the chooser or DiPlay itself. */
+        /** The launcher Android uses as home now, unless that is the chooser or TuPigCarPlay itself. */
         fun defaultHome(context: Context): String? = runCatching {
             context.packageManager.resolveActivity(
                 Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME),

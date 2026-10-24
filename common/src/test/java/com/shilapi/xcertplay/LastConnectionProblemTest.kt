@@ -36,7 +36,7 @@ import org.robolectric.util.ReflectionHelpers.ClassParameter.from
 @LooperMode(LooperMode.Mode.PAUSED)
 class LastConnectionProblemTest {
     private val context: Context = RuntimeEnvironment.getApplication()
-    private val prefs get() = context.getSharedPreferences("diplay_last_problem", Context.MODE_PRIVATE)
+    private val prefs get() = context.getSharedPreferences("tupigcarplay_last_problem", Context.MODE_PRIVATE)
     private val hosts = mutableListOf<CarPlayHostActivity>()
 
     @Before fun setUp() {
@@ -73,7 +73,7 @@ class LastConnectionProblemTest {
 
     private val hotspotOff = CarPlayStatus.Failed("The car hotspot is off. Turn it on in the car settings and connect again.",
         startupFailure = WirelessStartupFailure.HOTSPOT_CONFIGURATION, knownCause = ConnectionFailureCause.CAR_HOTSPOT_OFF)
-    private val notPaired = CarPlayStatus.Failed("The selected iPhone is no longer paired. Choose it again in DiPlay.",
+    private val notPaired = CarPlayStatus.Failed("The selected iPhone is no longer paired. Choose it again in TuPigCarPlay.",
         knownCause = ConnectionFailureCause.CHOSEN_IPHONE_NOT_PAIRED)
 
     @Test fun eachProblemTheScreenNamesIsRememberedInItsWords() {
@@ -152,7 +152,7 @@ class LastConnectionProblemTest {
     @Test fun settingsBackupsLeaveItOut() {
         LastConnectionProblem.follow(context, notPaired)
         assertEquals(context.getString(R.string.chosen_iphone_not_paired), remembered())
-        assertFalse(String(SettingsBackupCodec.export(context, "test")).contains("diplay_last_problem"))
+        assertFalse(String(SettingsBackupCodec.export(context, "test")).contains("tupigcarplay_last_problem"))
     }
 
     @Test fun aValueThisVersionCannotReadReadsAsNoneAndIsRemoved() {

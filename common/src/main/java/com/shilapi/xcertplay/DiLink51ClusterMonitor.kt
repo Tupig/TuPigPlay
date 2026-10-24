@@ -11,7 +11,7 @@ import android.os.SystemClock
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-/** Uses the owner's standard Android Usage Access grant, never the privileged BYD API. */
+/** Uses the owner's standard Android Usage Access grant, never the privileged TuPig API. */
 internal class DiLink51ClusterMonitor(context: Context, private val onState: (ClusterActivityState.Snapshot) -> Unit) {
     private val context = context.applicationContext
     private val handler = Handler(Looper.getMainLooper())

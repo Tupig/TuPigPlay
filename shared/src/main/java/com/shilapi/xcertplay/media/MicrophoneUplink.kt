@@ -30,7 +30,7 @@ internal class MicrophoneUplink(
     private val config: MicrophoneConfig,
     private val onDiagnostic: (String) -> Unit = {},
     private val speakerphoneCall: Boolean = false,
-    /** The call's far-end audio; when set, telephony capture runs DiPlay's own echo canceller. */
+    /** The call's far-end audio; when set, telephony capture runs TuPigCarPlay's own echo canceller. */
     private val echoReference: EchoReference? = null,
     private val echoCancellerFactory: (Int, Int, Int) -> CallEchoCanceller? = { frame, rate, tail ->
         SpeexEchoCanceller.create(frame, rate, tail)
@@ -539,7 +539,7 @@ internal class MicrophoneUplink(
 }
 
 /**
- * The recorder source for a CarPlay call. While DiPlay holds the car's phone audio state the car's call
+ * The recorder source for a CarPlay call. While TuPigCarPlay holds the car's phone audio state the car's call
  * processing is on for every source, but VOICE_COMMUNICATION then clips (about a fifth of the samples on a
  * Han) and the plain microphone source is muted. VOICE_RECOGNITION, which is also what the stock CarPlay
  * service ends up with, gives a normal level with no clipping, and the car still suppresses the far end's

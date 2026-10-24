@@ -24,11 +24,11 @@ import org.robolectric.shadows.ShadowAlertDialog
 @Config(sdk = [29], qualifiers = "en", manifest = Config.NONE)
 class CarHotspotSecuritySettingsTest {
     private val app get() = RuntimeEnvironment.getApplication()
-    private lateinit var activity: DiPlayActivity
+    private lateinit var activity: TuPigCarPlayActivity
 
     @Before fun setup() {
         app.getSharedPreferences("xcertplay_airplay", 0).edit().clear().commit()
-        activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+        activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         AirPlayPersistence.saveWirelessHotspotMode(app, WirelessHotspotMode.MANUAL)
         AirPlayPersistence.saveManualHotspotSsid(app, "Car hotspot")
@@ -82,7 +82,7 @@ class CarHotspotSecuritySettingsTest {
 
     private fun editCredentials(): AlertDialog {
         val parent = LinearLayout(activity)
-        DiPlayActivity::class.java.getDeclaredMethod("wirelessLinkControls", LinearLayout::class.java)
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("wirelessLinkControls", LinearLayout::class.java)
             .apply { isAccessible = true }.invoke(activity, parent)
         activity.setContentView(parent)
         descendants(parent).filterIsInstance<Button>().first { it.text.startsWith("Edit saved hotspot") }.performClick()

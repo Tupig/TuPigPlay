@@ -6,14 +6,14 @@ import android.provider.Settings
 import android.util.Log
 import com.shilapi.xcertplay.adb.AdbKeys
 import com.shilapi.xcertplay.adb.LocalAdb
-import com.shilapi.xcertplay.hud.BydOutputSettings
+import com.shilapi.xcertplay.hud.TuPigOutputSettings
 import com.shilapi.xcertplay.network.CarHotspotSettings
 import com.shilapi.xcertplay.orchestration.ManualHotspotValidation
 
 /** Each grant is requested explicitly from settings; startup never calls this authorization path. */
 internal object CarHotspotSetup {
-    // Older BYD units report QUALCOMM/qti and have no supported navigation-output service.
-    fun isBydHeadUnit(context: Context): Boolean = BydOutputSettings.navigationAvailable(context) || runCatching {
+    // Older TuPig units report QUALCOMM/qti and have no supported navigation-output service.
+    fun isTuPigHeadUnit(context: Context): Boolean = TuPigOutputSettings.navigationAvailable(context) || runCatching {
         context.packageManager.getApplicationInfo("com.byd.carsettings", 0).flags and ApplicationInfo.FLAG_SYSTEM != 0
     }.getOrDefault(false)
 
@@ -33,15 +33,15 @@ internal object CarHotspotSetup {
     fun grant(context: Context, permissions: List<Permission>, adb: LocalAdb = LocalAdb(AdbKeys.load(context))): LocalAdb.Access =
         adb.use {
             val access = it.connect(mayAsk = true)
-            Log.i("DiPlay-ADB", "switch connection: $access")
+            Log.i("TuPigCarPlay-ADB", "switch connection: $access")
             if (access == LocalAdb.Access.READY) {
                 for (permission in permissions) {
                     if (!permission.granted(context)) {
-                        Log.i("DiPlay-ADB", "request permission: ${permission.appOp}")
+                        Log.i("TuPigCarPlay-ADB", "request permission: ${permission.appOp}")
                         it.shell("appops set ${context.packageName} ${permission.appOp} allow")
                     }
                     val granted = permission.granted(context)
-                    Log.i("DiPlay-ADB", "permission ${permission.appOp}: granted=$granted")
+                    Log.i("TuPigCarPlay-ADB", "permission ${permission.appOp}: granted=$granted")
                     if (!granted) break
                 }
             }

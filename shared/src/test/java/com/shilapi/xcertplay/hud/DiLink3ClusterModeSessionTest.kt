@@ -4,9 +4,9 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class DiLink3ClusterModeSessionTest {
-    private val projection = BydDiLink3ClusterMode.Mode.PROJECTION
-    private val simple = BydDiLink3ClusterMode.Mode.SIMPLE_NAVIGATION
-    private val stock = BydDiLink3ClusterMode.Mode.STOCK
+    private val projection = TuPigDiLink3ClusterMode.Mode.PROJECTION
+    private val simple = TuPigDiLink3ClusterMode.Mode.SIMPLE_NAVIGATION
+    private val stock = TuPigDiLink3ClusterMode.Mode.STOCK
     private val projectionCommands get() = listOf(projection.entryCommand!!, projection.command)
     private val ok = "Result: Parcel(00000000 00000000 '........')"
     private val refused = "Result: Parcel(ffffffec 00000000 '........')"
@@ -27,14 +27,14 @@ class DiLink3ClusterModeSessionTest {
         projectionStepDelay = { projectionDelay() },
         projectionStillWanted = { projectionWanted() },
     )
-    private fun prepare(state: DiLink3ClusterModeSession, current: () -> BydDiLink3ClusterMode.Mode? = { null },
+    private fun prepare(state: DiLink3ClusterModeSession, current: () -> TuPigDiLink3ClusterMode.Mode? = { null },
                         wanted: () -> Boolean = { true }, delay: () -> Unit = {}) =
         state.prepareDisplay({ false }, current, wanted, delay)
 
     @Test fun projectionCreationRestoresStockAfterSecondCommandTimesOut() {
-        response = { if (it == BydDiLink3ClusterMode.CREATE_DISPLAY[1]) null else ok }
+        response = { if (it == TuPigDiLink3ClusterMode.CREATE_DISPLAY[1]) null else ok }
         assertFalse(prepare(session()))
-        assertEquals(BydDiLink3ClusterMode.CREATE_DISPLAY, commands)
+        assertEquals(TuPigDiLink3ClusterMode.CREATE_DISPLAY, commands)
         assertFalse(pending)
     }
 
@@ -43,26 +43,26 @@ class DiLink3ClusterModeSessionTest {
             pending = false
             commands.clear()
             response = {
-                if (it == BydDiLink3ClusterMode.CREATE_DISPLAY[1]) {
+                if (it == TuPigDiLink3ClusterMode.CREATE_DISPLAY[1]) {
                     if (throwError) throw java.io.IOException("ADB disconnected") else refused
                 } else ok
             }
             assertFalse(prepare(session()))
-            assertEquals(BydDiLink3ClusterMode.CREATE_DISPLAY, commands)
+            assertEquals(TuPigDiLink3ClusterMode.CREATE_DISPLAY, commands)
             assertFalse(pending)
         }
     }
 
     @Test fun unknownFirstCommandReplyStillAttemptsCompensation() {
-        response = { if (it == BydDiLink3ClusterMode.CREATE_DISPLAY[0]) null else ok }
+        response = { if (it == TuPigDiLink3ClusterMode.CREATE_DISPLAY[0]) null else ok }
         assertFalse(prepare(session()))
-        assertEquals(listOf(BydDiLink3ClusterMode.CREATE_DISPLAY[0], stock.command), commands)
+        assertEquals(listOf(TuPigDiLink3ClusterMode.CREATE_DISPLAY[0], stock.command), commands)
     }
 
     @Test fun cancelledPreparationRestoresStockBeforeTheNextStep() {
         var wanted = true
         assertFalse(prepare(session(), wanted = { wanted }, delay = { wanted = false }))
-        assertEquals(listOf(BydDiLink3ClusterMode.CREATE_DISPLAY[0], stock.command), commands)
+        assertEquals(listOf(TuPigDiLink3ClusterMode.CREATE_DISPLAY[0], stock.command), commands)
         assertFalse(pending)
     }
 
@@ -80,7 +80,7 @@ class DiLink3ClusterModeSessionTest {
 
     @Test fun failedPreparationRestorationBlocksANewProjectionUntilRecovery() {
         val state = session()
-        response = { if (it == BydDiLink3ClusterMode.CREATE_DISPLAY[0]) ok else null }
+        response = { if (it == TuPigDiLink3ClusterMode.CREATE_DISPLAY[0]) ok else null }
         assertFalse(prepare(state))
         assertTrue(pending)
         assertFalse(state.apply(projection))
@@ -142,9 +142,9 @@ class DiLink3ClusterModeSessionTest {
 
     @Test fun preparationUsesLatestDesiredModeAfterItsBlockingSteps() {
         val state = session()
-        var desired: BydDiLink3ClusterMode.Mode? = simple
+        var desired: TuPigDiLink3ClusterMode.Mode? = simple
         prepare(state, current = { desired }, delay = { desired = projection })
-        assertEquals(BydDiLink3ClusterMode.CREATE_DISPLAY.take(2) + projectionCommands, commands)
+        assertEquals(TuPigDiLink3ClusterMode.CREATE_DISPLAY.take(2) + projectionCommands, commands)
         assertTrue(pending)
         assertTrue(state.apply(null))
     }
@@ -152,7 +152,7 @@ class DiLink3ClusterModeSessionTest {
     @Test fun aFailedFinalMapModeAlsoCompensatesPreparation() {
         response = { if (it == projection.command) null else ok }
         assertFalse(prepare(session(), current = { projection }))
-        assertEquals(BydDiLink3ClusterMode.CREATE_DISPLAY.take(2) + projectionCommands + stock.command, commands)
+        assertEquals(TuPigDiLink3ClusterMode.CREATE_DISPLAY.take(2) + projectionCommands + stock.command, commands)
         assertFalse(pending)
     }
 
@@ -164,7 +164,7 @@ class DiLink3ClusterModeSessionTest {
     }
 
     @Test fun refusedFullProjectionNeverProceedsToHalfProjection() {
-        val full = BydDiLink3ClusterMode.CREATE_DISPLAY.first()
+        val full = TuPigDiLink3ClusterMode.CREATE_DISPLAY.first()
         response = { if (it == full) refused else ok }
         assertFalse(session().apply(projection))
         assertEquals(listOf(full, stock.command), commands)

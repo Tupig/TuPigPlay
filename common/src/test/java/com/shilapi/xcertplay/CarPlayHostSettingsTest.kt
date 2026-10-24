@@ -84,10 +84,10 @@ class CarPlayHostSettingsTest {
 
     @Test
     @Config(sdk = [28, 29, 32])
-    fun callPopupSwitchRequiresBydAndAndroid10() {
-        val description = activity.getString(R.string.settings_hide_byd_call_popup_description)
+    fun callPopupSwitchRequiresTuPigAndAndroid10() {
+        val description = activity.getString(R.string.settings_hide_tupig_call_popup_description)
         setField("settingsMenuCategoryKey", "vehicle")
-        assertFalse(CarHotspotSetup.isBydHeadUnit(activity))
+        assertFalse(CarHotspotSetup.isTuPigHeadUnit(activity))
         val otherMenu = invoke("buildSettingsMenu") as View
         assertFalse(views(otherMenu).filterIsInstance<Switch>().any { it.contentDescription == description })
         shadowOf(activity.packageManager).installPackage(PackageInfo().apply {
@@ -97,10 +97,10 @@ class CarPlayHostSettingsTest {
                 flags = ApplicationInfo.FLAG_SYSTEM
             }
         })
-        assertTrue(CarHotspotSetup.isBydHeadUnit(activity))
-        val bydMenu = invoke("buildSettingsMenu") as View
+        assertTrue(CarHotspotSetup.isTuPigHeadUnit(activity))
+        val tuPigMenu = invoke("buildSettingsMenu") as View
         assertEquals(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q,
-            views(bydMenu).filterIsInstance<Switch>().any { it.contentDescription == description })
+            views(tuPigMenu).filterIsInstance<Switch>().any { it.contentDescription == description })
     }
 
     @Test
@@ -488,7 +488,7 @@ class CarPlayHostSettingsTest {
         assertSame(controller, field("controller"))
         assertEquals(0, field("restartGeneration"))
         val intent = shadowOf(activity).nextStartedActivity
-        assertEquals(DiPlayActivity::class.java.name, intent.component!!.className)
+        assertEquals(TuPigCarPlayActivity::class.java.name, intent.component!!.className)
         assertEquals("settings", intent.getStringExtra("page"))
     }
 
@@ -498,7 +498,7 @@ class CarPlayHostSettingsTest {
         fullSettingsButton().performClick()
         assertNull(ShadowAlertDialog.getLatestAlertDialog())
         assertFalse(field("menuOpen") as Boolean)
-        assertEquals(DiPlayActivity::class.java.name,
+        assertEquals(TuPigCarPlayActivity::class.java.name,
             shadowOf(activity).nextStartedActivity.component!!.className)
     }
 
@@ -644,7 +644,7 @@ class CarPlayHostSettingsTest {
         )
         val heading = views(menu()).filterIsInstance<TextView>()
             .first { it.text == activity.getString(R.string.carplay_settings) }
-        assertEquals(DiPlayPalette.LIGHT.overlayPrimaryText, heading.currentTextColor)
+        assertEquals(TuPigCarPlayPalette.LIGHT.overlayPrimaryText, heading.currentTextColor)
     }
 
     @Test fun savingPersistsSettingsAndRestartsOnce() {
@@ -717,7 +717,7 @@ class CarPlayHostSettingsTest {
         assertEquals(0, field("restartGeneration"))
     }
 
-    // Galaxy Note20 in portrait: the menu said "1080 x 2249 -> 1080 x 2250" while DiPlay asked for 1080x2248.
+    // Galaxy Note20 in portrait: the menu said "1080 x 2249 -> 1080 x 2250" while TuPigCarPlay asked for 1080x2248.
     @Test fun theDisplaySummaryNamesTheSizeThatIsRequested() {
         setField("activeDisplaySize", displaySize(1080, 2249))
         invoke("openSettingsMenu")
@@ -1099,7 +1099,7 @@ class CarPlayHostSettingsTest {
         val close = views(panel).filterIsInstance<Button>()
             .first { it.text == activity.getString(R.string.close) }
         assertTrue(close.width >= close.height)
-        val destination = System.getenv("DIPLAY_SCREENSHOT_DIR") ?: return
+        val destination = System.getenv("TUPIGCARPLAY_SCREENSHOT_DIR") ?: return
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         root.draw(Canvas(bitmap))
         val file = File(destination, name)

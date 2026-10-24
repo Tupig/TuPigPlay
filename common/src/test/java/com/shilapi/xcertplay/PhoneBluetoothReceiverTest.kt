@@ -20,13 +20,13 @@ class PhoneBluetoothReceiverTest {
     private val selected = "12:34:56:78:9A:BC"
 
     @Before fun reset() {
-        DiPlayPreferences.saveConnectOnPhoneBluetooth(app, false)
-        app.getSharedPreferences("diplay_phone_wake", Context.MODE_PRIVATE).edit().clear().commit()
-        app.getSharedPreferences("diplay_phone_wake_diagnostics", Context.MODE_PRIVATE).edit().clear().commit()
+        TuPigCarPlayPreferences.saveConnectOnPhoneBluetooth(app, false)
+        app.getSharedPreferences("tupigcarplay_phone_wake", Context.MODE_PRIVATE).edit().clear().commit()
+        app.getSharedPreferences("tupigcarplay_phone_wake_diagnostics", Context.MODE_PRIVATE).edit().clear().commit()
         CarPlayBackgroundSession.clear()
         // Saved in lowercase on purpose: the receiver must match the (always uppercase) device
         // address case-insensitively; Robolectric refuses to build a lowercase remote device.
-        DiPlayPreferences.savePhone(app, selected.lowercase(), "iPhone")
+        TuPigCarPlayPreferences.savePhone(app, selected.lowercase(), "iPhone")
     }
 
     private fun event(address: String): Intent {
@@ -43,13 +43,13 @@ class PhoneBluetoothReceiverTest {
         val receiver = PhoneBluetoothReceiver()
         receiver.onReceive(context, event(selected))
         assertTrue(launches.isEmpty())
-        DiPlayPreferences.saveConnectOnPhoneBluetooth(app, true)
+        TuPigCarPlayPreferences.saveConnectOnPhoneBluetooth(app, true)
         receiver.onReceive(context, event("AA:BB:CC:DD:EE:FF"))
         assertTrue(launches.isEmpty())
         receiver.onReceive(context, event(selected))
         receiver.onReceive(context, event(selected))
         assertEquals(1, launches.size)
-        assertEquals(DiPlayActivity::class.java.name, launches.single().component?.className)
+        assertEquals(TuPigCarPlayActivity::class.java.name, launches.single().component?.className)
         assertTrue(launches.single().getBooleanExtra(PhoneBluetoothReceiver.EXTRA_AUTO_CONNECT, false))
         assertTrue(PhoneWakeDiagnostics.report(app).contains("result=startActivity-returned"))
     }

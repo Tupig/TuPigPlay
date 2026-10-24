@@ -1,6 +1,6 @@
 package com.shilapi.xcertplay.hud
 
-/** One of the car's call-state writes: the value sent for a call and the one BYD's CarPlay app sends when it ends. */
+/** One of the car's call-state writes: the value sent for a call and the one TuPig's CarPlay app sends when it ends. */
 internal class CarPlayCallWrite(val label: String, val call: Int, val idle: Int)
 
 /**

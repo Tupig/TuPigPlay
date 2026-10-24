@@ -36,8 +36,8 @@ import com.shilapi.xcertplay.airplay.AirPlaySessionListener
 import com.shilapi.xcertplay.airplay.PairingStore
 import com.shilapi.xcertplay.airplay.VideoInCar
 import com.shilapi.xcertplay.airplay.VideoPlaybackDelivery
-import com.shilapi.xcertplay.hud.BydBluetoothSuspend
-import com.shilapi.xcertplay.hud.BydNavigationOutputs
+import com.shilapi.xcertplay.hud.TuPigBluetoothSuspend
+import com.shilapi.xcertplay.hud.TuPigNavigationOutputs
 import com.shilapi.xcertplay.iap2.session.Iap2Session
 import com.shilapi.xcertplay.mfi.Iap2MfiAuthenticationClient
 import com.shilapi.xcertplay.mfi.MfiAuthenticationClient
@@ -46,7 +46,6 @@ import com.shilapi.xcertplay.mfi.LocalMfiAuthenticationClient
 import com.shilapi.xcertplay.network.CarPlayBonjour
 import com.shilapi.xcertplay.network.diagnosticSummary
 import com.shilapi.xcertplay.network.CarPlayVpnService
-import com.shilapi.xcertplay.network.LocalOnlyHotspotManager
 import com.shilapi.xcertplay.network.ManualHotspotManager
 import com.shilapi.xcertplay.network.ExistingWifiManager
 import com.shilapi.xcertplay.network.HotspotAddressPolicy
@@ -179,8 +178,8 @@ class CarPlayController(
             "A location provider is required when location reporting is enabled"
         }
         WifiScanPause.restoreIfNeeded(context.applicationContext)
-        BydNavigationOutputs.start(context.applicationContext)
-        BydNavigationOutputs.setClusterStreamControl(::applyClusterUi)
+        TuPigNavigationOutputs.start(context.applicationContext)
+        TuPigNavigationOutputs.setClusterStreamControl(::applyClusterUi)
     }
 
     private enum class Phase { IDLE, MFI, WIRELESS, IPHONE, REENUMERATION, DATAPATHS, CONTROL }
@@ -294,7 +293,7 @@ class CarPlayController(
     @Volatile private var wirelessAlternateAddress: InetAddress? = null
     @Volatile private var wirelessAddressRecovery: HotspotAddressRecovery? = null
     private val startupTimer = java.util.concurrent.ScheduledThreadPoolExecutor(1) { task ->
-        Thread(task, "diplay-first-tcp-timeout").apply { isDaemon = true }
+        Thread(task, "tupigcarplay-first-tcp-timeout").apply { isDaemon = true }
     }.apply { removeOnCancelPolicy = true }
     @Volatile private var wirelessDiagnostics: WirelessStartupDiagnostics? = null
     @Volatile private var bluetoothSocket: BluetoothSocket? = null
@@ -365,8 +364,8 @@ class CarPlayController(
             if (currentCornerMask?.session !== session) currentCornerMask = null
             val replacement = activeSession !== session
             if (replacement) {
-                BydNavigationOutputs.start(appContext)
-                BydNavigationOutputs.carPlaySessionStarted()
+                TuPigNavigationOutputs.start(appContext)
+                TuPigNavigationOutputs.carPlaySessionStarted()
                 com.shilapi.xcertplay.glance.CarPlayGlance.setConnected(true)
                 // The gear may have changed since /info.
                 if (videoListener != null) {
@@ -379,7 +378,7 @@ class CarPlayController(
             if (btPrefs.getBoolean("bt_suspend_during_carplay", false)) {
                 // close() marks [closed], and a closing session marks itself before onSessionEnded
                 // clears it, ahead of each resume; the pause checks all three under resume's lock.
-                BydBluetoothSuspend.suspend(appContext, this@CarPlayController, btSuspendDelayMs(btPrefs),
+                TuPigBluetoothSuspend.suspend(appContext, this@CarPlayController, btSuspendDelayMs(btPrefs),
                     log = { debugLog(it) }) {
                     !closed && activeSession === session && !session.isClosed
                 }
@@ -397,8 +396,8 @@ class CarPlayController(
             if (activeSession === session) {
                 activeSession = null
                 synchronized(albumReplayLock) { initialArtworkReplay = null }
-                BydNavigationOutputs.endNow(preserveTurnOverlay = !closed && config.transport == CarPlayTransport.WIRELESS)
-                BydBluetoothSuspend.resume(appContext, this@CarPlayController) { debugLog(it) }
+                TuPigNavigationOutputs.endNow(preserveTurnOverlay = !closed && config.transport == CarPlayTransport.WIRELESS)
+                TuPigBluetoothSuspend.resume(appContext, this@CarPlayController) { debugLog(it) }
                 com.shilapi.xcertplay.glance.CarPlayGlance.setConnected(false)
                 videoListener?.onVideoSessionEnded()
                 synchronized(playbackStatus) {
@@ -427,7 +426,7 @@ class CarPlayController(
         }
 
         // The user tapped the car icon in CarPlay: show the head unit's own menu, like its Home button.
-        // The session keeps running in the background, so returning to DiPlay resumes CarPlay.
+        // The session keeps running in the background, so returning to TuPigCarPlay resumes CarPlay.
         override fun onHostUiRequested(session: AirPlaySession) {
             debugLog("CarPlay requested the car UI; opening the head-unit home screen")
             runCatching {
@@ -683,15 +682,15 @@ class CarPlayController(
         }
         firstTcpWatchdog?.terminate()
         wiredStartWatchdog?.terminate()
-        BydBluetoothSuspend.resume(appContext, this) { debugLog(it) }
+        TuPigBluetoothSuspend.resume(appContext, this) { debugLog(it) }
         startupTimer.shutdownNow()
         (hotspot as? ManualHotspotManager)?.close()
         val teardownStarted = System.nanoTime()
         connectionDiagnostic("teardown begin transport=${config.transport}")
         videoGate?.close()
-        BydNavigationOutputs.endNow()
+        TuPigNavigationOutputs.endNow()
         com.shilapi.xcertplay.glance.CarPlayGlance.setConnected(false)
-        BydNavigationOutputs.clearClusterStreamControl(::applyClusterUi)
+        TuPigNavigationOutputs.clearClusterStreamControl(::applyClusterUi)
         closeReceivers()
         availabilityPollGeneration.incrementAndGet()
         permissionPollGeneration += 1
@@ -760,7 +759,7 @@ class CarPlayController(
                     if (closed || activeSession !== session || session.clusterStream != stream) {
                         return@synchronized false
                     }
-                    // A cluster stream DiPlay has not paused yet starts with the map drawn.
+                    // A cluster stream TuPigCarPlay has not paused yet starts with the map drawn.
                     val shown = clusterUiShown || clusterUiStream != session to stream
                     val delivered = session.setClusterUrl(url, send = shown)
                     val sent = delivered && !closed && activeSession === session && session.clusterStream == stream
@@ -830,7 +829,7 @@ class CarPlayController(
 
     // HUD (SOME/IP) and cluster (AMap broadcast) keep separate state so one failing cannot stall the other.
     private fun onRouteFrame(frame: com.shilapi.xcertplay.iap2.wire.Iap2Frame) {
-        BydNavigationOutputs.onFrame(frame)
+        TuPigNavigationOutputs.onFrame(frame)
         com.shilapi.xcertplay.glance.CarPlayGlance.onFrame(frame)
         synchronized(playbackStatus) {
             val previousPlaying = playbackStatus.playing
@@ -1287,7 +1286,7 @@ class CarPlayController(
                         flipWirelessAddressFamily(generation)
                         fail(WirelessStartupException(WirelessStartupFailure.FIRST_TCP_TIMEOUT,
                             "No AirPlay TCP after CarPlay StartSession"), generation)
-                        Thread({ closeWirelessStack(generation = generation) }, "diplay-startup-cleanup")
+                        Thread({ closeWirelessStack(generation = generation) }, "tupigcarplay-startup-cleanup")
                             .apply { isDaemon = true; start() }
                     }
                 },
@@ -1305,7 +1304,7 @@ class CarPlayController(
             BluetoothRadioCheck.blockerForState(
                 adapterPresent = activeAdapter != null,
                 state = activeAdapter?.state,
-                pausedByDiPlay = BydBluetoothSuspend.isSuspendedByUs(appContext),
+                pausedByTuPigCarPlay = TuPigBluetoothSuspend.isSuspendedByUs(appContext),
             )?.let { throw BluetoothRadioCheck.failure(it) }
             val hotspotInfo = startWirelessHotspot(generation)
             if (isStaleWirelessRun(generation)) {
@@ -1387,7 +1386,7 @@ class CarPlayController(
 
             val adapter = currentBluetoothAdapter()
                 ?: throw BluetoothRadioCheck.failure(BluetoothRadioCheck.NO_ADAPTER)
-            val bluetoothRecoveryComplete = BydBluetoothSuspend.resumeAndWait(appContext, adapter)
+            val bluetoothRecoveryComplete = TuPigBluetoothSuspend.resumeAndWait(appContext, adapter)
             if (adapter.state == BluetoothAdapter.STATE_TURNING_ON) {
                 awaitBluetoothEnabled(adapter, timeoutMillis = 3_000L)
             }
@@ -1541,12 +1540,18 @@ class CarPlayController(
                 Iap2WirelessLinkRole.RUNTIME_TUNNEL,
                 wirelessIdentification,
             )
+            // Listen on every hotspot host address, and tell the iPhone the same set in
+            // carplay-start-session. Advertising only the preferred address while binding the
+            // rest left some phones unable to open AirPlay TCP (upstream #1004 / PR #1071).
+            val endpointAddresses = (listOf(hostAddress) + hotspotInfo.hostAddresses.filter { it != hostAddress })
+                .map { hostAddressText(it) }
+                .distinct()
             val endpoint = Iap2WirelessCarPlayEndpoint(
                 ssid = hotspotInfo.ssid,
                 passphrase = hotspotInfo.passphrase,
                 channel = hotspotInfo.channel,
                 security = hotspotInfo.security,
-                ipAddresses = listOf(hostAddressText),
+                ipAddresses = endpointAddresses,
                 airPlayPort = listenerPort,
                 deviceIdentifier = deviceIdentifier,
                 publicKey = identity.publicKeyHex,
@@ -2498,12 +2503,6 @@ class CarPlayController(
         val manager: WirelessHotspotManager = when (hotspotMode) {
             WirelessHotspotMode.WIFI_P2P -> WifiP2pGroupManager(appContext, ::debugLog,
                 preferredChannel = config.wifiP2pPreferredChannel)
-            WirelessHotspotMode.LOCAL_ONLY_HOTSPOT -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                LocalOnlyHotspotManager(appContext, ::debugLog)
-            } else {
-                throw WirelessStartupException(WirelessStartupFailure.HOTSPOT_CONFIGURATION,
-                    "Android ${Build.VERSION.RELEASE} has no local-only hotspot. Choose Car hotspot or Wi-Fi Direct.")
-            }
             WirelessHotspotMode.EXISTING_WIFI -> ExistingWifiManager(
                 appContext, config.existingWifiSsid, config.existingWifiPassphrase, ::debugLog,
                 onNetworkChanged = { if (!isStaleWirelessRun(generation)) restartWireless() },
@@ -2576,7 +2575,7 @@ class CarPlayController(
         config.wirelessBluetoothDeviceAddress?.let { selected ->
             return bonded.firstOrNull { it.address.equals(selected, ignoreCase = true) }
                 ?: throw ConnectionFailureException(ConnectionFailureCause.CHOSEN_IPHONE_NOT_PAIRED,
-                    "The selected iPhone is no longer paired. Choose it again in DiPlay.")
+                    "The selected iPhone is no longer paired. Choose it again in TuPigCarPlay.")
         }
         val iPhones = bonded.filter { device ->
             device.name?.contains("iPhone", ignoreCase = true) == true
@@ -2643,7 +2642,7 @@ class CarPlayController(
             if (isStaleWirelessRun(link.generation)) return@Thread
             fail(failure, link.generation)
             closeWirelessStack(generation = link.generation)
-        }, "diplay-bluetooth-link-check").apply { isDaemon = true; start() }
+        }, "tupigcarplay-bluetooth-link-check").apply { isDaemon = true; start() }
     }
 
     /**
@@ -2900,7 +2899,7 @@ class CarPlayController(
     private fun hostAddressText(address: InetAddress): String {
         val text = address.hostAddress?.substringBefore('%')
         if (text.isNullOrBlank()) {
-            throw IOException("LocalOnlyHotspot host address is unavailable")
+            throw IOException("Wireless hotspot host address is unavailable")
         }
         return text
     }
@@ -3203,7 +3202,7 @@ class CarPlayController(
         private const val WIFI_P2P_START_TIMEOUT_MILLIS = 20_000L
         private const val PAIR_TIMEOUT_MILLIS = 5 * 60_000L
         private const val VPN_CONNECT_TIMEOUT_MILLIS = 10_000L
-        private const val WIRELESS_PREFS = "diplay_wireless"
+        private const val WIRELESS_PREFS = "tupigcarplay_wireless"
         private const val HOTSPOT_FAMILY_PREFERENCE_KEY = "hotspot_address_family"
         private const val CONTROL_LOOP_TIMEOUT_MILLIS = 5 * 60_000L
         private const val LOCATION_CONTROL_LOOP_TIMEOUT_MILLIS = 24 * 60 * 60 * 1_000L

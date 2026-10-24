@@ -13,7 +13,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
-/** Android 8.0 hid the saved hotspot configuration from ordinary apps, so DiPlay can compare it with its own only on 7.1 and earlier. */
+/** Android 8.0 hid the saved hotspot configuration from ordinary apps, so TuPigCarPlay can compare it with its own only on 7.1 and earlier. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [25], manifest = Config.NONE)
 class ManualHotspotDetailsDifferTest {

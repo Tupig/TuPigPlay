@@ -4,7 +4,7 @@ import android.content.Context
 
 /** Opt-in key routing shares the existing wheel accessibility service and authorization. */
 object NavigationWheelSettings {
-    private fun prefs(context: Context) = context.getSharedPreferences("diplay_navigation_wheel", Context.MODE_PRIVATE)
+    private fun prefs(context: Context) = context.getSharedPreferences("tupigcarplay_navigation_wheel", Context.MODE_PRIVATE)
     fun enabled(context: Context): Boolean = prefs(context).getBoolean("enabled", false)
     fun setEnabled(context: Context, enabled: Boolean) {
         prefs(context).edit().putBoolean("enabled", enabled).apply()

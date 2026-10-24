@@ -58,7 +58,7 @@ internal class NavigationPromptFocus(
         scheduleRelease("timeout", timeoutMillis)
     }
 
-    /** The prompt's last audio is still in DiPlay's buffers when the iPhone sends unduckAudio. */
+    /** The prompt's last audio is still in TuPigCarPlay's buffers when the iPhone sends unduckAudio. */
     @Synchronized
     fun onUnduck() {
         if (closed || request == null) return
@@ -116,7 +116,7 @@ internal class NavigationPromptFocus(
     }
 
     internal companion object {
-        const val TAG = "DiPlay-AudioFocus"
+        const val TAG = "TuPigCarPlay-AudioFocus"
         /** Covers the playout delay after unduckAudio and joins back-to-back prompts. */
         const val RELEASE_DELAY_MILLIS = 1_000L
         /** Longest hold without unduckAudio; reported prompts lasted up to about 15 s. */

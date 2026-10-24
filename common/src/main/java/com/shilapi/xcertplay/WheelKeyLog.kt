@@ -8,7 +8,7 @@ import java.util.Locale
 /**
  * What the wheel key service saw and did with it, for the diagnostic report. The service wrote only to
  * logcat, so a head unit without adb could not show whether a wheel key reaches Android at all (#662).
- * The media keys that reach DiPlay's media session, and its audio focus changes, are noted here too:
+ * The media keys that reach TuPigCarPlay's media session, and its audio focus changes, are noted here too:
  * without them a report could not tell a key the head unit kept from one the iPhone ignored (#610).
  *
  * Kept in memory since the app process started: storage on a key press would delay the head unit's own
@@ -71,9 +71,9 @@ internal object WheelKeyLog {
         synchronized(this) {
             val boundAt = boundAtMillis
             if (boundAt == null && entries.isEmpty()) {
-                return listOf("Wheel keys: the service has not run since DiPlay started")
+                return listOf("Wheel keys: the service has not run since TuPigCarPlay started")
             }
-            summary = "Wheel keys since DiPlay started: presses=$presses kept=$kept " +
+            summary = "Wheel keys since TuPigCarPlay started: presses=$presses kept=$kept " +
                 "leftToHeadUnit=${presses - kept} textKeysNotListed=$textKeys " +
                 (if (bound && boundAt != null) "boundForMs=${nowMillis - boundAt}" else "bound=false") +
                 if (bound && presses + textKeys == 0) "; no key has reached the service" else ""

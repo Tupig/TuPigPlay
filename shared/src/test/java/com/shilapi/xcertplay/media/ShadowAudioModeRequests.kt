@@ -9,19 +9,19 @@ import org.robolectric.shadows.ShadowAudioManager
 /**
  * The audio mode as AudioService keeps it: one request per process, the most recent one in force, and
  * MODE_NORMAL withdrawing the caller's own request (`AudioService.setModeInt`). Robolectric keeps only the
- * last mode set, so it cannot show DiPlay holding a mode after the process that set it first lets go.
- * Everything this test process sets is DiPlay's request; [otherProcess] stands for Telecom or the car's phone.
+ * last mode set, so it cannot show TuPigCarPlay holding a mode after the process that set it first lets go.
+ * Everything this test process sets is TuPigCarPlay's request; [otherProcess] stands for Telecom or the car's phone.
  */
 @Implements(AudioManager::class)
 open class ShadowAudioModeRequests : ShadowAudioManager() {
-    @Implementation override fun setMode(mode: Int) = request(DIPLAY, mode)
+    @Implementation override fun setMode(mode: Int) = request(TUPIGCARPLAY, mode)
 
     @Implementation override fun getMode(): Int = synchronized(requests) {
         requests.firstOrNull()?.second ?: AudioManager.MODE_NORMAL
     }
 
     companion object {
-        private const val DIPLAY = "diplay"
+        private const val TUPIGCARPLAY = "tupigcarplay"
         private const val OTHER = "other"
         private val requests = mutableListOf<Pair<String, Int>>() // newest first
 

@@ -3,7 +3,7 @@ package com.shilapi.xcertplay
 import com.shilapi.xcertplay.orchestration.CarPlayRuntimeConfig
 
 /**
- * The charging current DiPlay offers the iPhone over wired iAP2. The offer tells the iPhone how much it
+ * The charging current TuPigCarPlay offers the iPhone over wired iAP2. The offer tells the iPhone how much it
  * may draw; it does not limit the car's USB port. A lower offer can help when the port cannot supply the
  * iPhone's charging current and the iPhone drops off USB a few seconds after charging starts.
  * Stable preference values; never persist enum ordinals.

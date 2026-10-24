@@ -24,8 +24,8 @@ class CarHotspotAdbFallbackTest {
     }
 
     @Test fun aZeroExitCodeCannotHidePermissionOrUnknownCommandOutput() {
-        assertTrue(CarHotspotAdbFallback.accepted("Started\nDIPLAY_HOTSPOT_EXIT:0"))
-        for (output in listOf(null, "", "DIPLAY_HOTSPOT_EXIT:1", "Unknown command\nDIPLAY_HOTSPOT_EXIT:0", "SecurityException\nDIPLAY_HOTSPOT_EXIT:0")) {
+        assertTrue(CarHotspotAdbFallback.accepted("Started\nTUPIGCARPLAY_HOTSPOT_EXIT:0"))
+        for (output in listOf(null, "", "TUPIGCARPLAY_HOTSPOT_EXIT:1", "Unknown command\nTUPIGCARPLAY_HOTSPOT_EXIT:0", "SecurityException\nTUPIGCARPLAY_HOTSPOT_EXIT:0")) {
             assertFalse(CarHotspotAdbFallback.accepted(output))
         }
     }
@@ -37,14 +37,14 @@ class CarHotspotAdbFallbackTest {
             commands += command
             if (command.endsWith("help")) "  start-tethering wifi" else {
                 on = true
-                "DIPLAY_HOTSPOT_EXIT:0"
+                "TUPIGCARPLAY_HOTSPOT_EXIT:0"
             }
         }, {}))
         assertEquals(2, commands.size)
         assertFalse(commands.last().contains("||"))
         assertTrue(commands.last().contains("\$?"))
         assertFalse(CarHotspotAdbFallback.start(deadline(20), { false }, { false }, { command, _ ->
-            if (command.endsWith("help")) "  start-tethering wifi" else "DIPLAY_HOTSPOT_EXIT:0"
+            if (command.endsWith("help")) "  start-tethering wifi" else "TUPIGCARPLAY_HOTSPOT_EXIT:0"
         }, {}))
     }
 
@@ -69,7 +69,7 @@ class CarHotspotAdbFallbackTest {
 
         logs.clear()
         CarHotspotAdbFallback.start(deadline(), { false }, { false }, { command, _ ->
-            if (command.endsWith("help")) "  start-tethering wifi" else "\nSecurityException: no tether permission\nDIPLAY_HOTSPOT_EXIT:0"
+            if (command.endsWith("help")) "  start-tethering wifi" else "\nSecurityException: no tether permission\nTUPIGCARPLAY_HOTSPOT_EXIT:0"
         }, { logs += it })
         assertEquals(listOf("car hotspot: firmware rejected 'cmd connectivity start-tethering wifi': " +
             "SecurityException: no tether permission"), logs)
@@ -81,7 +81,7 @@ class CarHotspotAdbFallbackTest {
             when {
                 command == "dumpsys wifi" -> "mWifiApState: ${if (on) 13 else 11}"
                 command.endsWith("help") -> "  start-tethering wifi"
-                else -> { on = true; "DIPLAY_HOTSPOT_EXIT:0" }
+                else -> { on = true; "TUPIGCARPLAY_HOTSPOT_EXIT:0" }
             }
         }, {}))
     }
@@ -146,7 +146,7 @@ class CarHotspotAdbFallbackTest {
         var on = false
         val commands = mutableListOf<String>()
         val logs = mutableListOf<String>()
-        val helper = CarHotspotStartMain.command("/data/app/diplay/base.apk")
+        val helper = CarHotspotStartMain.command("/data/app/tupigcarplay/base.apk")
         assertTrue(CarHotspotAdbFallback.start(deadline(), { false }, { on }, { command, _ ->
             commands += command
             when {

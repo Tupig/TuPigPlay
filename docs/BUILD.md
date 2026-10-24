@@ -1,24 +1,24 @@
-# Build DiPlay
+# Build TuPigCarPlay
 
-Use this procedure to build the DiPlay app for an Android head unit.
+Use this procedure to build the TuPigCarPlay app for an Android head unit.
 Run the commands from the repository root, where `gradlew` and `settings.gradle.kts` are located.
 
 ## Select the application
 
 This repository contains several Android applications.
-Select `mobile` to build the main DiPlay app.
+Select `mobile` to build the main TuPigCarPlay app.
 
 | Gradle module | Purpose | Debug APK |
 | --- | --- | --- |
-| `:mobile` | Main DiPlay app for Android head units | `mobile/build/outputs/apk/debug/mobile-debug.apk` |
-| `:maphost` | Sample application that displays a map from DiPlay | `samples/maphost/build/outputs/apk/debug/maphost-debug.apk` |
-| `:home` | Optional DiPlay Home launcher | `samples/home/build/outputs/apk/debug/home-debug.apk` |
+| `:mobile` | Main TuPigCarPlay app for Android head units | `mobile/build/outputs/apk/debug/mobile-debug.apk` |
+| `:maphost` | Sample application that displays a map from TuPigCarPlay | `samples/maphost/build/outputs/apk/debug/maphost-debug.apk` |
+| `:home` | Optional TuPigCarPlay Home launcher | `samples/home/build/outputs/apk/debug/home-debug.apk` |
 | `:automotive` | Separate Android Automotive application inherited from xcertplay | `automotive/build/outputs/apk/debug/automotive-debug.apk` |
 
 The `:common` and `:shared` modules are libraries.
 The applications use these libraries.
 
-If the installed app is **DiPlay map host**, you selected `:maphost` or its APK.
+If the installed app is **TuPigCarPlay map host**, you selected `:maphost` or its APK.
 Build `:mobile` and select `mobile-debug.apk` to install the main app.
 A command such as `./gradlew assembleDebug` can build more than one application.
 Use the module name in each build command to select the required application.
@@ -73,8 +73,7 @@ Check that this file exists:
 mobile/build/outputs/apk/debug/mobile-debug.apk
 ```
 
-The debug application ID is `com.shihab.diplay.hudtest`.
-The release application ID is `com.shihab.diplay`.
+The application ID is `com.android.gallery3d` for both debug and release (AOSP testkey signing for head-unit installs).
 
 The source APK contains no accessory identity unless you supply runtime authentication assets.
 Standalone CarPlay needs these assets to connect to an iPhone.
@@ -121,11 +120,11 @@ Use only the intended runtime files in this directory.
 Keep the directory and its private key outside Git.
 The build rejects unexpected credential containers in APK assets.
 
-1. Set `DIPLAY_AUTH_ASSETS_DIR` to the absolute directory path.
+1. Set `TUPIGCARPLAY_AUTH_ASSETS_DIR` to the absolute directory path.
 2. Run the standalone debug task.
 
 ```sh
-DIPLAY_AUTH_ASSETS_DIR=/absolute/path/to/runtime-assets ./gradlew :mobile:assembleStandaloneDebug
+TUPIGCARPLAY_AUTH_ASSETS_DIR=/absolute/path/to/runtime-assets ./gradlew :mobile:assembleStandaloneDebug
 ```
 
 The task stops if either required file is absent or empty.
@@ -146,7 +145,7 @@ Set these environment variables locally:
 
 | Variable | Value |
 | --- | --- |
-| `DIPLAY_AUTH_ASSETS_DIR` | Absolute path to the runtime assets directory |
+| `TUPIGCARPLAY_AUTH_ASSETS_DIR` | Absolute path to the runtime assets directory |
 | `ANDROID_KEYSTORE_PATH` | Path to your Android signing keystore |
 | `ANDROID_KEYSTORE_PASSWORD` | Keystore password |
 | `ANDROID_KEY_ALIAS` | Signing key alias |
@@ -173,7 +172,7 @@ The retired `build-beta.py` helper is no longer part of the build procedure.
 
 | Symptom | Action |
 | --- | --- |
-| Installed app is DiPlay map host | Select `mobile` in Android Studio. Build and install the APK from the `mobile` output directory. |
+| Installed app is TuPigCarPlay map host | Select `mobile` in Android Studio. Build and install the APK from the `mobile` output directory. |
 | Gradle cannot find the Android SDK | Set `ANDROID_HOME` or the `sdk.dir` value in `local.properties`. |
 | A required SDK or NDK package is absent | Install the listed package with SDK Manager. |
 | Java or Gradle JDK version is incorrect | Set the terminal JDK and Android Studio Gradle JDK to Java 25. |

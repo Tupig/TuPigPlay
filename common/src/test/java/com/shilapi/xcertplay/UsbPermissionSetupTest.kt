@@ -50,7 +50,7 @@ class UsbPermissionSetupTest {
     }
 
     @Test fun transportFailureAndEmptyOutputNeverClaimSuccess() {
-        for (reply in listOf(null, "", "DIPLAY_PERMISSION_EXIT:1")) {
+        for (reply in listOf(null, "", "TUPIGCARPLAY_PERMISSION_EXIT:1")) {
             val client = FakeClient().apply { output = reply }
             val result = operation(client).run()
             assertEquals(permissions.toSet(), result.commandsFailed)
@@ -145,21 +145,21 @@ class UsbPermissionSetupTest {
     }
 
     @Test fun activityStopCancelsWorkerAndSuppressesLateDialogs() = cancelledUiAttempt { _, activity ->
-        DiPlayActivity::class.java.getDeclaredMethod("onStop").apply { isAccessible = true }.invoke(activity)
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("onStop").apply { isAccessible = true }.invoke(activity)
     }
 
     @Test fun activityDestroyCancelsWorkerAndSuppressesLateDialogs() = cancelledUiAttempt { _, activity ->
-        DiPlayActivity::class.java.getDeclaredMethod("onDestroy").apply { isAccessible = true }.invoke(activity)
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("onDestroy").apply { isAccessible = true }.invoke(activity)
     }
 
     private fun cancelledUiAttempt(cancel: (AlertDialog) -> Unit) = cancelledUiAttempt { dialog, _ -> cancel(dialog) }
 
-    private fun cancelledUiAttempt(cancel: (AlertDialog, DiPlayActivity) -> Unit) {
-        val activity = Robolectric.buildActivity(DiPlayActivity::class.java).get()
+    private fun cancelledUiAttempt(cancel: (AlertDialog, TuPigCarPlayActivity) -> Unit) {
+        val activity = Robolectric.buildActivity(TuPigCarPlayActivity::class.java).get()
         activity.setTheme(android.R.style.Theme_Material_NoActionBar)
         val client = FakeClient().apply { block = true }
         activity.usbPermissionOperationFactory = { operation(client) }
-        DiPlayActivity::class.java.getDeclaredMethod("autoApplyPermissions").apply { isAccessible = true }.invoke(activity)
+        TuPigCarPlayActivity::class.java.getDeclaredMethod("autoApplyPermissions").apply { isAccessible = true }.invoke(activity)
         val progress = ShadowAlertDialog.getLatestAlertDialog()
         try {
             assertTrue(client.entered.await(3, TimeUnit.SECONDS))
@@ -201,7 +201,7 @@ class UsbPermissionSetupTest {
 
     private fun runShell(script: String): String {
         val gitShell = File(System.getenv("ProgramFiles") ?: "C:/Program Files", "Git/bin/sh.exe")
-        val shell = System.getenv("DIPLAY_TEST_SHELL")
+        val shell = System.getenv("TUPIGCARPLAY_TEST_SHELL")
             ?: if (File.separatorChar == '\\' && gitShell.isFile) gitShell.absolutePath else "sh"
         // Windows reconstructs the -c argument and can strip its embedded quotes.
         // Stdin delivers the exact Android shell command, without a host command-line parser.
@@ -217,7 +217,7 @@ class UsbPermissionSetupTest {
 
     private class FakeClient : UsbPermissionSetup.Client {
         var access = LocalAdb.Access.READY
-        var output: String? = "DIPLAY_PERMISSION_EXIT:0"
+        var output: String? = "TUPIGCARPLAY_PERMISSION_EXIT:0"
         var onConnect: () -> Unit = {}
         var onCommand: (String) -> Unit = {}
         var block = false

@@ -36,7 +36,7 @@ object HotspotJoinRepairMain {
         require(token == "-" || HotspotJoinRepair.validToken(token))
         if (Build.VERSION.SDK_INT < 33) return HotspotJoinTransaction.Result(HotspotJoinTransaction.Status.UNSUPPORTED)
         Os.umask(0x3f) // All new journal/lock/cancellation files start at 0600, directories at 0700.
-        val directory = File("/data/local/tmp/diplay-hotspot-join-$packageName")
+        val directory = File("/data/local/tmp/tupigcarplay-hotspot-join-$packageName")
         if (!directory.exists()) Os.mkdir(directory.path, 0x1c0)
         val stat = Os.lstat(directory.path)
         if (!OsConstants.S_ISDIR(stat.st_mode) || stat.st_uid != uid || stat.st_mode and 0x3f != 0)

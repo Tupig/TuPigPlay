@@ -90,7 +90,7 @@ object AirPlayPersistence {
     private const val KEY_CLUSTER_MAP = "cluster_map_enabled"
 
     /**
-     * The Geely cluster projection switch is DiPlay's right now. The switch belongs to the head unit
+     * The Geely cluster projection switch is TuPigCarPlay's right now. The switch belongs to the head unit
      * and carries no owner, and the process can be killed without running `onStop`, so the claim is
      * kept on disk and handed back by the next run ([GeelyClusterProjection.releaseStale]).
      */
@@ -130,7 +130,7 @@ object AirPlayPersistence {
     private const val KEY_ADAPT_PIP_RESOLUTION = "adapt_pip_resolution"
     private const val KEY_AUTO_START_ON_BOOT = "auto_start_on_boot"
     private const val KEY_BT_SUSPEND_DURING_CARPLAY = "bt_suspend_during_carplay"
-    private const val KEY_HIDE_BYD_CALL_POPUP = "hide_byd_call_popup"
+    private const val KEY_HIDE_TUPIG_CALL_POPUP = "hide_tupig_call_popup"
     private const val KEY_BT_SUSPEND_DELAY = "bt_suspend_delay_seconds"
     private const val KEY_LOCATION_REPORTING_ENABLED = "location_reporting_enabled"
     private const val KEY_EXTERNAL_CONTROLLER = "external_controller"
@@ -142,9 +142,9 @@ object AirPlayPersistence {
     private const val SAFE_AREA_KEY_PREFIX = "safe_area_"
     private const val CUSTOM_ICON_FILE = "airplay-icon.png"
 
-    const val DEFAULT_MANUFACTURER = "DiPlay"
-    const val DEFAULT_MODEL = "DiPlay"
-    const val DEFAULT_OEM_LABEL = "BYD"
+    const val DEFAULT_MANUFACTURER = "Leapmotor"
+    const val DEFAULT_MODEL = "24款增程C11"
+    const val DEFAULT_OEM_LABEL = "Leapmotor"
     const val DEFAULT_MFI_I2C_PATH = "/dev/i2c-1"
 
     fun loadAmbientDelaySeconds(context: Context): Int =
@@ -278,7 +278,7 @@ object AirPlayPersistence {
             .apply()
     }
 
-    /** Opt-out for head units that route physical volume buttons to DiPlay's focus owner. */
+    /** Opt-out for head units that route physical volume buttons to TuPigCarPlay's focus owner. */
     fun loadDisableMediaKeyAudioFocus(context: Context): Boolean =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .getBoolean(KEY_DISABLE_MEDIA_KEY_AUDIO_FOCUS, false)
@@ -396,17 +396,19 @@ object AirPlayPersistence {
     fun loadWirelessHotspotMode(context: Context): WirelessHotspotMode {
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         val stored = prefs.getString(KEY_WIRELESS_HOTSPOT_MODE, null)
-        val mode = WirelessHotspotMode.entries.firstOrNull { it.name == stored }
-            ?: WirelessHotspotMode.MANUAL
-        val supported = if (mode == WirelessHotspotMode.LOCAL_ONLY_HOTSPOT) WirelessHotspotMode.MANUAL else mode
-        if (stored != supported.name) saveWirelessHotspotMode(context, supported)
-        return supported
+        // Retired LocalOnlyHotspot selections migrate to the built-in car hotspot.
+        val mode = when (stored) {
+            "LOCAL_ONLY_HOTSPOT" -> WirelessHotspotMode.MANUAL
+            else -> WirelessHotspotMode.entries.firstOrNull { it.name == stored }
+                ?: WirelessHotspotMode.MANUAL
+        }
+        if (stored != mode.name) saveWirelessHotspotMode(context, mode)
+        return mode
     }
 
     fun saveWirelessHotspotMode(context: Context, mode: WirelessHotspotMode) {
-        val supported = if (mode == WirelessHotspotMode.LOCAL_ONLY_HOTSPOT) WirelessHotspotMode.MANUAL else mode
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-            .putString(KEY_WIRELESS_HOTSPOT_MODE, supported.name)
+            .putString(KEY_WIRELESS_HOTSPOT_MODE, mode.name)
             .apply()
     }
 
@@ -544,13 +546,13 @@ object AirPlayPersistence {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .getBoolean(KEY_BT_SUSPEND_DURING_CARPLAY, false)
 
-    fun loadHideBydCallPopup(context: Context): Boolean =
+    fun loadHideTuPigCallPopup(context: Context): Boolean =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .getBoolean(KEY_HIDE_BYD_CALL_POPUP, false)
+            .getBoolean(KEY_HIDE_TUPIG_CALL_POPUP, false)
 
-    fun saveHideBydCallPopup(context: Context, enabled: Boolean) {
+    fun saveHideTuPigCallPopup(context: Context, enabled: Boolean) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-            .putBoolean(KEY_HIDE_BYD_CALL_POPUP, enabled).apply()
+            .putBoolean(KEY_HIDE_TUPIG_CALL_POPUP, enabled).apply()
     }
 
     fun saveBtSuspendDuringCarplay(context: Context, enabled: Boolean) {
@@ -779,7 +781,7 @@ object AirPlayPersistence {
         }
     }
 
-    /** DiPlay's own experimental echo canceller on CarPlay call audio; opt-in, applies at reconnect. */
+    /** TuPigCarPlay's own experimental echo canceller on CarPlay call audio; opt-in, applies at reconnect. */
     fun loadCallEchoCancellation(context: Context): Boolean =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(KEY_CALL_ECHO_CANCELLATION, false)
 
@@ -894,7 +896,7 @@ object AirPlayPersistence {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean(KEY_CLUSTER_PROJECTION_HELD, held).apply()
     }
 
-    /** The dashboard map as a card on the centre screen while DiPlay is in the background. */
+    /** The dashboard map as a card on the centre screen while TuPigCarPlay is in the background. */
     fun loadCenterMapOverlay(context: Context): Boolean =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(KEY_CENTER_MAP_OVERLAY, false)
 
@@ -1420,7 +1422,7 @@ object AirPlayPersistence {
             .apply()
     }
 
-    /** Opens CarPlay in DiPlay's own task, for launchers that show that task in a card (#463). */
+    /** Opens CarPlay in TuPigCarPlay's own task, for launchers that show that task in a card (#463). */
     fun loadCarPlaySameTask(context: Context): Boolean =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .getBoolean(KEY_CARPLAY_SAME_TASK, false)

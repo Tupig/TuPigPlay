@@ -41,7 +41,7 @@ internal sealed interface ConnectionProblem {
 internal object LastConnectionProblem {
     data class Record(val problem: ConnectionProblem, val atMillis: Long)
 
-    private const val PREFS = "diplay_last_problem"
+    private const val PREFS = "tupigcarplay_last_problem"
     private const val KEY_PROBLEM = "problem"
     private const val KEY_AT = "at"
 

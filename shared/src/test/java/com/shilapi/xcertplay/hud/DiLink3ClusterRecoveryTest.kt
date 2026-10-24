@@ -20,10 +20,10 @@ import org.robolectric.util.ReflectionHelpers
 @Config(sdk = [29], manifest = Config.NONE, shadows = [DiLink3ClusterRecoveryTest.Shell::class])
 class DiLink3ClusterRecoveryTest {
     private val app get() = RuntimeEnvironment.getApplication()
-    private val output get() = BydDiLink3ClusterOutput
+    private val output get() = TuPigDiLink3ClusterOutput
     private val worker get() = ReflectionHelpers.getField<ScheduledExecutorService>(output, "worker")
-    private val prefs get() = app.getSharedPreferences("diplay_dilink3_cluster", 0)
-    private val stock get() = BydDiLink3ClusterMode.Mode.STOCK.command
+    private val prefs get() = app.getSharedPreferences("tupigcarplay_dilink3_cluster", 0)
+    private val stock get() = TuPigDiLink3ClusterMode.Mode.STOCK.command
     private fun drain() { worker.submit {}.get(5, TimeUnit.SECONDS) }
 
     @Before fun setup() {
@@ -45,9 +45,9 @@ class DiLink3ClusterRecoveryTest {
 
     @Test fun appOpeningRecoversAnInterruptedClusterEvenWhenNavigationIsDisabled() {
         prefs.edit().putBoolean("restore_stock_mode", true).commit()
-        BydOutputSettings.setEnabled(app, false)
+        TuPigOutputSettings.setEnabled(app, false)
         Shell.response = { null }
-        BydNavigationOutputs.onAppOpened(app)
+        TuPigNavigationOutputs.onAppOpened(app)
         drain()
         assertEquals(listOf(stock), Shell.commands.toList())
         assertTrue(prefs.getBoolean("restore_stock_mode", false))
@@ -70,8 +70,8 @@ class DiLink3ClusterRecoveryTest {
         // Exercise the same serial-worker operation used by the periodic retry.
         worker.submit { ReflectionHelpers.callInstanceMethod<Void>(output, "applyLatest") }
             .get(5, TimeUnit.SECONDS)
-        assertEquals(listOf(BydDiLink3ClusterMode.Mode.PROJECTION.entryCommand,
-            BydDiLink3ClusterMode.Mode.PROJECTION.command, stock, stock), Shell.commands.toList())
+        assertEquals(listOf(TuPigDiLink3ClusterMode.Mode.PROJECTION.entryCommand,
+            TuPigDiLink3ClusterMode.Mode.PROJECTION.command, stock, stock), Shell.commands.toList())
         assertFalse(prefs.contains("restore_stock_mode"))
     }
 
@@ -105,7 +105,7 @@ class DiLink3ClusterRecoveryTest {
         assertFalse(prefs.contains("restore_stock_mode"))
     }
 
-    @Implements(BydAdbShell::class, isInAndroidSdk = false)
+    @Implements(TuPigAdbShell::class, isInAndroidSdk = false)
     class Shell {
         @Implementation fun run(context: Context, command: String): String? {
             commands.add(command)

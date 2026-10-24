@@ -4,11 +4,11 @@ import java.security.SecureRandom
 import java.util.Random
 
 /**
- * Invents hotspot credentials for the seamless-connection mode: a DiPlay-XXXX name and a strong
+ * Invents hotspot credentials for the seamless-connection mode: a TuPigCarPlay-XXXX name and a strong
  * password. The caller persists them so the car and the iPhone see the same values on every start.
  */
 object ManualHotspotProvisioning {
-    private const val SSID_PREFIX = "DiPlay-"
+    private const val SSID_PREFIX = "TuPigCarPlay-"
     private const val SSID_SUFFIX_LENGTH = 4
     private const val SSID_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
     private const val PASSPHRASE_LENGTH = 16

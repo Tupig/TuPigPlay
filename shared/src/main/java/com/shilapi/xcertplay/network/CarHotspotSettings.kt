@@ -5,7 +5,7 @@ import com.shilapi.xcertplay.adb.LocalAdb
 import com.shilapi.xcertplay.orchestration.WirelessHotspotMode
 
 object CarHotspotSettings {
-    private fun prefs(context: Context) = context.getSharedPreferences("diplay_car_hotspot", Context.MODE_PRIVATE)
+    private fun prefs(context: Context) = context.getSharedPreferences("tupigcarplay_car_hotspot", Context.MODE_PRIVATE)
 
     fun enabled(context: Context): Boolean = prefs(context).getBoolean("auto_enable", false)
 
@@ -18,15 +18,15 @@ object CarHotspotSettings {
         prefs(context).edit().putBoolean("config_write", enabled).apply()
 
     // Visibility is independent of the saved choice: ADB is only needed to grant permission.
-    fun visible(bydAvailable: Boolean, access: LocalAdb.Access): Boolean =
-        bydAvailable && (access == LocalAdb.Access.READY || access == LocalAdb.Access.NOT_APPROVED)
+    fun visible(tuPigAvailable: Boolean, access: LocalAdb.Access): Boolean =
+        tuPigAvailable && (access == LocalAdb.Access.READY || access == LocalAdb.Access.NOT_APPROVED)
 
     fun shouldEnable(context: Context, wireless: Boolean, mode: WirelessHotspotMode): Boolean =
         enabled(context) && wireless && mode == WirelessHotspotMode.MANUAL
 
     /**
      * Set when the driver connects although Android reports the car hotspot off. Some firmware reports it off
-     * while the car's own hotspot is on (Geely Galaxy E8, #604), and DiPlay then refused every connection.
+     * while the car's own hotspot is on (Geely Galaxy E8, #604), and TuPigCarPlay then refused every connection.
      */
     fun offReportIgnored(context: Context): Boolean = prefs(context).getBoolean("ignore_off_report", false)
 
