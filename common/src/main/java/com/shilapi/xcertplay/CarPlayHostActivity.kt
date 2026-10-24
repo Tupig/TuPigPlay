@@ -200,7 +200,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         remoteMfiServer = remoteMfiServer.trim().takeIf { it.isNotEmpty() },
         remoteMfiToken = remoteMfiToken.takeIf { it.isNotEmpty() },
         identification = Iap2IdentificationConfig(
-            name = "TuPigCarPlay",
+            name = IPHONE_ACCESSORY_NAME,
             modelIdentifier = normalizedModel(),
             manufacturer = normalizedManufacturer(),
             serialNumber = "TUPIGCARPLAY-" + TuPigCarPlayBootstrap.deviceId(airPlayIdentity).replace(":", ""),
@@ -213,7 +213,7 @@ open class CarPlayHostActivity : ComponentActivity() {
             vehicleSpeedEnabled = locationReportingEnabled &&
                 (com.shilapi.xcertplay.hud.TuPigOutputSettings.wheelSpeedToIphoneActive(this) || EcarxWheelSpeed.present()),
         ),
-        label = "TuPigCarPlay",
+        label = IPHONE_ACCESSORY_NAME,
         hostName = "tupigcarplay-" + TuPigCarPlayBootstrap.deviceId(airPlayIdentity).replace(":", "").lowercase(),
         hostMac = TuPigCarPlayBootstrap.deviceId(airPlayIdentity).split(":").map { it.toInt(16).toByte() }.toByteArray(),
         wirelessBluetoothDeviceAddress = TuPigCarPlayPreferences.phoneAddress(this),
@@ -5077,7 +5077,7 @@ open class CarPlayHostActivity : ComponentActivity() {
         val carBluetoothAudio = AirPlayPersistence.loadCarBluetoothAudio(this)
         if (carBluetoothAudio) logCarBluetoothAudio()
         return AirPlayConfig(
-            deviceName = "TuPigCarPlay",
+            deviceName = IPHONE_ACCESSORY_NAME,
             deviceId = TuPigCarPlayBootstrap.deviceId(airPlayIdentity),
             btMac = TuPigCarPlayBluetooth.localAddress(this) ?: TuPigCarPlayBootstrap.deviceId(airPlayIdentity),
             sourceVersion = "950.7.1",
@@ -6928,6 +6928,8 @@ open class CarPlayHostActivity : ComponentActivity() {
     }
 
     private companion object {
+        /** Name the iPhone shows for this CarPlay accessory (not the head-unit app label). */
+        const val IPHONE_ACCESSORY_NAME = "Leapmotor C11"
         const val CLUSTER_SMALL_WINDOW_ON = 1
         const val CLUSTER_SMALL_WINDOW_AUTO = 2
         const val SIDE_PANEL_REFRESH_MILLIS = 5_000L
