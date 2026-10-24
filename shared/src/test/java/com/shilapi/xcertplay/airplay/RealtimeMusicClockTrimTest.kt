@@ -25,7 +25,7 @@ import org.robolectric.shadow.api.Shadow
 import org.robolectric.shadows.ShadowSystemClock
 
 /**
- * A TuPig DiLink 3.0 (#1068, #976) gets the iPhone's music in Wi-Fi bursts 400 ms apart and its DAC plays 0.08 % slow.
+ * A Leapmotor OS 3.0 (#1068, #976) gets the iPhone's music in Wi-Fi bursts 400 ms apart and its DAC plays 0.08 % slow.
  * Playback starts partway through a burst and the rest of the burst lands on top.
  */
 @RunWith(RobolectricTestRunner::class)

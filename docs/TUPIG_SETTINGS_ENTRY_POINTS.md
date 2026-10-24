@@ -1,4 +1,4 @@
-# TuPig DiLink 1.0 settings entry points (Android 7.1)
+# Leapmotor OS 1.0 settings entry points (Android 7.1)
 
 Firmware audit of DiLink 1.0 (TuPig Song Pro 2019, platform MSM8953 / Android 7.1.2, package
 `VP128_1.38.2103120.14.2103090.zip`) covering every screen TuPigCarPlay opens through a settings intent.

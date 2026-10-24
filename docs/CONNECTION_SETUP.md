@@ -126,7 +126,7 @@ connection. The guide explains the exact command for the installed app.
 WHAT TO TEST / REPORT
 Check first connection, reconnect after restarting the app/car, maps,
 music/audio, and any instrument-map features supported by your car.
-If something fails, note the time and steps, car model, DiLink/Android
+If something fails, note the time and steps, car model, Leapmotor OS/Android
 version, phone model/OS, and which app you used. Export a diagnostic report
 from Settings → Diagnostics → Save diagnostic report. Reports are saved
 under Downloads/DiAuto or Downloads/TuPigCarPlay. Share the report with your test

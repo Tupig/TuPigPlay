@@ -113,7 +113,7 @@ internal class PhoneAudioRouteController(
 /**
  * Puts the car's audio into its phone state by holding a self-managed Telecom call.
  *
- * On a TuPig DiLink 3 head unit, Telecom tells the car's audio layer about any call, and the voice processing
+ * On a Leapmotor OS 3 head unit, Telecom tells the car's audio layer about any call, and the voice processing
  * the car applies to a phone call, echo cancellation included, only runs in that state. A third-party call
  * played as media never reaches it, so the far end hears its own voice back. Any app may register a
  * self-managed call (the normal permission MANAGE_OWN_CALLS), so TuPigCarPlay holds one for as long as a call

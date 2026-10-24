@@ -1,4 +1,4 @@
-BYDMate - Trip and Charge Tracker for TuPig DiLink 5.0
+BYDMate - Trip and Charge Tracker for BYD DiLink 5.0
 Copyright (C) 2026 AndyShaman (https://github.com/AndyShaman)
 
 Licensed under the PolyForm Noncommercial License 1.0.0.

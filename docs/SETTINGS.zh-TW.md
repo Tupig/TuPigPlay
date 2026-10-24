@@ -64,6 +64,6 @@
 4. 若公共儲存空間或檔案選擇器不可用，應用程式使用專用外部或私有目錄；確認訊息會顯示實際路徑。使用 **檢視報告**／**分享診斷報告**；沒有分享應用程式時，可在報告檢視中選取並複製文字。
 5. 檢查 TXT，移除不適合公開的資訊，再附到[相關 GitHub 問題](https://github.com/shihabal3amri/TuPigCarPlay/issues)或[建立新問題](https://github.com/shihabal3amri/TuPigCarPlay/issues/new/choose)。
 
-請附上車型與車機型號、完整韌體／Android／DiLink、iPhone／iOS、TuPigCarPlay 版本、連線方式（USB／車載熱點／Wi-Fi Direct／同一區域網路）、相關設定、重現步驟、預期與實際結果，以及故障時間。
+請附上車型與車機型號、完整韌體／Android／Leapmotor OS、iPhone／iOS、TuPigCarPlay 版本、連線方式（USB／車載熱點／Wi-Fi Direct／同一區域網路）、相關設定、重現步驟、預期與實際結果，以及故障時間。
 
 報告不會自動上傳。請勿公開熱點密碼、私密金鑰或私人認證檔案，詳見[隱私權說明](PRIVACY.zh-TW.md)。

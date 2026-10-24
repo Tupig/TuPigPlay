@@ -30,7 +30,7 @@ Wi-Fi Direct 现支持 Android 7.0–9 的旧版建组路径，使用系统返�
 1. 更新到 **0.2.21**，复现问题并记录发生时间。开机／自动启动问题发生后，可手动打开 TuPigCarPlay 导出。
 2. 打开“**设置 → 诊断 → 保存诊断报告**”。Android 10+ 通常保存到 **Downloads/TuPigCarPlay**；Android 7.0–9 会请求存储权限并同样保存到该位置，也可点“选择保存位置”。如选择器或公共存储不可用，应用会使用专用外部或私有目录，并在确认中说明目的地。
 3. 使用确认中的**查看报告／分享**；没有分享应用时，可在报告视图中选择并复制文本。检查 `.txt` 并删除隐私信息，再附到匹配的[现有问题](https://github.com/shihabal3amri/TuPigCarPlay/issues)，或[新建问题](https://github.com/shihabal3amri/TuPigCarPlay/issues/new/choose)。报告不会自动上传，请勿公开热点密码或私有认证文件。
-4. 注明车型／车机、DiLink/Android/完整固件版本、iPhone/iOS、USB／车机热点／Wi-Fi Direct／同一局域网、相关设置、复现步骤、预期与实际结果及故障时间。
+4. 注明车型／车机、Leapmotor OS/Android/完整固件版本、iPhone/iOS、USB／车机热点／Wi-Fi Direct／同一局域网、相关设置、复现步骤、预期与实际结果及故障时间。
 
 [从源码构建](docs/BUILD.md)：主应用请选择 `mobile` 模块。`maphost` 是地图演示应用，构建步骤和 APK 路径见说明。
 

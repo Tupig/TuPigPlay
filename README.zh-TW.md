@@ -66,7 +66,7 @@ Wi-Fi Direct 在 Android 7.0–9 使用依賴韌體的舊版路徑，無法驗�
 
 ## 回報問題
 
-重現問題後，開啟 **設定 → 診斷 → 儲存診斷報告**，記錄故障時間並檢查 TXT 內容，再附到[相關問題](https://github.com/shihabal3amri/TuPigCarPlay/issues)或[新增問題](https://github.com/shihabal3amri/TuPigCarPlay/issues/new/choose)。請提供車型／車機、Android／DiLink／完整韌體版本、iPhone／iOS、連線方式、相關設定與重現步驟。不要公開熱點密碼或認證檔案。詳見[診斷回報步驟](docs/SETTINGS.zh-TW.md#匯出診斷報告與回報問題)。
+重現問題後，開啟 **設定 → 診斷 → 儲存診斷報告**，記錄故障時間並檢查 TXT 內容，再附到[相關問題](https://github.com/shihabal3amri/TuPigCarPlay/issues)或[新增問題](https://github.com/shihabal3amri/TuPigCarPlay/issues/new/choose)。請提供車型／車機、Android／Leapmotor OS／完整韌體版本、iPhone／iOS、連線方式、相關設定與重現步驟。不要公開熱點密碼或認證檔案。詳見[診斷回報步驟](docs/SETTINGS.zh-TW.md#匯出診斷報告與回報問題)。
 
 ## 原始碼與授權
 

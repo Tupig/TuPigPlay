@@ -2110,7 +2110,7 @@ private class AudioRenderer(
 
     /**
      * Worker-thread only. The guidance is scaled in [attenuateNavigation] as it is written, not with
-     * AudioTrack.setVolume: on a TuPig DiLink 3.0 the track accepted every setVolume and the guidance on
+     * AudioTrack.setVolume: on a Leapmotor OS 3.0 the track accepted every setVolume and the guidance on
      * stream 14 stayed as loud (#719). Each change is reported once, when it reaches this stream.
      */
     private fun applyNavigationAttenuation() {

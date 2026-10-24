@@ -757,7 +757,7 @@ open class CarPlayHostActivity : ComponentActivity() {
             mainHandler.postDelayed(this, 1_000L)
         }
     }
-    // Some head units (e.g. TuPig DiLink) update resources.configuration for day/night
+    // Some head units (e.g. Leapmotor OS) update resources.configuration for day/night
     // without delivering onConfigurationChanged, so poll while the activity is visible.
     private val pollConfiguration = object : Runnable {
         override fun run() {
