@@ -1,0 +1,85 @@
+{
+  "说明": "中文报告对应原文的只读校验清单；不替代原审批证据。",
+  "reports": [
+    {
+      "source": "acceptance-packet-20261021-078.md",
+      "translation": "docs/reports/20261021-zh-CN/acceptance-packet-20261021-078.md",
+      "sha256": "56a404318c28f52784f1d9d5c0ddd406875c85685e013773860a96f7576b4728"
+    },
+    {
+      "source": "build-package-20261021-092-successor-plan.md",
+      "translation": "docs/reports/20261021-zh-CN/build-package-20261021-092-successor-plan.md",
+      "sha256": "ce671b3991c01876ddabbed2f8f594f8aa8f0ccdfba7c23a221976f07dffce33"
+    },
+    {
+      "source": "execution-brief-20261021-078-r3.md",
+      "translation": "docs/reports/20261021-zh-CN/execution-brief-20261021-078-r3.md",
+      "sha256": "366e6039323fcc649b2331b21ed8d0b580c279a77572ffa71cbb4644dc5319c3"
+    },
+    {
+      "source": "implementation-evidence-20261021-078.md",
+      "translation": "docs/reports/20261021-zh-CN/implementation-evidence-20261021-078.md",
+      "sha256": "3d79e7e4f0ddafe66fc74e5aef62577b2edb7d839cd95d34c03457736c4e50ee"
+    },
+    {
+      "source": "review-actual-test-adequacy-20261021-078-095.md",
+      "translation": "docs/reports/20261021-zh-CN/review-actual-test-adequacy-20261021-078-095.md",
+      "sha256": "7476a039903a07fe785259934e507433b5a07d5a2f75397ee5395ce196fe6989"
+    },
+    {
+      "source": "review-actual-test-adequacy-20261021-078.md",
+      "translation": "docs/reports/20261021-zh-CN/review-actual-test-adequacy-20261021-078.md",
+      "sha256": "02ab0cf82cf1d86af27d009d9bf045a2f7e3e93589f4d5ff66f0844fd6834897"
+    },
+    {
+      "source": "review-execution-readiness-20261021-078-r3.md",
+      "translation": "docs/reports/20261021-zh-CN/review-execution-readiness-20261021-078-r3.md",
+      "sha256": "23cb7a4e2d9a06dadee9d22d44f43e1504459127524f41d3c49ebd96cfc77cdc"
+    },
+    {
+      "source": "review-post-implementation-pe-20261021-078.md",
+      "translation": "docs/reports/20261021-zh-CN/review-post-implementation-pe-20261021-078.md",
+      "sha256": "6b6c3a5b1ed499f13870f1b4540a4da19757df238cd9a82a381f72469dde1f16"
+    },
+    {
+      "source": "review-post-implementation-secops-20261021-078-097.md",
+      "translation": "docs/reports/20261021-zh-CN/review-post-implementation-secops-20261021-078-097.md",
+      "sha256": "cb7d93edb49c604dbf37aa4bb81b75a65d0c51c9dad1a23d972e7767de6fd4c2"
+    },
+    {
+      "source": "review-post-implementation-secops-20261021-078-runtime.md",
+      "translation": "docs/reports/20261021-zh-CN/review-post-implementation-secops-20261021-078-runtime.md",
+      "sha256": "13cb266641fe83fc145f29121389238f02c99e1b4923e2d8633c31914dda981f"
+    },
+    {
+      "source": "review-post-implementation-secops-20261021-078.md",
+      "translation": "docs/reports/20261021-zh-CN/review-post-implementation-secops-20261021-078.md",
+      "sha256": "6e112d463b491602409e95f2870c47f07b6d9b52ef3bde8309f045c67ac07d5c"
+    },
+    {
+      "source": "test-implementation-evidence-20261021-078.md",
+      "translation": "docs/reports/20261021-zh-CN/test-implementation-evidence-20261021-078.md",
+      "sha256": "8a0fc572f2c78642a4312154fc8c8ff0ec1035a677e2112bb0030b2d23dcde7e"
+    },
+    {
+      "source": "test-mechanical-correction-20261021-078-097.md",
+      "translation": "docs/reports/20261021-zh-CN/test-mechanical-correction-20261021-078-097.md",
+      "sha256": "45e49c8e4d655e37311d2d3d04af8b1675b76122ac508e3300a63737b93bb343"
+    },
+    {
+      "source": "test-mechanical-correction-20261021-078-r1.md",
+      "translation": "docs/reports/20261021-zh-CN/test-mechanical-correction-20261021-078-r1.md",
+      "sha256": "b05c8df5df3c66a95af35d3b1f91f51367fdd11d20786e1e2ed3cdfe1d8a5284"
+    },
+    {
+      "source": "test-runtime-evidence-20261021-078-attempt1.md",
+      "translation": "docs/reports/20261021-zh-CN/test-runtime-evidence-20261021-078-attempt1.md",
+      "sha256": "8ff08e367e3c8665de08a51c85999fe1c5f0e4376f51ef3fb3533bce2a2c627e"
+    },
+    {
+      "source": "test-runtime-evidence-20261021-078.md",
+      "translation": "docs/reports/20261021-zh-CN/test-runtime-evidence-20261021-078.md",
+      "sha256": "7b9903b39126713efe7cadef662561e2e0dbfd2302ec68f75a371ef95dce21b7"
+    }
+  ]
+}
