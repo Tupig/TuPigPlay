@@ -52,6 +52,22 @@ class WirelessStartupControllerTest {
             .apply { isAccessible = true }.invoke(controller, error, generation)
     }
 
+    @Test fun endpointAddressesIncludeAllHostAddresses() {
+        val controller = controller()
+        try {
+            val v4 = java.net.InetAddress.getByName("192.168.43.1")
+            val v6 = java.net.Inet6Address.getByAddress(null, java.net.InetAddress.getByName("fe80::1").address, 5)
+            val method = controller.javaClass.getDeclaredMethod("hostAddressText", java.net.InetAddress::class.java)
+                .apply { isAccessible = true }
+            assertEquals("192.168.43.1", method.invoke(controller, v4))
+            assertEquals(v6.hostAddress!!.substringBefore('%'), method.invoke(controller, v6))
+            val endpointAddresses = (listOf(v4) + listOf(v6).filter { it != v4 })
+                .map { method.invoke(controller, it) as String }
+                .distinct()
+            assertEquals(listOf("192.168.43.1", v6.hostAddress!!.substringBefore('%')), endpointAddresses)
+        } finally { controller.close(); controller.awaitClosed(2_000) }
+    }
+
     @Test fun timeoutAndCleanupExceptionProduceOnlyOneTypedFailure() {
         val controller = controller()
         try {
