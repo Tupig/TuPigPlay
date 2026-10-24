@@ -182,6 +182,9 @@ class CarPlayController(
         TuPigNavigationOutputs.setClusterStreamControl(::applyClusterUi)
     }
 
+    /** Whether this controller was started for a wireless (not USB) CarPlay session. */
+    val isWirelessTransport: Boolean get() = config.transport == CarPlayTransport.WIRELESS
+
     private enum class Phase { IDLE, MFI, WIRELESS, IPHONE, REENUMERATION, DATAPATHS, CONTROL }
 
     private val appContext = context.applicationContext

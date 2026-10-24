@@ -5850,8 +5850,11 @@ class TuPigCarPlayActivity : ComponentActivity(), AppAppearanceOwner {
 
     private fun refreshStatus() {
         val running = CarPlayBackgroundSession.hasSession()
-        // A USB session shares this card's status and Disconnect, but not its wireless title or Wi-Fi hint (#742).
-        val wired = HomeCardTransport.wired(running, AirPlayPersistence.loadWirelessEnabled(this))
+        // Prefer the running session's transport over the saved connection mode so a USB session
+        // never keeps the Wireless CarPlay title when wireless is still the saved default (#742 / #108).
+        val wirelessSelected = CarPlayBackgroundSession.sessionWireless()
+            ?: AirPlayPersistence.loadWirelessEnabled(this)
+        val wired = HomeCardTransport.wired(running, wirelessSelected)
         homeCardTitle?.text = getString(if (wired) R.string.home_usb_carplay else R.string.wireless_carplay)
         homeConnectionHint?.visibility = if (wired) View.GONE else View.VISIBLE
         status?.text = when {

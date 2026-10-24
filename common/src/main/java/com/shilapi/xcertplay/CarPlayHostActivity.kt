@@ -7030,6 +7030,8 @@ internal object CarPlayBackgroundSession {
     private var owner: Any? = null
     @Synchronized fun isOwner(candidate: Any): Boolean = owner === candidate
     @Synchronized fun hasSession(): Boolean = stopAction != null || stopping
+    /** Null when no controller is stored; otherwise whether the running session is wireless. */
+    @Synchronized fun sessionWireless(): Boolean? = controller?.isWirelessTransport
     private val stopWaiters = mutableListOf<() -> Unit>()
 
     fun stop(completion: () -> Unit = {}) {

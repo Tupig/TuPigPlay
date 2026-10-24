@@ -12,4 +12,9 @@ class HomeCardTransportTest {
         assertFalse(HomeCardTransport.wired(sessionRunning = false, wirelessSelected = false))
         assertFalse(HomeCardTransport.wired(sessionRunning = false, wirelessSelected = true))
     }
+
+    @Test fun usbSessionStaysWiredEvenIfWirelessIsTheSavedDefault() {
+        // Home uses session transport when present so a cable session is not titled Wireless (#108).
+        assertTrue(HomeCardTransport.wired(sessionRunning = true, wirelessSelected = false))
+    }
 }
