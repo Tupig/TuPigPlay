@@ -42,4 +42,12 @@ class UpdateVersionTest {
         assertTrue(UpdateVersion.isNewer("0.2.15", "psa.2"))
         assertFalse(UpdateVersion.isNewer("public-preview", "psa.2"))
     }
+
+    @Test
+    fun stableLabelsRejectSuffixes() {
+        assertTrue(UpdateVersion.isStableLabel("0.2.21"))
+        assertTrue(UpdateVersion.isStableLabel("v0.2.21"))
+        assertFalse(UpdateVersion.isStableLabel("0.2.21-rc.1"))
+        assertFalse(UpdateVersion.isStableLabel("v0.2.21-beta"))
+    }
 }

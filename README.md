@@ -1,67 +1,96 @@
 # TuPigCarPlay
 
-[English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md)
+[![CI](https://img.shields.io/github/actions/workflow/status/Tupig/TuPigPlay/diplay.yml?branch=main&label=CI)](https://github.com/Tupig/TuPigPlay/actions)
+[![Release](https://img.shields.io/github/v/release/Tupig/TuPigPlay)](https://github.com/Tupig/TuPigPlay/releases)
+[![License](https://img.shields.io/github/license/Tupig/TuPigPlay)](LICENSE)
 
-**CarPlay for compatible TuPig Android head units.** Wired and wireless, with the familiar DiAuto interface. Independent app: `com.android.gallery3d`.
+**简体中文** | [English](#tupigcarplay-english)
 
-> **TuPig support scope:** These projects focus on TuPig cars. They may work on other brands, but other brands are unsupported and there are no plans to add support or fix brand-specific incompatibilities.
+给 **零跑 Leapmotor** 安卓车机用的 CarPlay：有线、无线都行。仓库是 [`Tupig/TuPigPlay`](https://github.com/Tupig/TuPigPlay)，对外就叫 **TuPigCarPlay**。
 
-[Download & website](https://shihabal3amri.github.io/TuPigCarPlay/) · [Release](https://github.com/shihabal3amri/TuPigCarPlay/releases/tag/v0.2.21) · [Report a problem](https://github.com/shihabal3amri/TuPigCarPlay/issues/new/choose)
+详细说明在 [文档中心](docs/wiki/Home.md)。常用：[安装](docs/wiki/安装与使用.md) · [怎么连](docs/wiki/连接方式.md) · [常见问题](docs/wiki/常见问题.md) · [版本](docs/wiki/版本说明.md) · [版本与更新](docs/wiki/版本与更新.md)
 
-![TuPigCarPlay home](site/assets/home.png)
+## 目录
 
-## 0.2.21 — public preview
+- [简介](#简介)
+- [从哪一版改的](#从哪一版改的)
+- [怎么装、怎么连](#怎么装怎么连)
+- [支持什么](#支持什么)
+- [文档](#文档)
+- [自己编译](#自己编译)
+- [隐私、安全和许可](#隐私安全和许可)
 
-Install on the **car**, not the iPhone. No jailbreak, dongle, Mac, account or authentication server is required for use. Core CarPlay does not require ADB; optional dashboard, battery, wheel-speed and parked-video features do. Your head unit must permit APK installation. The APK supports Android 7.0+ (API 24); Android 7.0–8.1 support is not yet confirmed on a vehicle. Wireless supports Wi-Fi Direct, the car’s existing hotspot or Existing Wi-Fi / Same LAN. Android 7.0–9 Wi-Fi Direct uses a firmware-dependent legacy path with generated group credentials and unverified requested frequency; see [Android 9 Wi-Fi Direct](docs/ANDROID9_WIFI_DIRECT.md). Android 10+ verifies its negotiated group frequency.
+## 简介
 
-- Wired USB and wireless CarPlay with local authentication.
-- TuPig HUD navigation with arrows, distance and street names on verified firmware.
-- Car hotspot support, improved audio buffering and saved receive diagnostics.
-- Automatic address discovery, fixed-channel Wi-Fi fallbacks and successful-configuration memory.
-- Icon/text size, resolution and frame rate; applying a display change reconnects CarPlay.
-- Local diagnostic export. Reports are sent only if you choose to share them.
-- Separate installation alongside DiAuto. Run one projection app at a time.
+装在车机上（别装到 iPhone），可以：
 
-This is **not an Apple-certified product**. The APK bundles an experimental accessory identity recovered from public Carlinkit firmware, not a newly provisioned MFi identity for TuPigCarPlay. A bundled private key is extractable. Acceptance after future iOS updates, reliability across head units and suitability of that identity for general distribution are unresolved. This release invites community testing; it is not a guarantee of universal compatibility.
+- USB 有线，或车机热点 / Wi-Fi Direct / 同一局域网无线
+- 核心投屏不要求越狱、转接盒、账号；也不要求 ADB
+- 零跑仪表、导航一类能力看固件，有的要已授权的网络 ADB
+- 出问题可在设置里导出诊断报告，要不要发出去由你决定
 
-Earlier releases were tested on the development DiLink5.1 car: live windshield guidance and street names work, Car hotspot now starts CarPlay, and Wi-Fi Direct performance is substantially improved. Audio underrun recovery is improved in 0.2.15; remaining cutouts need current diagnostic reports. The 0.2.16 software Opus microphone fallback was accepted on a BOS Mini A1 head unit (Android 9) with an iPhone 12 on iOS 27. The floating-map test build was installed on the development DiLink 5.1 car; feedback led to the pinch corrections in 0.2.9. Earlier wheel-speed and video contributions were tested on a TuPig Tang with DiLink 5.0 and an iPhone 15 Pro on iOS 27; wheel-speed dead reckoning in tunnels remains unverified. Broader head-unit and iOS compatibility is not guaranteed. The HUD firmware scope and cleanup limits are documented in [TuPig navigation](docs/TUPIG_NAVIGATION.md).
+**只做零跑。** 别的牌子或许能开，我们不承诺、也不按那些车修。  
+**不是 Apple 认证产品。** 预览包里可能带有从公开 Carlinkit 固件里取出的实验性配件身份，私钥能被抠出来，以后 iOS 认不认都不好说——见 [第三方声明](docs/THIRD_PARTY_NOTICES.md)。
 
-## What’s new in 0.2.21
+## 从哪一版改的
 
-- Music plays in step with the iPhone again: on 0.2.20, pause, skip and track changes could come seconds late, and the speed could wobble.
-- Wired CarPlay recovers by itself when the iPhone never opens CarPlay, no longer waits forever after **Disconnect**, and keeps a connection that has already recovered.
-- TuPigCarPlay no longer closes when the microphone is used on head units without Android's own Opus encoder, and music comes back after a call or a short interruption.
-- Wireless CarPlay says why it cannot start; on TuPig head units the dashboard is handed back to the car when CarPlay ends, and TuPigCarPlay no longer closes from the DiYou desktop card.
-- TuPigCarPlay installs on Android 7.0 and is available in Italian.
-- New options, off by default: temporary system bars, black rounded corners, a play/pause wheel key, double press for Siri, importing the car hotspot details, a home-screen bubble and the car's own music rhythm.
+代码是在 [DiPlay](https://github.com/shihabal3amri/DiPlay) 公开预览版 **[v0.2.21](https://github.com/shihabal3amri/DiPlay/releases/tag/v0.2.21)** 上继续改的（当时 DiPlay 最新带版本号的发布就是这一版；本仓分叉时还带上了该标签之后、大约到 2026-10-24 的一小段提交）。
 
-See [0.2.21 release notes](docs/RELEASE-NOTES-0.2.21.md) and [validation](docs/VALIDATION.md) for contribution links and remaining physical tests. General stutter, calls/Siri, decoder and model-specific reports still need current-device evidence. [0.2.20 notes](docs/RELEASE-NOTES-0.2.20.md) remain available as historical guidance.
+协议接收端最早来自 [xcertplay](https://github.com/shilapi/xcertplay)（GPL-3.0）。界面样子参考了 DiAuto（AGPL-3.0）。许可与致谢写在 [第三方声明](docs/THIRD_PARTY_NOTICES.md)。
 
-If a problem remains, reproduce it on **0.2.21**, then use **Settings → Diagnostics → Save diagnostic report**. Android 10+ normally saves to **Downloads/TuPigCarPlay**; Android 7.0–9 asks for storage access and saves there too. If unavailable, use **View report** or **Share** from the confirmation, which identifies external/private fallback storage. Review the `.txt` and add it to a matching [existing issue](https://github.com/shihabal3amri/TuPigCarPlay/issues), or [create one](https://github.com/shihabal3amri/TuPigCarPlay/issues/new/choose). Include vehicle/head-unit model, exact firmware and Android/Leapmotor OS, phone/iOS, connection backend, relevant settings, steps and failure time. Reports are shared only when you choose; never post your hotspot password.
+## 怎么装、怎么连
 
-## Documentation
+1. 到 [Releases](https://github.com/Tupig/TuPigPlay/releases) 下 `TuPigCarPlay-*.apk`，装到**车机**。
+2. 按提示给权限；先把别的投屏软件关掉。
+3. **设置 → 连接 → 连接方式**：优先填好**车机自带热点**（能开 5 GHz 更好），或改用 USB / Wi-Fi Direct / 同一局域网。
+4. 点 **连接手机**。
 
-[Existing Wi-Fi / Same LAN](docs/EXISTING_WIFI.md) keeps the iPhone and head unit
-on an external router. See the guide for setup, build requirements and the
-Leapmotor OS 4.0 / Android 10 clean-install validation result.
+更细的步骤：[安装与使用](docs/wiki/安装与使用.md)、[连接方式](docs/wiki/连接方式.md)。
 
-- [Install and connect](docs/INSTALL.md)
-- [Compatibility and troubleshooting](docs/COMPATIBILITY.md)
-- [Smooth wireless CarPlay](docs/SMOOTH_WIRELESS.md)
-- [Privacy and diagnostic reports](docs/PRIVACY.md)
-- [Build from source](docs/BUILD.md) — select `mobile` for the main TuPigCarPlay app; `maphost` is a map sample.
-- [Validation](docs/VALIDATION.md)
-- [Release notes](CHANGELOG.md)
-- [Credits and licenses](docs/THIRD_PARTY_NOTICES.md)
+报 bug 请先在本机复现，再 **设置 → 诊断 → 保存诊断报告**，看过、去掉热点密码之类以后，再贴到 [Issues](https://github.com/Tupig/TuPigPlay/issues)。
 
-The app and the website source include English, Arabic, Russian, Ukrainian, Spanish, Simplified Chinese, Traditional Chinese (Taiwan), and Japanese. Traditional Chinese uses Taiwan wording; the app also recognizes Hong Kong/Macao and explicit Hant selections without claiming separate regional translations. Choose the app language in Settings; on Android 13+, it stays synchronized with Android’s per-app language setting. See the [Traditional Chinese guide](README.zh-TW.md) for installation, settings, troubleshooting, privacy and build instructions.
+## 支持什么
 
-## Source and credits
+| | |
+| --- | --- |
+| 车机 | 零跑 Leapmotor，能装 APK |
+| 系统 | Android 7.0+（API 24+）；7.0–8.1 实车还测得少 |
+| 手机 | 能开系统 CarPlay 的 iPhone |
+| ADB | 核心投屏不用；部分车辆功能才要 |
 
-Based on [xcertplay](https://github.com/shilapi/xcertplay), GPL-3.0. The home/settings UI and website adapt [DiAuto](https://github.com/shihabal3amri/DiAuto), AGPL-3.0; that license is included in `docs/licenses`. Preserve those notices when distributing modifications. CarPlay and its icon belong to Apple Inc.; no Apple or TuPig affiliation or endorsement is implied.
+四种连法的注意点见 [连接方式](docs/wiki/连接方式.md)，边界见 [兼容性](docs/wiki/兼容性.md)。
 
-This repository starts with a clean public source snapshot. Local research, tester reports and release-signing secrets are excluded. The complete source corresponding to the APK is provided with every release; experimental runtime identity assets are described separately in the build instructions and notices.
+## 文档
 
-## Local release packaging
+- 给人看的：[文档中心](docs/wiki/Home.md)
+- [隐私](docs/PRIVACY.md) · [安全](SECURITY.md) · [版本摘要](docs/wiki/版本说明.md) · [CHANGELOG](CHANGELOG.md)
 
-The release APK intentionally contains the experimental accessory identity. The Git repository and source archive exclude all accessory and Android signing keys; tests generate synthetic identities at runtime. Source/CI builds omit runtime identity assets by default. Local release builds explicitly select an external asset directory. Publishing the APK makes its bundled identity extractable; building locally does not preserve that identity's confidentiality.
+## 自己编译
+
+主包是 `mobile` 模块：
+
+```sh
+./gradlew :mobile:assembleDebug
+```
+
+提交前最好跑一轮和 CI 一样的测试 / lint（见 [从源码构建](docs/wiki/从源码构建.md)、[AGENTS.md](AGENTS.md)）。签名密钥和配件私钥不要进 Git。
+
+## 隐私、安全和许可
+
+没有账号，诊断不会自动上传。[隐私政策](docs/PRIVACY.md)。安全问题请走 GitHub 私密报告：[安全政策](SECURITY.md)。
+
+CarPlay 名字和图标是 Apple 的；本项目和 Apple、零跑都没有官方关系。
+
+有用的话欢迎 Star。
+
+---
+
+# TuPigCarPlay (English)
+
+[简体中文](#tupigcarplay) | **English**
+
+CarPlay on **Leapmotor** Android head units. Repo: [`Tupig/TuPigPlay`](https://github.com/Tupig/TuPigPlay).
+
+Built from [DiPlay](https://github.com/shihabal3amri/DiPlay) public preview **[v0.2.21](https://github.com/shihabal3amri/DiPlay/releases/tag/v0.2.21)** (plus a short stretch of commits after that tag through about 2026-10-24). Receiver work traces to [xcertplay](https://github.com/shilapi/xcertplay).
+
+Leapmotor only. Not Apple-certified; see [THIRD_PARTY_NOTICES](docs/THIRD_PARTY_NOTICES.md). Docs: [wiki](docs/wiki/Home.md). Install APK from [Releases](https://github.com/Tupig/TuPigPlay/releases) on the **car**, then Connection setup → prefer the car hotspot, or USB / Wi-Fi Direct / Same LAN.

@@ -46,3 +46,6 @@ release-signing.properties
 
 # Written by scripts/download_count.py when the site is deployed
 site/assets/downloads.json
+
+# Graphify local knowledge graph (regenerate with `graphify update .`)
+graphify-out/

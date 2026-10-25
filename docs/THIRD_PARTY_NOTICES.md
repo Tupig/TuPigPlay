@@ -1,10 +1,50 @@
-# Credits and license notices
+# 第三方声明 / Third-party notices
+
+**简体中文** | [English](#credits-and-license-notices-english)
+
+仓库 [`Tupig/TuPigPlay`](https://github.com/Tupig/TuPigPlay)，产品名 **TuPigCarPlay**。
+
+本应用在 [DiPlay](https://github.com/shihabal3amri/DiPlay) 公开预览版 **[v0.2.21](https://github.com/shihabal3amri/DiPlay/releases/tag/v0.2.21)** 上继续修改（分叉时还带了该标签之后大约到 2026-10-24 的提交）。
+
+## 接收端
+
+协议接收端最早来自 [xcertplay（shilapi）](https://github.com/shilapi/xcertplay)（GNU GPL v3），全文见 `LICENSE`；相关说明归档在 `docs/archive/UPSTREAM-README.md`。
+
+原作者还感谢 [LIVI](https://github.com/f-io/LIVI)、[Showcase](https://github.com/amineross/showcase) 等协议研究；源码里的署名我们保留。
+
+## 主页与设置 UI
+
+`common/.../TuPigCarPlayActivity.kt` 等适配了 [DiAuto](https://github.com/shihabal3amri/DiAuto) 的配色、布局与文案风格。DiAuto 为 AGPL-3.0；许可文本见 `docs/licenses/DiAuto-AGPL-3.0.txt`。
+
+## CarPlay 图标
+
+未改动的图标来自 Apple 开发者站点资源。CarPlay 及相关标识属于 Apple Inc.；本项目开源许可证不覆盖该资源，亦不代表 Apple 认证或背书。
+
+## 运行时依赖
+
+AndroidX / Jetpack Compose、Kotlin 标准库、Bouncy Castle、JmDNS、SLF4J 等，许可证见 `docs/licenses/dependencies/` 与版本目录。
+
+## 配件身份（重要）
+
+公开 APK 可能包含从公开 Carlinkit 固件提取的实验性配件证书与密钥，**可被提取**。这不是为本项目新签发的 MFi 身份；未来 iOS 是否继续接受未知。详见 [SECURITY.md](../SECURITY.md)。
+
+仪表导航等 PNG 资源另见 `shared/TUPIG_HUD_ICONS_NOTICE.md`。
+
+---
+
+# Credits and license notices (English)
+
+[简体中文](#第三方声明--third-party-notices) | **English**
+
+## Based on DiPlay
+
+TuPigCarPlay continues from [DiPlay](https://github.com/shihabal3amri/DiPlay) public preview **[v0.2.21](https://github.com/shihabal3amri/DiPlay/releases/tag/v0.2.21)**, including a short stretch of commits after that tag through about 2026-10-24.
 
 ## Receiver
 
-TuPigCarPlay is a modified version of [xcertplay by shilapi](https://github.com/shilapi/xcertplay). The upstream receiver is licensed under GNU GPL version 3; the full text is in `LICENSE` and the original README is retained in `docs/UPSTREAM-README.md`.
+The protocol receiver comes from [xcertplay by shilapi](https://github.com/shilapi/xcertplay) (GNU GPL version 3); see `LICENSE` and `docs/archive/UPSTREAM-README.md`.
 
-Upstream credits [LIVI](https://github.com/f-io/LIVI) and [Showcase](https://github.com/amineross/showcase) for protocol research. Existing source comments and attribution are preserved.
+Credits to [LIVI](https://github.com/f-io/LIVI) and [Showcase](https://github.com/amineross/showcase) for protocol research are kept in the tree.
 
 ## Home and settings UI
 

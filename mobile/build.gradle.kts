@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -6,6 +8,14 @@ plugins {
 // Optional local-only input. CI and ordinary source builds contain no accessory identity.
 val localAuthenticationAssets = providers.environmentVariable("TUPIGCARPLAY_AUTH_ASSETS_DIR")
     .orNull?.let { file(it).canonicalFile }
+
+val versionProperties = Properties().apply {
+    rootProject.file("version.properties").inputStream().use { load(it) }
+}
+val productVersionName = versionProperties.getProperty("VERSION_NAME")
+    ?: error("VERSION_NAME missing from version.properties")
+val productVersionCode = versionProperties.getProperty("VERSION_CODE")?.toIntOrNull()
+    ?: error("VERSION_CODE missing from version.properties")
 
 android {
     namespace = "com.shilapi.xcertplay"
@@ -18,8 +28,8 @@ android {
         applicationId = "com.android.gallery3d"
         minSdk = 24
         targetSdk = 37
-        versionCode = 40
-        versionName = "0.2.21"
+        versionCode = productVersionCode
+        versionName = productVersionName
     }
 
     localAuthenticationAssets?.let { sourceSets.getByName("main").assets.srcDir(it) }
